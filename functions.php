@@ -12,7 +12,7 @@ function enqueue_custom_script() {
     
     // Find and load the .JSON files
     wp_localize_script('custom-filter-script', 'jsonData', array(
-        'json_url' => get_template_directory_uri() . 'wp-content/uploads/2024/11/dk.json',
+        'json_url' => 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json',
     ));
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_script');
