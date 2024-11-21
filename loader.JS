@@ -25,6 +25,18 @@ function addLongStringInChunks(element, longString, chunkSize = 1000) {
     }
 }
 
-// Usage
-getElementByIdAndModify('MissionTitle', 'blue');
-console.log(isOnMissionsPage())
+// searches all child elements of element and store all elements containing text 
+function searchAndFindTextElements(element){
+    if (!element) {
+        console.error(element +' not found.');
+        return;
+    }
+    const childElements = Array.from(element.querySelectorAll('*'));
+
+    const filteredArray = childElements.filter(element => 
+        element.tagName.toLowerCase() !== 'div' && hasNonEmptyText(element)
+    );
+    return filteredArray
+}
+
+// updates text on element
