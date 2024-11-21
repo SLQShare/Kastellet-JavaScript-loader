@@ -8,13 +8,20 @@ function isOnMissionsPage() {
     const path = window.location.pathname.toLocaleLowerCase();
     return path.includes('/missions')
 }
+// removes placeholder text and adds long text in chunks to save
+function addLongStringInChunks(element, longString, chunkSize = 1000) {
+    if (!element) {
+        console.error("Element not found.");
+        return;
+    }
+    element.textContent = "";
+    let currentIndex = 0;
+    const totalLength = longString.length;
 
-function getElementByIdAndModify(id, newColor) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.style.color = newColor;
-    } else {
-        console.error(`Element with id "${id}" not found`);
+    while (currentIndex < totalLength) {
+        const chunk = longString.slice(currentIndex, currentIndex + chunkSize);
+        element.textContent += chunk; // Append the current chunk
+        currentIndex += chunkSize;
     }
 }
 
