@@ -2,9 +2,11 @@
 console.log("1")
 // Accessing the JSON data
 console.log(window.jsonData);
-const data = window.jsonData
-
+// checks the current page, so the code is only running when needed
 function isOnMissionsPage() {
+    const path = window.location.pathname.toLowerCase();
+    return path.includes('/missions');
+}
 // finds element by Id
 function findElementById(id) {
     return document.getElementById(id);
