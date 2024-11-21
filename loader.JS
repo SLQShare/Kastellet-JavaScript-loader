@@ -5,6 +5,10 @@ console.log(window.jsonData);
 const data = window.jsonData
 
 function isOnMissionsPage() {
+// finds element by Id
+function findElementById(id) {
+    return document.getElementById(id);
+}
 // checks HTML element for text
 function hasNonEmptyText(element) {
     return element.textContent.trim().length > 0;
