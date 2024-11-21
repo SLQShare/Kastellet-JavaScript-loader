@@ -5,8 +5,9 @@ console.log(window.jsonData);
 const data = window.jsonData
 
 function isOnMissionsPage() {
-    const path = window.location.pathname.toLocaleLowerCase();
-    return path.includes('/missions')
+// checks HTML element for text
+function hasNonEmptyText(element) {
+    return element.textContent.trim().length > 0;
 }
 // removes placeholder text and adds long text in chunks to save
 function addLongStringInChunks(element, longString, chunkSize = 1000) {
