@@ -160,7 +160,3 @@ function addTextFromDataToTable(data, missionId) {
 
     console.log("Headers and text updated successfully.");
 }
-
-
-
-
