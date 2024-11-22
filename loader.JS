@@ -3,24 +3,13 @@ console.log(isOnMissionsPage());
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
 
+main(missionId, urlDk);
 
-function main() {
+function main(missionId, urlDk) {
     if (isOnMissionsPage()) {
-        console.log(window.jsonData);
-
-        const target = findElementById('MissionTabs');
-        filteredArray = searchAndFindTextElements(target);
-
-        //const childElements = Array.from(target.querySelectorAll('*'));
-
-        //const filteredArray = childElements.filter(element => 
-        //    element.tagName.toLowerCase() !== 'div' && hasNonEmptyText(element)
-        //);
-
-        console.log('length: ' + filteredArray.length);
-        console.log(filteredArray.map(el => el.textContent.trim()));
-        console.log(filteredArray);
-
+        fetchAndProcessData(missionId, urlDk);     
+    }
+}
         const testString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus bibendum at odio sollicitudin imperdiet. Aliquam aliquet lacinia lectus a blandit. Nulla efficitur erat et est pulvinar dapibus. In laoreet dictum ligula maximus vehicula. Nullam sollicitudin tempus turpis, sit amet ullamcorper leo aliquam nec. Pellentesque et justo mi. Nunc metus turpis, elementum quis hendrerit eget, scelerisque vitae nulla. Phasellus pretium, sem eget tincidunt ultrices, neque dolor tristique quam, vel ullamcorper nisi erat nec turpis. Nulla tristique vitae eros eget pharetra. Praesent efficitur nisi varius orci fermentum rhoncus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam efficitur orci ut massa finibus, vel scelerisque lectus elementum. Maecenas condimentum nunc efficitur neque cursus auctor. Etiam a mi ut turpis aliquam finibus eget eget enim. Fusce volutpat mi mauris, eleifend congue ex bibendum id. Ut dictum porttitor erat, et varius augue vulputate sed. Proin rhoncus finibus posuere. Nunc blandit viverra dui, ut vulputate eros sodales et. Suspendisse condimentum justo non ante condimentum, vel rutrum nibh elementum. Nullam a porttitor nisi. Fusce metus leo, maximus eget pretium tincidunt, tristique sed nulla. Nullam consectetur congue maximus. Ut dignissim tempus ullamcorper. Nunc dictum leo nunc, sed ultrices tortor dignissim in. Sed sit amet congue lectus. In hac habitasse platea dictumst. Ut commodo nisi id interdum porta. Nullam interdum ultricies ex sit amet faucibus. Pellentesque volutpat mollis elit, sit amet scelerisque nulla faucibus sit amet. Morbi sit amet lobortis risus, vel elementum magna. Vestibulum in tristique diam. Sed ornare nulla sit amet metus dapibus, ac finibus dolor consectetur. Donec vehicula ac nunc at volutpat. Integer gravida rutrum posuere. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam aliquam eros sed dolor venenatis gravida quis et risus. Fusce eu nibh metus. Quisque egestas convallis magna. Sed mauris neque, aliquet ac vulputate id, consectetur ut dolor. Vivamus felis urna, faucibus in leo eget, bibendum ultricies diam. Sed tempus sodales commodo. Mauris faucibus congue gravida.Ut quam urna, tempus et massa in, faucibus porttitor enim. Aliquam at elementum enim, at bibendum ex. Vestibulum rhoncus tristique quam, eu luctus nisl. Quisque eget justo tortor. Pellentesque et tincidunt est, ac ultrices metus. Morbi vel urna sed velit vehicula lacinia sed at purus. Donec sodales enim ut elit luctus sollicitudin. Phasellus ultrices at dui sed placerat. Mauris non facilisis nunc. Nunc rhoncus tellus magna, quis molestie est maximus et. Etiam vehicula sodales odio sed malesuada. Aenean tempor mollis lobortis."
 
         addLongStringInChunks(filteredArray[15], testString, 1000);       
