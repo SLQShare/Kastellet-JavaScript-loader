@@ -85,4 +85,15 @@ function searchAndFindTextElements(element){
     return filteredArray
 }
 
-// updates text on element
+function getMissionById(missionsArray, id) {
+    if (!Array.isArray(missionsArray)) {
+        throw new Error("Invalid missions data: Expected an array.");
+    }
+
+    const mission = missionsArray.find(mission => mission.id === id);
+    if (mission) {
+        return mission;
+    } else {
+        throw new Error(`Mission with id ${id} not found.`);
+    }
+}
