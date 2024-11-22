@@ -1,6 +1,8 @@
 console.log("1");
 console.log(isOnMissionsPage());
-main();
+let missionId = 1248; // default value
+const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
+
 
 function main() {
     if (isOnMissionsPage()) {
