@@ -1,4 +1,3 @@
-console.log("1");
 console.log(isOnMissionsPage());
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
@@ -10,6 +9,7 @@ function main(missionId, urlDk) {
         fetchAndProcessData(missionId, urlDk);     
     }
 }
+
 // Function to fetch data and process it
 async function fetchAndProcessData(missionId,url) {
     try {
@@ -21,39 +21,32 @@ async function fetchAndProcessData(missionId,url) {
         console.error("Error fetching JSON:", error);
     }
 }
+
 // Function to process the data
 function processData(missionId , data) {
     // Implement your logic here
     console.log("Processing data:", data);
-    const dataDk = data.missions;
+    const dataDk = data;
     console.log("dataDk:", dataDk)
-    debugger;
-    // For example, assign to a variable, manipulate DOM, etc.
-    const table = findElementById('MissionTitle');
-    debugger;
-    filteredArrayOfElements = searchAndFindTextElements(table);
-    const missionInformation = getMissionById(dataDk, missionId)
-    console.log('filteredArrayOfElements', filteredArrayOfElements);
-    console.log("missioninformation",missionInformation);
-    debugger;
-    const testTitel = missionInformation.title;
-    const testString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus bibendum at odio sollicitudin imperdiet. Aliquam aliquet lacinia lectus a blandit. Nulla efficitur erat et est pulvinar dapibus. In laoreet dictum ligula maximus vehicula. Nullam sollicitudin tempus turpis, sit amet ullamcorper leo aliquam nec. Pellentesque et justo mi. Nunc metus turpis, elementum quis hendrerit eget, scelerisque vitae nulla. Phasellus pretium, sem eget tincidunt ultrices, neque dolor tristique quam, vel ullamcorper nisi erat nec turpis. Nulla tristique vitae eros eget pharetra. Praesent efficitur nisi varius orci fermentum rhoncus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam efficitur orci ut massa finibus, vel scelerisque lectus elementum. Maecenas condimentum nunc efficitur neque cursus auctor. Etiam a mi ut turpis aliquam finibus eget eget enim. Fusce volutpat mi mauris, eleifend congue ex bibendum id. Ut dictum porttitor erat, et varius augue vulputate sed. Proin rhoncus finibus posuere. Nunc blandit viverra dui, ut vulputate eros sodales et. Suspendisse condimentum justo non ante condimentum, vel rutrum nibh elementum. Nullam a porttitor nisi. Fusce metus leo, maximus eget pretium tincidunt, tristique sed nulla. Nullam consectetur congue maximus. Ut dignissim tempus ullamcorper. Nunc dictum leo nunc, sed ultrices tortor dignissim in. Sed sit amet congue lectus. In hac habitasse platea dictumst. Ut commodo nisi id interdum porta. Nullam interdum ultricies ex sit amet faucibus. Pellentesque volutpat mollis elit, sit amet scelerisque nulla faucibus sit amet. Morbi sit amet lobortis risus, vel elementum magna. Vestibulum in tristique diam. Sed ornare nulla sit amet metus dapibus, ac finibus dolor consectetur. Donec vehicula ac nunc at volutpat. Integer gravida rutrum posuere. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam aliquam eros sed dolor venenatis gravida quis et risus. Fusce eu nibh metus. Quisque egestas convallis magna. Sed mauris neque, aliquet ac vulputate id, consectetur ut dolor. Vivamus felis urna, faucibus in leo eget, bibendum ultricies diam. Sed tempus sodales commodo. Mauris faucibus congue gravida.Ut quam urna, tempus et massa in, faucibus porttitor enim. Aliquam at elementum enim, at bibendum ex. Vestibulum rhoncus tristique quam, eu luctus nisl. Quisque eget justo tortor. Pellentesque et tincidunt est, ac ultrices metus. Morbi vel urna sed velit vehicula lacinia sed at purus. Donec sodales enim ut elit luctus sollicitudin. Phasellus ultrices at dui sed placerat. Mauris non facilisis nunc. Nunc rhoncus tellus magna, quis molestie est maximus et. Etiam vehicula sodales odio sed malesuada. Aenean tempor mollis lobortis."
-    debugger;
-    addLongStringInChunks(filteredArrayOfElements[0], testTitel, 1000); 
+    addTextFromDataToTable(dataDk, missionId)
 }
+
 // checks the current page, so the code is only running when needed
 function isOnMissionsPage() {
     const path = window.location.pathname.toLowerCase();
     return path.includes('/missions');
 }
+
 // finds element by Id
 function findElementById(id) {
     return document.getElementById(id);
 }
+
 // checks HTML element for text
 function hasNonEmptyText(element) {
     return element.textContent.trim().length > 0;
 }
+
 // removes placeholder text and adds long text in chunks to save
 function addLongStringInChunks(element, longString, chunkSize = 1000) {
     if (!element) {
@@ -97,3 +90,77 @@ function getMissionById(missionsArray, id) {
         throw new Error(`Mission with id ${id} not found.`);
     }
 }
+
+function addTextFromDataToTable(data, missionId) {
+    const table = findElementById('MissionTabs');
+    const missionInformation = getMissionById(data.missions, missionId);
+
+    // Ensure the mission data is valid
+    if (!missionInformation || !missionInformation.content || !missionInformation.content.text) {
+        console.error("Invalid mission data or content structure.");
+        return;
+    }
+
+    // Get text elements
+    const textElementsByClass = Array.from(document.getElementsByClassName('TabText'));
+
+    // Get header elements
+    const filteredArrayOfElements = searchAndFindTextElements(table).filter(
+        element => element instanceof HTMLElement && !(element.tagName.toLowerCase() === 'button' || element.tagName.toLowerCase() === 'p')
+    );
+
+    console.log("Text elements:", textElementsByClass);
+    console.log("Header elements:", filteredArrayOfElements);
+
+    // Determine the number of sections to process (minimum of available data or elements)
+    const numSections = Math.min(
+        missionInformation.content.text.length,
+        textElementsByClass.length,
+        Math.floor(filteredArrayOfElements.length / 2) // Two headers per section
+    );
+
+    console.log(`Processing ${numSections} sections...`);
+
+    // Loop through text entries for text assignments
+    for (let i = 0; i < numSections; i++) {
+        const textEntry = missionInformation.content.text[i];
+
+        // Assign text content
+        if (textEntry && textEntry.text && textElementsByClass[i]) {
+            textElementsByClass[i].innerHTML = textEntry.text; // Assign text
+        } else {
+            console.warn(`No text or element found for index ${i}`);
+        }
+    }
+
+    // Loop through header assignments and hide unused buttons
+    for (let i = 0; i < filteredArrayOfElements.length; i++) {
+        const headerEntry = missionInformation.content.text[i]?.heading;
+        const buttonElement = filteredArrayOfElements[i].closest('button'); // Find the closest parent button
+
+        if (i < numSections) {
+            // Assign header content
+            if (headerEntry) {
+                filteredArrayOfElements[i].textContent = headerEntry; // Assign heading
+                if (buttonElement) {
+                    buttonElement.style.display = ''; // Show the button
+                }
+            } else {
+                if (buttonElement) {
+                    buttonElement.style.display = 'none'; // Hide the button
+                }
+            }
+        } else {
+            // Hide the button for unused headers
+            if (buttonElement) {
+                buttonElement.style.display = 'none';
+            }
+        }
+    }
+
+    console.log("Headers and text updated successfully.");
+}
+
+
+
+
