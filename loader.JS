@@ -48,7 +48,7 @@ function hasNonEmptyText(element) {
     return element.textContent.trim().length > 0;
 }
 
-// removes placeholder text and adds long text in chunks to save
+// removes placeholder text and adds long text in chunks to save TODO: likely needs to be deleted
 function addLongStringInChunks(element, longString, chunkSize = 1000) {
     if (!element) {
         console.error("Element not found.");
@@ -110,9 +110,6 @@ function addTextFromDataToTable(data, missionId) {
         element => element instanceof HTMLElement && !(element.tagName.toLowerCase() === 'button' || element.tagName.toLowerCase() === 'p')
     );
 
-    console.log("Text elements:", textElementsByClass);
-    console.log("Header elements:", filteredArrayOfElements);
-
     // Determine the number of sections to process (minimum of available data or elements)
     const numSections = Math.min(
         missionInformation.content.text.length,
@@ -120,7 +117,7 @@ function addTextFromDataToTable(data, missionId) {
         Math.floor(filteredArrayOfElements.length / 2) // Two headers per section
     );
 
-    console.log(`Processing ${numSections} sections...`);
+    //console.log(`Processing ${numSections} sections...`);
 
     // Loop through text entries for text assignments
     for (let i = 0; i < numSections; i++) {
@@ -158,6 +155,7 @@ function addTextFromDataToTable(data, missionId) {
             }
         }
     }
+}
 // updates the images for the mission TODO: The image location is hard coded and need to be changed
 function updateImagesAndImageText(data, missionId) {
     const pictureSlider = document.getElementsByClassName('swiper-wrapper'); // Elementor carousel wrapper
@@ -213,6 +211,7 @@ function updateImagesAndImageText(data, missionId) {
         console.error("Error updating carousel:", error);
     }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     const imageText = document.getElementById('figureTextId');
     const imageTextElementArray = searchAndFindTextElements(imageText);
