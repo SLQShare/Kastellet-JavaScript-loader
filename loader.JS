@@ -29,6 +29,7 @@ function processData(missionId , data) {
     const dataDk = data;
     console.log("dataDk:", dataDk)
     addTextFromDataToTable(dataDk, missionId)
+    updateImagesAndImageText(dataDk, missionId)
 }
 
 // checks the current page, so the code is only running when needed
