@@ -157,6 +157,58 @@ function addTextFromDataToTable(data, missionId) {
             }
         }
     }
+// updates the images for the mission TODO: The image location is hard coded and need to be changed
+function updateImagesAndImageText(data, missionId) {
+    const pictureSlider = document.getElementsByClassName('swiper-wrapper'); // Elementor carousel wrapper
+    const missionInformation = getMissionById(data.missions, missionId);
+    try {
+        console.log("pictureSlider[0]:", pictureSlider[0]);
+        console.log("missionInformation:", missionInformation);
 
-    console.log("Headers and text updated successfully.");
+        const missionImageArray = missionInformation.content.gallery.images;
+        console.log("missionImageArray:", missionImageArray);
+
+        const existingSlides = Array.from(pictureSlider[0].querySelectorAll('.swiper-slide'));
+        console.log("Existing Slides:", existingSlides);
+
+        for (let i = 0; i < missionImageArray.length; i++) {
+            const imageLocation = missionImageArray[i]?.url;
+            const imageText = missionImageArray[i]?.caption;
+
+            console.log(`Image Location: ${imageLocation}`);
+            console.log(`Image Text: ${imageText}`);
+
+            if (i < existingSlides.length) {
+                // Update existing slides
+                const imageDiv = existingSlides[i].querySelector('.elementor-carousel-image');
+                if (imageDiv) {
+                    imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
+                    imageDiv.setAttribute('aria-label', imageText || '');
+                }
+            } else {
+                // Create new slides
+                const wrapperDiv = document.createElement('div');
+                wrapperDiv.className = 'swiper-slide';
+                wrapperDiv.setAttribute('role', 'group');
+                wrapperDiv.setAttribute('aria-label', `${i + 1} / ${missionImageArray.length}`);
+                wrapperDiv.style.width = '423px';
+                wrapperDiv.style.marginRight = '10px';
+
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'elementor-carousel-image';
+                imageDiv.setAttribute('role', 'img');
+                imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
+                imageDiv.setAttribute('aria-label', imageText || '');
+
+                wrapperDiv.appendChild(imageDiv);
+
+                // Append the new slide to the swiper-wrapper
+                pictureSlider[0].appendChild(wrapperDiv);
+
+                console.log("Appended new slide:", wrapperDiv);
+            }
+        }
+    } catch (error) {
+        console.error("Error updating carousel:", error);
+    }
 }
