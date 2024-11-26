@@ -89,6 +89,16 @@ function getMissionById(missionsArray, id) {
         throw new Error(`Mission with id ${id} not found.`);
     }
 }
+// headerInformation(data, missionId, cssId, informationType
+function headerInformation(data, missionId, cssId, informationType){
+    const missionInformation = getMissionById(data.missions, missionId);
+    const elementArray = searchAndFindTextElements(findElementById(cssId));
+    try {
+        elementArray[0].innerHTML = missionInformation[informationType];
+    } catch (error) {
+        log.error("invalide information passed into headerInformation", error)
+    }
+}
 
 function addTextFromDataToTable(data, missionId) {
     const table = findElementById('MissionTabs');
