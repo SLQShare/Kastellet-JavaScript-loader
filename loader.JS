@@ -1,4 +1,3 @@
-console.log(isOnMissionsPage());
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
 
@@ -14,7 +13,7 @@ function main(missionId, urlDk) {
 async function fetchAndProcessData(missionId,url) {
     try {
         const jsonData = await jQuery.getJSON(url);
-        console.log("Data received:", jsonData);
+        console.log("Data received");
         // Call a function to process the data
         processData(missionId, jsonData);
     } catch (error) {
@@ -25,7 +24,6 @@ async function fetchAndProcessData(missionId,url) {
 // Function to process the data
 function processData(missionId , data) {
     // Implement your logic here
-    console.log("Processing data:", data);
     const dataDk = data;
     console.log("dataDk:", dataDk)
     addTextFromDataToTable(dataDk, missionId)
@@ -117,8 +115,6 @@ function addTextFromDataToTable(data, missionId) {
         Math.floor(filteredArrayOfElements.length / 2) // Two headers per section
     );
 
-    //console.log(`Processing ${numSections} sections...`);
-
     // Loop through text entries for text assignments
     for (let i = 0; i < numSections; i++) {
         const textEntry = missionInformation.content.text[i];
@@ -161,21 +157,14 @@ function updateImagesAndImageText(data, missionId) {
     const pictureSlider = document.getElementsByClassName('swiper-wrapper'); // Elementor carousel wrapper
     const missionInformation = getMissionById(data.missions, missionId);
     try {
-        console.log("pictureSlider[0]:", pictureSlider[0]);
         console.log("missionInformation:", missionInformation);
 
         const missionImageArray = missionInformation.content.gallery.images;
-        console.log("missionImageArray:", missionImageArray);
-
         const existingSlides = Array.from(pictureSlider[0].querySelectorAll('.swiper-slide'));
-        console.log("Existing Slides:", existingSlides);
 
         for (let i = 0; i < missionImageArray.length; i++) {
             const imageLocation = missionImageArray[i]?.url;
             const imageText = missionImageArray[i]?.caption;
-
-            console.log(`Image Location: ${imageLocation}`);
-            console.log(`Image Text: ${imageText}`);
 
             if (i < existingSlides.length) {
                 // Update existing slides
@@ -207,8 +196,6 @@ function updateImagesAndImageText(data, missionId) {
 
                 // Append the new slide to the swiper-wrapper
                 pictureSlider[0].appendChild(wrapperDiv);
-
-                console.log("Appended new slide:", wrapperDiv);
             }
         }
     } catch (error) {
@@ -218,7 +205,7 @@ function updateImagesAndImageText(data, missionId) {
 function findImageTextElement(){
     const imageText = document.getElementById('figureTextId');
     const imageTextElementArray = searchAndFindTextElements(imageText);
-
+ 
     // Determine the target element for updating text
     if (imageTextElementArray.length === 1) {
         return imageTextElementArray[0];
