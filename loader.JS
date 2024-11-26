@@ -223,6 +223,17 @@ function findImageTextElement(){
         return;
     }
 }
+// Function to update the text for the active slide
+function updateSlideText(textElement, classNameString) {
+    if (!textElement) return;
+    const activeSlide = document.querySelector('.'+classNameString);
+    if (activeSlide) {
+        const childElementArray = Array.from(activeSlide.querySelectorAll('*'));
+        textElement.textContent = childElementArray[0].attributes["aria-label"].nodeValue;
+    } else {
+        console.warn('No active slide found.');
+    }
+}
 
     // Select the carousel wrapper
     const carousel = document.querySelector('.swiper-wrapper'); // Adjust selector as needed
