@@ -99,6 +99,19 @@ function headerInformation(data, missionId, cssId, informationType){
         log.error("invalide information passed into headerInformation", error)
     }
 }
+// loop child elements and compare each element to mission forces
+function comparesTheForceTagsToMissionForces(data, missionId, cssId){
+    const missionInformation = getMissionById(data.missions, missionId);
+    const elementForcesArray = Array.from(findElementById(cssId).querySelectorAll('*'));
+    const missionForces = missionInformation.forces;
+    
+    elementForcesArray.forEach(element => {
+        const elementId = parseInt(element.id, 10)
+        if (!missionForces.includes(elementId)){
+            element.style.display = 'none'
+        }
+    });
+}
 
 function addTextFromDataToTable(data, missionId) {
     const table = findElementById('MissionTabs');
