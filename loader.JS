@@ -112,6 +112,16 @@ function comparesTheForceTagsToMissionForces(data, missionId, cssId){
         }
     });
 }
+// concatenate from and to into the year
+function assignMissionDuration(data, missionId, cssId){
+    const missionInformation = getMissionById(data.missions, missionId);
+    const missionDuration = searchAndFindTextElements(findElementById(cssId));
+    try {
+        missionDuration[0].innerHTML = String(missionInformation.year.from) +'-'+String(missionInformation.year.to);
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 function addTextFromDataToTable(data, missionId) {
     const table = findElementById('MissionTabs');
