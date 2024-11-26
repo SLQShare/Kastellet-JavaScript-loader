@@ -184,6 +184,10 @@ function updateImagesAndImageText(data, missionId) {
                     imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
                     imageDiv.setAttribute('aria-label', imageText || '');
                 }
+                if (i === 0) {
+                    const imageTextParagraphElement = findImageTextElement();
+                    updateSlideText(imageTextParagraphElement, 'swiper-slide');
+                }
             } else {
                 // Create new slides
                 const wrapperDiv = document.createElement('div');
