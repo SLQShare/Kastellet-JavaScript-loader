@@ -235,36 +235,21 @@ function updateSlideText(textElement, classNameString) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const imageTextParagraphElement = findImageTextElement();
+
     // Select the carousel wrapper
     const carousel = document.querySelector('.swiper-wrapper'); // Adjust selector as needed
 
     if (carousel) {
         // Add event listener to detect changes in the slider
         carousel.addEventListener('transitionend', () => {
-            updateActiveSlideText(imageTextParagraphElement);
+            updateSlideText(imageTextParagraphElement, 'swiper-slide-active');
         });
 
         // Initial update for the first active slide
-        updateActiveSlideText(imageTextParagraphElement);
+        updateSlideText(imageTextParagraphElement, 'swiper-slide-active');
     } else {
         console.error('Carousel element not found.');
     }
-
-    // Function to update the text for the active slide
-    function updateActiveSlideText(textElement) {
-        if (!textElement) return;
-
-        // Find the currently active slide
-        const activeSlide = document.querySelector('.swiper-slide-active');
-        if (activeSlide) {
-            // Extract the `aria-label` or other relevant text from the active slide
-            const ariaLabel = activeSlide.getAttribute('aria-label') || 'No description available';
-            textElement.textContent = ariaLabel;
-
-            console.log('Updated text to active slide aria-label:', ariaLabel);
-        } else {
-            console.warn('No active slide found.');
-        }
-    }
 });
-
