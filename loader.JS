@@ -25,9 +25,13 @@ async function fetchAndProcessData(missionId,url) {
 function processData(missionId , data) {
     // Implement your logic here
     const dataDk = data;
-    console.log("dataDk:", dataDk)
-    addTextFromDataToTable(dataDk, missionId)
-    updateImagesAndImageText(dataDk, missionId)
+    console.log("dataDk:", dataDk);
+    headerInformation(dataDk, missionId, 'MissionTitle', 'name');
+    headerInformation(dataDk, missionId, 'MissionSubtitle', 'subtitle');
+    comparesTheForceTagsToMissionForces(dataDk, missionId, "ForceContainer");
+    assignMissionDuration(dataDk, missionId, "MissionDuration")
+    addTextFromDataToTable(dataDk, missionId);
+    updateImagesAndImageText(dataDk, missionId);
 }
 
 // checks the current page, so the code is only running when needed
@@ -89,6 +93,7 @@ function getMissionById(missionsArray, id) {
         throw new Error(`Mission with id ${id} not found.`);
     }
 }
+
 // headerInformation(data, missionId, cssId, informationType
 function headerInformation(data, missionId, cssId, informationType){
     const missionInformation = getMissionById(data.missions, missionId);
@@ -99,6 +104,7 @@ function headerInformation(data, missionId, cssId, informationType){
         log.error("invalide information passed into headerInformation", error)
     }
 }
+
 // loop child elements and compare each element to mission forces
 function comparesTheForceTagsToMissionForces(data, missionId, cssId){
     const missionInformation = getMissionById(data.missions, missionId);
@@ -112,6 +118,7 @@ function comparesTheForceTagsToMissionForces(data, missionId, cssId){
         }
     });
 }
+
 // concatenate from and to into the year
 function assignMissionDuration(data, missionId, cssId){
     const missionInformation = getMissionById(data.missions, missionId);
