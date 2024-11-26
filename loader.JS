@@ -211,21 +211,18 @@ function updateImagesAndImageText(data, missionId) {
         console.error("Error updating carousel:", error);
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
+function findImageTextElement(){
     const imageText = document.getElementById('figureTextId');
     const imageTextElementArray = searchAndFindTextElements(imageText);
-    let imageTextParagraphElement = null;
 
     // Determine the target element for updating text
     if (imageTextElementArray.length === 1) {
-        imageTextParagraphElement = imageTextElementArray[0];
+        return imageTextElementArray[0];
     } else {
         console.warn('Unable to determine single imageTextParagraphElement.');
         return;
     }
-
-    console.log('imageTextParagraphElement:', imageTextParagraphElement);
+}
 
     // Select the carousel wrapper
     const carousel = document.querySelector('.swiper-wrapper'); // Adjust selector as needed
