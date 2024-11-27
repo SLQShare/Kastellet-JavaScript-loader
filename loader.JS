@@ -196,6 +196,18 @@ function addTextFromDataToTable(data, missionId) {
 function updateImagesAndImageText(data, missionId) {
     const pictureSlider = document.getElementsByClassName('swiper-wrapper'); // Elementor carousel wrapper
     const missionInformation = getMissionById(data.missions, missionId);
+
+    // Caption container outside the slider
+    const captionContainer = document.getElementById('figureTextIdContainer');
+
+    if (!captionContainer) {
+        console.error('Caption container not found. Please ensure an element with id="figureTextIdContainer" exists.');
+        return;
+    }
+
+    // Clear any existing captions in the caption container
+    captionContainer.innerHTML = '';
+
     try {
         console.log("missionInformation:", missionInformation);
 
@@ -213,35 +225,61 @@ function updateImagesAndImageText(data, missionId) {
                     imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
                     imageDiv.setAttribute('aria-label', imageText || '');
                 }
-                if (i === 0) {
-                    const imageTextParagraphElement = findImageTextElement();
-                    updateSlideText(imageTextParagraphElement, 'swiper-slide');
-                }
             } else {
                 // Create new slides
                 const wrapperDiv = document.createElement('div');
                 wrapperDiv.className = 'swiper-slide';
-                wrapperDiv.setAttribute('role', 'group');
-                wrapperDiv.setAttribute('aria-label', `${i + 1} / ${missionImageArray.length}`);
-                wrapperDiv.style.width = '423px';
-                wrapperDiv.style.marginRight = '10px';
 
                 const imageDiv = document.createElement('div');
                 imageDiv.className = 'elementor-carousel-image';
-                imageDiv.setAttribute('role', 'img');
                 imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
                 imageDiv.setAttribute('aria-label', imageText || '');
 
                 wrapperDiv.appendChild(imageDiv);
-
-                // Append the new slide to the swiper-wrapper
                 pictureSlider[0].appendChild(wrapperDiv);
             }
+
+            // Add caption to the external caption container
+            const captionElement = document.createElement('div');
+            captionElement.className = 'image-caption';
+            captionElement.textContent = imageText || 'No caption available';
+
+            // Apply styles dynamically
+            captionElement.style.marginTop = '10px';
+            captionElement.style.textAlign = 'center';
+            captionElement.style.color = 'white'; // Ensure it's visible
+            captionElement.style.fontSize = '16px'; // Adjust for readability
+            captionElement.style.background = 'rgba(0, 0, 0, 0.5)'; // Optional: semi-transparent background
+            captionElement.style.padding = '10px';
+            captionElement.style.borderRadius = '5px'; // Rounded corners
+            captionElement.style.maxWidth = '90%';
+            captionElement.style.marginLeft = 'auto';
+            captionElement.style.marginRight = 'auto';
+
+            // Append the caption to the external container
+            captionContainer.appendChild(captionElement);
         }
     } catch (error) {
         console.error("Error updating carousel:", error);
     }
 }
+
+
+function addCaptionTextStyle(element){
+    if (!element){
+        console.error('Element not found', element);
+        return;
+    } 
+    // Add positioning styles to avoid bullet navigation overlap
+    element.style.position = 'relative';
+    element.style.bottom = '20px'; // Adjust based on your design
+    element.style.left = '50%';
+    element.style.transform = 'translateX(-50%)';
+    element.style.zIndex = '10'; // Ensure it appears above navigation
+    element.style.marginTop = '20px'
+    element.style.paddingBottom = '20px'
+}
+
 function findImageTextElement(){
     const imageText = document.getElementById('figureTextId');
     const imageTextElementArray = searchAndFindTextElements(imageText);
