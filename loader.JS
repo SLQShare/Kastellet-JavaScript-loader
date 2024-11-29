@@ -4,9 +4,7 @@ const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/202
 main(missionId, urlDk);
 
 function main(missionId, urlDk) {
-    if (isOnMissionsPage()) {
-        fetchAndProcessData(missionId, urlDk);     
-    }
+    fetchAndProcessData(missionId, urlDk);   
 }
 
 // Function to fetch data and process it
@@ -23,22 +21,41 @@ async function fetchAndProcessData(missionId,url) {
 
 // Function to process the data
 function processData(missionId , data) {
-    // Implement your logic here
     const dataDk = data;
     console.log("dataDk:", dataDk);
-    headerInformation(dataDk, missionId, 'MissionTitle', 'name');
-    headerInformation(dataDk, missionId, 'MissionSubtitle', 'subtitle');
-    comparesTheForceTagsToMissionForces(dataDk, missionId, "ForceContainer");
-    assignMissionDuration(dataDk, missionId, "MissionDuration")
-    addTextFromDataToTable(dataDk, missionId);
-    updateImagesAndImageText(dataDk, missionId);
+    updateTheMissionsPage(missionId, data);
+    updateTheInfoScreen(missionId, data);
+    
 }
 
-// checks the current page, so the code is only running when needed
-function isOnMissionsPage() {
-    const path = window.location.pathname.toLowerCase();
-    return path.includes('/missions');
+// update the missionspage with information
+function updateTheMissionsPage(missionId, data){
+    if (isOnMissionsPage('missions')) {
+        headerInformation(data, missionId, 'MissionTitle', 'name');
+        headerInformation(data, missionId, 'MissionSubtitle', 'subtitle');
+        comparesTheForceTagsToMissionForces(data, missionId, "ForceContainer");
+        assignMissionDuration(data, missionId, "MissionDuration")
+        addTextFromDataToTable(data, missionId);
+        updateImagesAndImageText(data, missionId);   
+    }
 }
+
+
+
+// Checks if the current page matches the specified site name
+function isOnMissionsPage(siteName) {
+    if (!siteName || typeof siteName !== 'string') {
+        console.error('Invalid siteName provided');
+        return false;
+    }
+    
+    const path = window.location.pathname.toLowerCase();
+    const normalizedSiteName = siteName.trim().toLowerCase();
+
+    console.log(`Checking path: ${path} for /${normalizedSiteName}`);
+    return path.includes(`/${normalizedSiteName}`);
+}
+
 
 // finds element by Id
 function findElementById(id) {
@@ -287,6 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Carousel element not found.');
     }
 });
+
 // update the infoscreen
 function updateTheInfoScreen(missionId, data){
     if (isOnMissionsPage('Missions')){
@@ -376,6 +394,7 @@ function createInfoScreenFilterButton(missionId, data) {
         }
     });
 }
+
 // Function to copy all computed styles from one element to another
 function copyAllStyles(sourceElement, targetElement, stringArray = []) {
     if (!sourceElement || !targetElement) {
@@ -393,7 +412,9 @@ function copyAllStyles(sourceElement, targetElement, stringArray = []) {
         }
     });
 }
+
 // Function to apply styles
 function applyStyles(element, styles) {
     Object.assign(element.style, styles);
 }
+
