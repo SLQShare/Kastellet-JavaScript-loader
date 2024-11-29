@@ -287,3 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Carousel element not found.');
     }
 });
+// update the infoscreen
+function updateTheInfoScreen(missionId, data){
+    if (isOnMissionsPage('Missions')){
+        return
+    }
+    console.log('test')
+    createInfoScreenFilterButton(missionId, data)
+}
