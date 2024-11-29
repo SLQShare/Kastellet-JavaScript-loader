@@ -320,19 +320,19 @@ function createInfoScreenFilterButton(missionId, data) {
         const parentButton = document.getElementById(buttonId);
         parentButton.style.all = 'unset'
 
-        if (parentButton) {
-            // Apply styles to the parent button
+        // Reset and apply styles to the parent button
+        parentButton.style.all = 'unset';
             applyStyles(parentButton, {
                 color: 'white',
-                fontSize: '16px',
+            fontSize: '20px',
                 textAlign: 'center',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontFamily: 'Poppins", Sans-serif',
+            fontFamily: 'Poppins, Sans-serif',
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
-                marginBottom: '35px',
+            marginBottom: '10px',
                 width: '400px',
                 height: '75px',
                 backgroundColor: '#72756f',
