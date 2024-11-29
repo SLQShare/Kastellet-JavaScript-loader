@@ -339,16 +339,13 @@ function createInfoScreenFilterButton(missionId, data) {
                 borderRadius: '50px',
             });
 
-            // Set button text based on its ID
-            if (parentButton.id === "PeriodFilterButton") {
-                parentButton.textContent = 'Period';
-            } else if (parentButton.id === "contributionFilterButton") {
-                parentButton.textContent = 'Styrke';
-            } else if (parentButton.id === "geographyFilterButton") {
-                parentButton.textContent = data.locations[6]?.title || 'Geography';
-            }
-            
-            // Create a new div for the filter content
+        // Create a wrapper for the button and its filters
+        const buttonWrapper = document.createElement('div');
+        applyStyles(buttonWrapper, {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+        });
             const filterSelectorContainer = document.createElement('div');
             applyStyles(filterSelectorContainer, {
                 display: 'flex',
