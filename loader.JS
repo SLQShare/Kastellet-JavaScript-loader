@@ -316,7 +316,17 @@ function updateTheInfoScreen(missionId, data){
 function createInfoScreenFilterButton(missionId, data) {
     const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton'];
     const dataSet = generateDataSet(1940, 2030, 10);
-
+    const contributionColors = {
+        1087: { backgroundColor: "#518346", textColor: "#ffffff" },
+        1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
+        1089: { backgroundColor: "#052854", textColor: "#ffffff" },
+        1090: { backgroundColor: "#8d1b3d", textColor: "#ffffff" },
+        1091: { backgroundColor: "#ffffff", textColor: "#81847e" }, 
+        1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
+        1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
+    };
+    
+    
     buttonIds.forEach(buttonId => {
         const parentButton = document.getElementById(buttonId);
 
@@ -329,12 +339,12 @@ function createInfoScreenFilterButton(missionId, data) {
         parentButton.style.all = 'unset';
         applyStyles(parentButton, {
             color: 'white',
-            fontSize: '20px',
+            fontSize: '24px',
             textAlign: 'center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontFamily: 'Poppins, Sans-serif',
+            fontFamily: 'Saira Stencil One, Sans-serif',
             fontWeight: 'bold',
             textTransform: 'uppercase',
             marginBottom: '10px',
@@ -375,10 +385,13 @@ function createInfoScreenFilterButton(missionId, data) {
                 filterSelectorContainer.appendChild(filterSelectorButton);
             });
         } else if (parentButton.id === "contributionFilterButton") {
-            parentButton.textContent = 'Styrke';
+            parentButton.textContent = 'Styrke'; //TODO remove hardcode
             data.forces.forEach((force) => {
+                const colors = contributionColors[force.id] || { backgroundColor: "#cccccc", textColor: "#000000" };
                 const filterSelectorButton = createfilterSelectorButton(parentButton);
                 filterSelectorButton.textContent = force?.title || 'Unknown Force';
+                filterSelectorButton.style.backgroundColor = colors.backgroundColor;
+                filterSelectorButton.style.WebkitTextFillColor = colors.textColor;
                 filterSelectorContainer.appendChild(filterSelectorButton);
             });
         } else if (parentButton.id === "geographyFilterButton") {
@@ -420,7 +433,7 @@ function createfilterSelectorButton(parentButton) {
         width: '400px',
         textAlign: 'center',
         borderRadius: '50px',
-        fontSize: '16px',
+        fontSize: '24px',
         fontWeight: 'bold',
         textTransform: 'uppercase',
     });
@@ -461,5 +474,3 @@ function generateDataSet(startYear, endYear, intervalSize) {
     }
     return dataSet;
 }
-
-
