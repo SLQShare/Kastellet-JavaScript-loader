@@ -267,6 +267,9 @@ function updateSlideText(textElement, classNameString) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (!isOnMissionsPage('missions')) {
+        return;     
+    }
     const imageTextParagraphElement = findImageTextElement();
 
     // Select the carousel wrapper
