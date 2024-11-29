@@ -295,6 +295,87 @@ function updateTheInfoScreen(missionId, data){
     console.log('test')
     createInfoScreenFilterButton(missionId, data)
 }
+function createInfoScreenFilterButton(missionId, data) {
+    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton'];
+
+    buttonIds.forEach(buttonId => {
+        const parentButton = document.getElementById(buttonId);
+        parentButton.style.all = 'unset'
+
+        if (parentButton) {
+            // Apply styles to the parent button
+            applyStyles(parentButton, {
+                color: 'white',
+                fontSize: '16px',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'Poppins", Sans-serif',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                marginBottom: '35px',
+                width: '400px',
+                height: '75px',
+                backgroundColor: '#72756f',
+                borderRadius: '50px',
+            });
+
+            // Set button text based on its ID
+            if (parentButton.id === "PeriodFilterButton") {
+                parentButton.textContent = 'Period';
+            } else if (parentButton.id === "contributionFilterButton") {
+                parentButton.textContent = 'Styrke';
+            } else if (parentButton.id === "geographyFilterButton") {
+                parentButton.textContent = data.locations[6]?.title || 'Geography';
+            }
+            
+            // Create a new div for the filter content
+            const filterSelectorContainer = document.createElement('div');
+            applyStyles(filterSelectorContainer, {
+                display: 'flex',
+                flexDirection: 'column',
+            });
+
+            // Create the filter selector button
+            const filterSelectorButton = document.createElement('div');
+            copyAllStyles(parentButton, filterSelectorButton, ['color', 'background-color']);
+
+            // Ensure styles are applied
+            applyStyles(filterSelectorButton, {
+                backgroundColor: "#ffffff",
+                // fontSize: '16px',
+                // textAlign: 'center',
+                // display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '75px', 
+                WebkitAlignItems: 'center',
+                WebkitJustifyContent: 'center',
+                marginBottom: '5px',
+                WebkitTextFillColor: '#81847e',
+                display: 'none',
+            });
+
+            filterSelectorButton.textContent = `Filters for ${buttonId}`;
+
+            const parentContainer = parentButton.parentElement;
+            parentContainer.insertBefore(filterSelectorContainer, parentButton.nextSibling);
+
+            // Append the filter div to the parent
+            filterSelectorContainer.appendChild(parentButton);
+            filterSelectorContainer.appendChild(filterSelectorButton);
+
+            // Add click behavior to toggle the display of the filter div
+            parentButton.addEventListener('click', () => {
+                const isDisplayed = filterSelectorButton.style.display === 'block' || filterSelectorButton.style.display === 'flex';
+                filterSelectorButton.style.display = isDisplayed ? 'none' : 'flex';
+            });
+        } else {
+            console.error(`Button with ID "${buttonId}" not found.`);
+        }
+    });
+}
 // Function to copy all computed styles from one element to another
 function copyAllStyles(sourceElement, targetElement, stringArray = []) {
     if (!sourceElement || !targetElement) {
