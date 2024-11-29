@@ -295,3 +295,7 @@ function updateTheInfoScreen(missionId, data){
     console.log('test')
     createInfoScreenFilterButton(missionId, data)
 }
+// Function to apply styles
+function applyStyles(element, styles) {
+    Object.assign(element.style, styles);
+}
