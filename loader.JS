@@ -399,3 +399,16 @@ function applyStyles(element, styles) {
     Object.assign(element.style, styles);
 }
 
+function generateDataSet(startYear, endYear, intervalSize) {
+    const dataSet = [];
+    for (let year = startYear; year <= endYear; year += intervalSize) {
+        const endIntervalYear = Math.min(year + intervalSize - 1, endYear);
+        dataSet.push({
+            interval: [year, endIntervalYear],
+            description: `${year}-${endIntervalYear}`
+        });
+    }
+    return dataSet;
+}
+
+
