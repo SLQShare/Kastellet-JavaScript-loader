@@ -352,16 +352,11 @@ function createInfoScreenFilterButton(missionId, data) {
                 flexDirection: 'column',
             });
 
-            // Create the filter selector button
+// Helper function to create a filter selector button
+function createfilterSelectorButton(parentButton) {
             const filterSelectorButton = document.createElement('div');
-            copyAllStyles(parentButton, filterSelectorButton, ['color', 'background-color']);
-
-            // Ensure styles are applied
             applyStyles(filterSelectorButton, {
-                backgroundColor: "#ffffff",
-                // fontSize: '16px',
-                // textAlign: 'center',
-                // display: 'flex',
+        backgroundColor: '#ffffff',
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '75px', 
@@ -369,27 +364,16 @@ function createInfoScreenFilterButton(missionId, data) {
                 WebkitJustifyContent: 'center',
                 marginBottom: '5px',
                 WebkitTextFillColor: '#81847e',
-                display: 'none',
-            });
-
-            filterSelectorButton.textContent = `Filters for ${buttonId}`;
-
-            const parentContainer = parentButton.parentElement;
-            parentContainer.insertBefore(filterSelectorContainer, parentButton.nextSibling);
-
-            // Append the filter div to the parent
-            filterSelectorContainer.appendChild(parentButton);
-            filterSelectorContainer.appendChild(filterSelectorButton);
-
-            // Add click behavior to toggle the display of the filter div
-            parentButton.addEventListener('click', () => {
-                const isDisplayed = filterSelectorButton.style.display === 'block' || filterSelectorButton.style.display === 'flex';
-                filterSelectorButton.style.display = isDisplayed ? 'none' : 'flex';
-            });
-        } else {
-            console.error(`Button with ID "${buttonId}" not found.`);
-        }
+        display: 'flex',
+        width: '400px',
+        textAlign: 'center',
+        borderRadius: '50px',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
     });
+
+    return filterSelectorButton;
 }
 
 // Function to copy all computed styles from one element to another
