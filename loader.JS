@@ -295,6 +295,23 @@ function updateTheInfoScreen(missionId, data){
     console.log('test')
     createInfoScreenFilterButton(missionId, data)
 }
+// Function to copy all computed styles from one element to another
+function copyAllStyles(sourceElement, targetElement, stringArray = []) {
+    if (!sourceElement || !targetElement) {
+        console.error("Source or target element not found.");
+        return;
+    }
+
+    const computedStyles = window.getComputedStyle(sourceElement);
+    const excludedProperties = stringArray; // Use the passed array or default to an empty array
+
+    // Apply all computed styles except those in the excluded list
+    Array.from(computedStyles).forEach(property => {
+        if (!excludedProperties.includes(property)) {
+            targetElement.style[property] = computedStyles.getPropertyValue(property);
+        }
+    });
+}
 // Function to apply styles
 function applyStyles(element, styles) {
     Object.assign(element.style, styles);
