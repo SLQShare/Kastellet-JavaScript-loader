@@ -472,6 +472,48 @@ function createInfoScreenFilterButton(missionId, data) {
         }
     });
 }
+function resetFilter(type = null) {
+    // Reset all filters if no specific type is provided
+    if (!type) {
+        for (const key in filterStateStorage) {
+            const state = filterStateStorage[key];
+            const { activeParentButton, activeFilterButton } = state;
+
+            if (state.isFilterActive && activeParentButton && activeFilterButton) {
+                // Reverse the style swap
+                handleStateIndictionForFilters(key, activeFilterButton, activeParentButton);
+            }
+
+            // Reset state properties
+            state.isFilterActive = false;
+            state.activeParentButton = null;
+            state.activeFilterButton = null;
+        }
+        console.log('All filters reset:', filterStateStorage);
+        return;
+    }
+
+    // Reset a specific filter type
+    const state = filterStateStorage[type];
+    if (!state) {
+        console.error(`Invalid filter type: ${type}`);
+        return;
+    }
+
+    const { activeParentButton, activeFilterButton } = state;
+
+    if (state.isFilterActive && activeParentButton && activeFilterButton) {
+        // Reverse the style swap
+        handleStateIndictionForFilters(type, activeFilterButton, activeParentButton);
+    }
+
+    // Reset state properties for the specific type
+    state.isFilterActive = false;
+    state.activeParentButton = null;
+    state.activeFilterButton = null;
+
+    console.log(`Filter for type "${type}" reset:`, filterStateStorage[type]);
+}
 // state indication for filter options
 function handleStateIndictionForFilters(type, parentButtonElement, filterButtonElement) {
     if (!parentButtonElement || !filterButtonElement) {
