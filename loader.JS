@@ -472,6 +472,39 @@ function createInfoScreenFilterButton(missionId, data) {
         }
     });
 }
+// state indication for filter options
+function handleStateIndictionForFilters(type, parentButtonElement, filterButtonElement) {
+    if (!parentButtonElement || !filterButtonElement) {
+        console.error('Parent button or filter button not found.', error);
+        return;
+    }
+
+    // Save parent button's styles and content
+    const parentStyles = {
+        backgroundColor: parentButtonElement.style.backgroundColor,
+        color: parentButtonElement.style.color,
+        text: parentButtonElement.textContent,
+    };
+
+    // Save filter button's styles and content
+    const filterStyles = {
+        backgroundColor: filterButtonElement.style.backgroundColor,
+        color: filterButtonElement.style.color,
+        text: filterButtonElement.textContent,
+    };
+
+    // Swap styles and content
+    parentButtonElement.style.backgroundColor = filterStyles.backgroundColor;
+    parentButtonElement.style.color = filterStyles.color;
+    parentButtonElement.textContent = filterStyles.text;
+
+    filterButtonElement.style.backgroundColor = parentStyles.backgroundColor;
+    filterButtonElement.style.color = parentStyles.color;
+    filterButtonElement.textContent = parentStyles.text;
+
+    console.log('filterStateStorage end of handle:', filterStateStorage);
+
+}
 
 // Helper function to create a filter selector button
 function createfilterSelectorButton(parentButton) {
