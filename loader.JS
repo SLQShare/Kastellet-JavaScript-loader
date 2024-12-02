@@ -452,12 +452,24 @@ function createInfoScreenFilterButton(missionId, data) {
         
         // Add the filter container to the wrapper
         buttonWrapper.appendChild(filterSelectorContainer);
-
         // Add toggle behavior to the parent button
+        if (parentButton.id === "resetButton") {
+            console.log("reset button",parentButton);
+            parentButton.addEventListener('click', () => {
+                resetFilter(); // Call the function to reset all filters
+            });
+        } else {
         parentButton.addEventListener('click', () => {
+                const type = parentButton.id.replace('FilterButton','').toLowerCase()
+                console.log(type);
+                if (filterStateStorage[type].isFilterActive){
+                    resetFilter(type);
+                    console.log('it should reset before it opens')
+                }
             const isDisplayed = filterSelectorContainer.style.display === 'flex';
             filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
         });
+        }
     });
 }
 
