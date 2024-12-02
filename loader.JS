@@ -424,6 +424,7 @@ function createInfoScreenFilterButton(missionId, data) {
                 const filterSelectorButton = createfilterSelectorButton(parentButton);
                 filterSelectorButton.textContent = dataItem.description;
                 filterSelectorContainer.appendChild(filterSelectorButton);
+                filterSelectorButton.addEventListener('click', function(){filterSelection('period', filterSelectorButton, parentButton);});
             });
         } else if (parentButton.id === "contributionFilterButton") {
             parentButton.textContent = 'Styrke'; //TODO remove hardcode
@@ -434,6 +435,7 @@ function createInfoScreenFilterButton(missionId, data) {
                 filterSelectorButton.style.backgroundColor = colors.backgroundColor;
                 filterSelectorButton.style.WebkitTextFillColor = colors.textColor;
                 filterSelectorContainer.appendChild(filterSelectorButton);
+                filterSelectorButton.addEventListener('click', function(){filterSelection('contribution' , filterSelectorButton, parentButton);});
             });
         } else if (parentButton.id === "geographyFilterButton") {
             parentButton.textContent = data.locations[6]?.title || 'Geography';
@@ -443,6 +445,7 @@ function createInfoScreenFilterButton(missionId, data) {
                     const filterSelectorButton = createfilterSelectorButton(parentButton);
                     filterSelectorButton.textContent = location?.title || 'Unknown Location';
                     filterSelectorContainer.appendChild(filterSelectorButton);
+                    filterSelectorButton.addEventListener('click', function(){filterSelection('geography' , filterSelectorButton, parentButton);});
                 }
             });
         }
