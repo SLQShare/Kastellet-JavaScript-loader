@@ -331,7 +331,12 @@ function updateTheInfoScreen(missionId, data){
     createInfoScreenFilterButton(missionId, data)
 }
 function createInfoScreenFilterButton(missionId, data) {
-    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton'];
+    const resetButton = document.createElement('div');
+    resetButton.id = 'resetButton';
+    resetButton.textContent = 'Nulstil'; // TODO hardcoded danish
+    const referenceButton = document.getElementById('geographyFilterButton')
+    referenceButton.insertAdjacentElement('afterend', resetButton);
+    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton', 'resetButton'];
     const dataSet = generateDataSet(1940, 2030, 10);
     const contributionColors = {
         1087: { backgroundColor: "#518346", textColor: "#ffffff" },
