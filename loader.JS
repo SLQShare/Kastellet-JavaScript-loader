@@ -1,5 +1,22 @@
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
+const filterStateStorage = {
+    period: {
+        isFilterActive: false,
+        activeParentButton: null,
+        activeFilterButton: null,
+    },
+    contribution: {
+        isFilterActive: false,
+        activeParentButton: null,
+        activeFilterButton: null,
+    },
+    geography: {
+        isFilterActive: false,
+        activeParentButton: null,
+        activeFilterButton: null,
+    },
+};
 
 main(missionId, urlDk);
 
