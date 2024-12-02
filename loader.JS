@@ -1,5 +1,12 @@
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
+// filter storage object
+const selectedFilters = {
+    period: null,
+    contribution: null, 
+    geography: null,
+};
+
 const filterStateStorage = {
     period: {
         isFilterActive: false,
@@ -348,7 +355,6 @@ function createInfoScreenFilterButton(missionId, data) {
         1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
     };
     
-    
     buttonIds.forEach(buttonId => {
         const parentButton = document.getElementById(buttonId);
 
@@ -359,6 +365,7 @@ function createInfoScreenFilterButton(missionId, data) {
 
         // Reset and apply styles to the parent button
         parentButton.style.all = 'unset';
+        
         if (buttonId === 'resetButton'){
             applyStyles(parentButton, {
                 color: 'white',
@@ -377,22 +384,22 @@ function createInfoScreenFilterButton(missionId, data) {
                 borderRadius: '50px',
             })
         } else {
-        applyStyles(parentButton, {
-            color: 'white',
-            fontSize: '24px',
-            textAlign: 'center',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Saira Stencil One, Sans-serif',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            marginBottom: '10px',
+            applyStyles(parentButton, {
+                color: 'white',
+                fontSize: '24px',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'Saira Stencil One, Sans-serif',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                marginBottom: '10px',
                 width: '350px',
-            height: '75px',
-            backgroundColor: '#72756f',
-            borderRadius: '50px',
-        });
+                height: '75px',
+                backgroundColor: '#72756f',
+                borderRadius: '50px',
+            });
         }
 
         // Create a wrapper for the button and its filters
@@ -449,7 +456,7 @@ function createInfoScreenFilterButton(missionId, data) {
                 }
             });
         }
-        
+
         // Add the filter container to the wrapper
         buttonWrapper.appendChild(filterSelectorContainer);
         // Add toggle behavior to the parent button
@@ -459,19 +466,21 @@ function createInfoScreenFilterButton(missionId, data) {
                 resetFilter(); // Call the function to reset all filters
             });
         } else {
-        parentButton.addEventListener('click', () => {
+            parentButton.addEventListener('click', () => {
                 const type = parentButton.id.replace('FilterButton','').toLowerCase()
                 console.log(type);
                 if (filterStateStorage[type].isFilterActive){
                     resetFilter(type);
                     console.log('it should reset before it opens')
                 }
-            const isDisplayed = filterSelectorContainer.style.display === 'flex';
-            filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
-        });
+                const isDisplayed = filterSelectorContainer.style.display === 'flex';
+                filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
+            });
         }
     });
 }
+
+
 // filter event listener function call
 function filterSelection(type, filterButtonElement, parentButtonElement) {
     console.log('type', type, 'buttonText', filterButtonElement.textContent);
@@ -490,6 +499,7 @@ function filterSelection(type, filterButtonElement, parentButtonElement) {
     filterStateStorage[type].activeFilterButton = filterButtonElement;
     filterButtonElement.parentElement.style.display = 'none';
 }
+
 function resetFilter(type = null) {
     // Reset all filters if no specific type is provided
     if (!type) {
@@ -532,6 +542,7 @@ function resetFilter(type = null) {
 
     console.log(`Filter for type "${type}" reset:`, filterStateStorage[type]);
 }
+
 // state indication for filter options
 function handleStateIndictionForFilters(type, parentButtonElement, filterButtonElement) {
     if (!parentButtonElement || !filterButtonElement) {
@@ -566,6 +577,8 @@ function handleStateIndictionForFilters(type, parentButtonElement, filterButtonE
 
 }
 
+
+
 // Helper function to create a filter selector button
 function createfilterSelectorButton(parentButton) {
     const filterSelectorButton = document.createElement('div');
@@ -579,7 +592,7 @@ function createfilterSelectorButton(parentButton) {
         marginBottom: '5px',
         WebkitTextFillColor: '#81847e',
         display: 'flex',
-        width: '400px',
+        width: '350px',
         textAlign: 'center',
         borderRadius: '50px',
         fontSize: '24px',
