@@ -359,6 +359,24 @@ function createInfoScreenFilterButton(missionId, data) {
 
         // Reset and apply styles to the parent button
         parentButton.style.all = 'unset';
+        if (buttonId === 'resetButton'){
+            applyStyles(parentButton, {
+                color: 'white',
+                fontSize: '24px',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'Saira Stencil One, Sans-serif',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                marginBottom: '10px',
+                width: '200px',
+                height: '75px',
+                backgroundColor: '#d9534f',
+                borderRadius: '50px',
+            })
+        } else {
         applyStyles(parentButton, {
             color: 'white',
             fontSize: '24px',
@@ -370,11 +388,12 @@ function createInfoScreenFilterButton(missionId, data) {
             fontWeight: 'bold',
             textTransform: 'uppercase',
             marginBottom: '10px',
-            width: '400px',
+                width: '350px',
             height: '75px',
             backgroundColor: '#72756f',
             borderRadius: '50px',
         });
+        }
 
         // Create a wrapper for the button and its filters
         const buttonWrapper = document.createElement('div');
