@@ -472,6 +472,24 @@ function createInfoScreenFilterButton(missionId, data) {
         }
     });
 }
+// filter event listener function call
+function filterSelection(type, filterButtonElement, parentButtonElement) {
+    console.log('type', type, 'buttonText', filterButtonElement.textContent);
+
+    // Check if a filter is already active
+    if (filterStateStorage[type].isFilterActive) {
+        console.warn(`Filter type "${type}" is already active.`);
+        return; // Prevent further interaction until reset
+    }
+    // Apply the new filter
+    handleStateIndictionForFilters(type, parentButtonElement, filterButtonElement);
+
+    // Update the state tracker
+    filterStateStorage[type].isFilterActive = true;
+    filterStateStorage[type].activeParentButton = parentButtonElement;
+    filterStateStorage[type].activeFilterButton = filterButtonElement;
+    filterButtonElement.parentElement.style.display = 'none';
+}
 function resetFilter(type = null) {
     // Reset all filters if no specific type is provided
     if (!type) {
