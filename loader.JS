@@ -480,6 +480,12 @@ function createInfoScreenFilterButton(missionId, data) {
 
 
 // filter event listener function call
+function applyFilter(type, value, filterButtonElement, parentButtonElement) {
+    //updatefilterStateStorage(type, parentButtonElement, filterButtonElement); // Update UI state
+    updateSelectedFilter(type, value); // Update queryable data
+    updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
+}
+
 function resetFilterObjects(type = null){
     resetSelectedFilter(null);
     resetStateStorage(null);
