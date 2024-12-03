@@ -478,15 +478,18 @@ function createInfoScreenFilterButton(missionId, data) {
 }
 
 // filter event listener function call
-function applyFilter(type, value, filterButtonElement, parentButtonElement) {
-    //updatefilterStateStorage(type, parentButtonElement, filterButtonElement); // Update UI state
+function applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
     updateSelectedFilter(type, value); // Update queryable data
     updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
+    applyFiltersToFindMissions(data, selectedFilters)
+    //categorizeHotspotsAdvanced(data.hotspotCollections)
 }
 
-function resetFilterObjects(type = null){
-    resetSelectedFilter(null);
-    resetStateStorage(null);
+function resetFilterObjects(data, type = null){
+    resetSelectedFilter(type);
+    resetStateStorage(type);
+    applyFiltersToFindMissions(data, selectedFilters)
+    
 }
 
 function updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement){
