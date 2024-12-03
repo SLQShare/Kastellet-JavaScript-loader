@@ -690,3 +690,35 @@ function formatSelectedFilterValues(filters, data) {
     console.log("Formatted Filters:", formattedFilters);
     return formattedFilters;
 }
+
+// helping function to applyFiltersToFindMissions that checks each filter type
+function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
+    return missionIds.filter(missionId => {
+        const mission = jsonData.missions.find(m => m.id === missionId);
+
+        if (!mission) {
+            console.warn(`Mission with ID ${missionId} not found.`);
+            return false;
+        }
+
+        switch (filterType) {
+            case "period":
+                // Match missions within the period range
+                const { from, to } = mission.year;
+                const [startYear, endYear] = filterValue; // Assuming it's an array like [1940, 1949]
+                return (from >= startYear && from <= endYear) || (to >= startYear && to <= endYear);
+
+            case "contribution":
+                // Compare `filterValue` (array of formatted IDs) to `mission.forces` (array of IDs)
+                return filterValue.some(contributionId => mission.forces.includes(contributionId));
+
+            case "geography":
+                // Match missions with at least one geography ID in the filter
+                return mission.hotspotCollections.some(hotspot => filterValue.includes(hotspot.id));
+
+            default:
+                console.warn(`Unknown filter type: ${filterType}`);
+                return true; // Do not filter out if the filter type is unknown
+        }
+    });
+}
