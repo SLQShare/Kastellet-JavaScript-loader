@@ -480,9 +480,10 @@ function createInfoScreenFilterButton(missionId, data) {
 
 
 // filter event listener function call
-function filterSelection(type, filterButtonElement, parentButtonElement) {
-    console.log('type', type, 'buttonText', filterButtonElement.textContent);
-
+function resetFilterObjects(type = null){
+    resetSelectedFilter(null);
+    resetStateStorage(null);
+}
     // Check if a filter is already active
     if (filterStateStorage[type].isFilterActive) {
         console.warn(`Filter type "${type}" is already active.`);
