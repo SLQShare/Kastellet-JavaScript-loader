@@ -484,6 +484,8 @@ function resetFilterObjects(type = null){
     resetSelectedFilter(null);
     resetStateStorage(null);
 }
+
+function updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement){
     // Check if a filter is already active
     if (filterStateStorage[type].isFilterActive) {
         console.warn(`Filter type "${type}" is already active.`);
