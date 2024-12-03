@@ -431,7 +431,7 @@ function createInfoScreenFilterButton(missionId, data) {
                 const filterSelectorButton = createfilterSelectorButton(parentButton);
                 filterSelectorButton.textContent = dataItem.description;
                 filterSelectorContainer.appendChild(filterSelectorButton);
-                filterSelectorButton.addEventListener('click', function(){applyFilter('period', filterSelectorButton.textContent, filterSelectorButton, parentButton);});
+                filterSelectorButton.addEventListener('click', function(){applyFilter('period', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
             });
         } else if (parentButton.id === "contributionFilterButton") {
             parentButton.textContent = 'Styrke'; //TODO remove hardcode
@@ -442,7 +442,7 @@ function createInfoScreenFilterButton(missionId, data) {
                 filterSelectorButton.style.backgroundColor = colors.backgroundColor;
                 filterSelectorButton.style.WebkitTextFillColor = colors.textColor;
                 filterSelectorContainer.appendChild(filterSelectorButton);
-                filterSelectorButton.addEventListener('click', function(){applyFilter('contribution' , filterSelectorButton.textContent, filterSelectorButton, parentButton);});
+                filterSelectorButton.addEventListener('click', function(){applyFilter('contribution' , filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
             });
         } else if (parentButton.id === "geographyFilterButton") {
             parentButton.textContent = data.locations[6]?.title || 'Geography';
@@ -452,7 +452,7 @@ function createInfoScreenFilterButton(missionId, data) {
                     const filterSelectorButton = createfilterSelectorButton(parentButton);
                     filterSelectorButton.textContent = location?.title || 'Unknown Location';
                     filterSelectorContainer.appendChild(filterSelectorButton);
-                    filterSelectorButton.addEventListener('click', function(){applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton);});
+                    filterSelectorButton.addEventListener('click', function(){applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
                 }
             });
         }
@@ -462,13 +462,13 @@ function createInfoScreenFilterButton(missionId, data) {
         // Add toggle behavior to the parent button
         if (parentButton.id === "resetButton") {
             parentButton.addEventListener('click', () => {
-                resetFilterObjects(); // Call the function to reset all filters
+                resetFilterObjects(data); // Call the function to reset all filters
             });
         } else {
             parentButton.addEventListener('click', () => {
                 const type = parentButton.id.replace('FilterButton','').toLowerCase()
                 if (filterStateStorage[type].isFilterActive){
-                    resetFilterObjects(type);
+                    resetFilterObjects(data, type);
                 }
                 const isDisplayed = filterSelectorContainer.style.display === 'flex';
                 filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
