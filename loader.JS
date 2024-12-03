@@ -600,9 +600,6 @@ function handleStateIndictionForFilters(type, parentButtonElement, filterButtonE
     filterButtonElement.style.backgroundColor = parentStyles.backgroundColor;
     filterButtonElement.style.color = parentStyles.color;
     filterButtonElement.textContent = parentStyles.text;
-
-    console.log('filterStateStorage end of handle:', filterStateStorage);
-
 }
 
 // Helper function to create a filter selector button
