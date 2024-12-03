@@ -344,7 +344,7 @@ function createInfoScreenFilterButton(missionId, data) {
     const referenceButton = document.getElementById('geographyFilterButton')
     referenceButton.insertAdjacentElement('afterend', resetButton);
     const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton', 'resetButton'];
-    const dataSet = generateDataSet(1940, 2030, 10);
+    const dataSet = generateDataSet(1940, 2029, 10);
     const contributionColors = {
         1087: { backgroundColor: "#518346", textColor: "#ffffff" },
         1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
