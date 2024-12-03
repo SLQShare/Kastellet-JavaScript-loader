@@ -537,8 +537,14 @@ function resetFilter(type = null) {
     state.isFilterActive = false;
     state.activeParentButton = null;
     state.activeFilterButton = null;
-
-    console.log(`Filter for type "${type}" reset:`, filterStateStorage[type]);
+// data state
+function updateSelectedFilter(type, value) {
+    if (!type || value === undefined) {
+        console.error("Invalid filter type or value.");
+        return;
+    }
+    selectedFilters[type] = value;
+}
 }
 
 // state indication for filter options
