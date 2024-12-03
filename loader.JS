@@ -498,7 +498,7 @@ function filterSelection(type, filterButtonElement, parentButtonElement) {
     filterButtonElement.parentElement.style.display = 'none';
 }
 
-function resetFilter(type = null) {
+function resetStateStorage(type = null) {
     // Reset all filters if no specific type is provided
     if (!type) {
         for (const key in filterStateStorage) {
@@ -515,7 +515,6 @@ function resetFilter(type = null) {
             state.activeParentButton = null;
             state.activeFilterButton = null;
         }
-        console.log('All filters reset:', filterStateStorage);
         return;
     }
 
@@ -537,6 +536,9 @@ function resetFilter(type = null) {
     state.isFilterActive = false;
     state.activeParentButton = null;
     state.activeFilterButton = null;
+}
+
+
 // data state
 function updateSelectedFilter(type, value) {
     if (!type || value === undefined) {
@@ -545,6 +547,7 @@ function updateSelectedFilter(type, value) {
     }
     selectedFilters[type] = value;
 }
+
 function resetSelectedFilter(type = null) {
     if (!type) {
         for (const key in selectedFilters) {
