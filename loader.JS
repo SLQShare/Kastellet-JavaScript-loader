@@ -691,6 +691,28 @@ function formatSelectedFilterValues(filters, data) {
     return formattedFilters;
 }
 
+// query json using the filter objects in selectedFilters
+function applyFiltersToFindMissions(jsonData, selectedFilters) {
+    // Format the filters using the provided function
+    const formattedFilters = formatSelectedFilterValues(selectedFilters, jsonData);
+
+    let filteredMissionIds = jsonData.missions.map(mission => mission.id); // Initialize with all mission IDs
+
+    // Apply each filter based on the formatted filter values
+    Object.entries(formattedFilters).forEach(([filterType, filterValue]) => {
+        if (filterValue) {
+            filteredMissionIds = applyFilterByType(
+                jsonData,
+                filteredMissionIds,
+                filterType,
+                filterValue
+            );
+        }
+    });
+
+    console.log("Filtered Mission IDs:", filteredMissionIds); // Debugging
+    return filteredMissionIds;
+}
 // helping function to applyFiltersToFindMissions that checks each filter type
 function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
     return missionIds.filter(missionId => {
