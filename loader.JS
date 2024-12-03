@@ -660,3 +660,33 @@ function generateDataSet(startYear, endYear, intervalSize) {
     }
     return dataSet;
 }
+// helping function to applyFiltersToFindMissions that formats the buttons
+function formatSelectedFilterValues(filters, data) {
+    const formattedFilters = {};
+
+    // Format period filter
+    if (filters.period) {
+        const [startYear, endYear] = filters.period.split("-").map(Number);
+        formattedFilters.period = [startYear, endYear];
+    }
+
+    // Format contribution filter
+    if (filters.contribution) {
+        const contributionIds = data.forces
+            .filter(force => filters.contribution.includes(force.title))
+            .map(force => force.id); 
+        formattedFilters.contribution = contributionIds;
+        debugger;
+    }
+
+    // Format geography filter
+    if (filters.geography) {
+        const geographyIds = data.hotspotCollections
+            .filter(hotspot => filters.geography.includes(hotspot.title))
+            .map(hotspot => hotspot.id);
+        formattedFilters.geography = geographyIds;
+    }
+
+    console.log("Formatted Filters:", formattedFilters);
+    return formattedFilters;
+}
