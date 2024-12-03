@@ -545,7 +545,21 @@ function updateSelectedFilter(type, value) {
     }
     selectedFilters[type] = value;
 }
+function resetSelectedFilter(type = null) {
+    if (!type) {
+        for (const key in selectedFilters) {
+            selectedFilters[key] = null;
+        }
+        return;
+    }
+
+    if (selectedFilters.hasOwnProperty(type)) {
+        selectedFilters[type] = null;
+    } else {
+        console.error(`Invalid filter type: ${type}`);
+    }
 }
+
 
 // state indication for filter options
 function handleStateIndictionForFilters(type, parentButtonElement, filterButtonElement) {
