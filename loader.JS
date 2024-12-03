@@ -621,6 +621,7 @@ function applyStyles(element, styles) {
     Object.assign(element.style, styles);
 }
 
+// function to create the date intervals for the period options
 function generateDataSet(startYear, endYear, intervalSize) {
     const dataSet = [];
     for (let year = startYear; year <= endYear; year += intervalSize) {
