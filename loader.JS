@@ -461,7 +461,6 @@ function createInfoScreenFilterButton(missionId, data) {
         buttonWrapper.appendChild(filterSelectorContainer);
         // Add toggle behavior to the parent button
         if (parentButton.id === "resetButton") {
-            console.log("reset button",parentButton);
             parentButton.addEventListener('click', () => {
                 resetFilter(); // Call the function to reset all filters
             });
@@ -471,7 +470,6 @@ function createInfoScreenFilterButton(missionId, data) {
                 console.log(type);
                 if (filterStateStorage[type].isFilterActive){
                     resetFilter(type);
-                    console.log('it should reset before it opens')
                 }
                 const isDisplayed = filterSelectorContainer.style.display === 'flex';
                 filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
@@ -560,7 +558,7 @@ function handleStateIndictionForFilters(type, parentButtonElement, filterButtonE
     // Save filter button's styles and content
     const filterStyles = {
         backgroundColor: filterButtonElement.style.backgroundColor,
-        color: filterButtonElement.style.color,
+        color: filterButtonElement.style.WebkitTextFillColor,
         text: filterButtonElement.textContent,
     };
 
@@ -576,8 +574,6 @@ function handleStateIndictionForFilters(type, parentButtonElement, filterButtonE
     console.log('filterStateStorage end of handle:', filterStateStorage);
 
 }
-
-
 
 // Helper function to create a filter selector button
 function createfilterSelectorButton(parentButton) {
