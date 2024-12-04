@@ -1,5 +1,6 @@
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
+const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/12/dk2-1.json';
 // filter storage object
 const selectedFilters = {
     period: null,
@@ -25,7 +26,7 @@ const filterStateStorage = {
     },
 };
 
-main(missionId, urlDk);
+main(missionId, urlDk2);
 
 function main(missionId, urlDk) {
     fetchAndProcessData(missionId, urlDk);   
