@@ -789,3 +789,19 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
         }
     });
 }
+
+const mapCoordinatesForZoom = {
+    africa: { scale: 20, x: -100, y: -50 },
+    asia: { scale: 1.8, x: 50, y: -100 },
+    europe: { scale: 1.5, x: 0, y: 0 },
+    america: { scale: 1.6, x: -150, y: 50 },
+    middleeast: { scale: 1.6, x: -150, y: 50 },
+    australia: { scale: 1.6, x: -150, y: 50 },
+    default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
+}
+
+function zoomToCoordinates(regionName, backgroundMap){
+    const coordinates = mapCoordinatesForZoom[regionName]|| mapCoordinatesForZoom.default;
+    debugger;
+    backgroundMap.style.transform = `translate(${coordinates.x}px, ${coordinates.y}px) scale(${coordinates.scale})`;
+}
