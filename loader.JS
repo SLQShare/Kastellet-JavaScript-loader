@@ -683,11 +683,11 @@ function formatSelectedFilterValues(filters, data) {
         debugger;
     }
 
-    // Format geography filter
+    // Format geography filter: Matches user-selected geography titles with region IDs in `data.locations`.
     if (filters.geography) {
-        const geographyIds = data.hotspotCollections
-            .filter(hotspot => filters.geography.includes(hotspot.title))
-            .map(hotspot => hotspot.id);
+        const geographyIds = data.locations
+            .filter(location => filters.geography.includes(location.title)) // Match selected titles.
+            .map(location => location.region); // Extract corresponding region IDs.
         formattedFilters.geography = geographyIds;
     }
 
