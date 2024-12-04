@@ -694,7 +694,13 @@ function formatSelectedFilterValues(filters, data) {
         const geographyIds = data.locations
             .filter(location => filters.geography.includes(location.title)) // Match selected titles.
             .map(location => location.region); // Extract corresponding region IDs.
-        formattedFilters.geography = geographyIds;
+            if (Array.isArray(geographyIds)) {
+                formattedFilters.geography = geographyIds.map(geo =>
+                    geo.toLowerCase().replace(/\s/g, '')
+                );
+            } else {
+                formattedFilters.geography = geographyIds.toLowerCase().replace(/\s/g, '');
+            }    
     }
 
     console.log("Formatted Filters:", formattedFilters); // Debugging: Check the resulting formatted filters.
