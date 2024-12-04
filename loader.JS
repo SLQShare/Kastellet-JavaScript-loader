@@ -701,16 +701,24 @@ function formatSelectedFilterValues(filters, data) {
     return formattedFilters;
 }
 
-// query json using the filter objects in selectedFilters
+/**
+ * Applies user-selected filters to find relevant mission IDs.
+ *
+ * @param {Object} jsonData - The dataset containing all missions and related data.
+ * @param {Object} selectedFilters - The user-selected filters for period, contribution, and geography.
+ * @returns {Array} filteredMissionIds - An array of mission IDs that match the selected filters.
+ */
 function applyFiltersToFindMissions(jsonData, selectedFilters) {
-    // Format the filters using the provided function
+    // Convert user-selected filters into a structured format.
     const formattedFilters = formatSelectedFilterValues(selectedFilters, jsonData);
 
-    let filteredMissionIds = jsonData.missions.map(mission => mission.id); // Initialize with all mission IDs
+    // Initialize the filtered mission IDs with all mission IDs in the dataset.
+    let filteredMissionIds = jsonData.missions.map(mission => mission.id);
 
-    // Apply each filter based on the formatted filter values
+    // Apply each filter to narrow down the mission IDs.
     Object.entries(formattedFilters).forEach(([filterType, filterValue]) => {
         if (filterValue) {
+            // Narrow down mission IDs based on the current filter type and value.
             filteredMissionIds = applyFilterByType(
                 jsonData,
                 filteredMissionIds,
@@ -720,7 +728,7 @@ function applyFiltersToFindMissions(jsonData, selectedFilters) {
         }
     });
 
-    console.log("Filtered Mission IDs:", filteredMissionIds); // Debugging
+    console.log("Filtered Mission IDs:", filteredMissionIds); // Debugging: Check the final filtered mission IDs.
     return filteredMissionIds;
 }
 // helping function to applyFiltersToFindMissions that checks each filter type
