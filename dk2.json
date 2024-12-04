@@ -3303,7 +3303,7 @@
       "x": 844,
       "y": 491,
       "direction": "left",
-      "region": "Europe"
+      "region": "Africa"
     },
     {
       "mapid": 4684,
@@ -3312,7 +3312,7 @@
       "x": 964,
       "y": 408,
       "direction": "left",
-      "region": "Europe"
+      "region": "MiddleEast"
     },
     {
       "mapid": 4684,
@@ -3330,7 +3330,7 @@
       "x": 1186,
       "y": 396,
       "direction": "left",
-      "region": "Europe"
+      "region": "Asia"
     },
     {
       "mapid": 4684,
@@ -3339,7 +3339,7 @@
       "x": 374,
       "y": 503,
       "direction": "left",
-      "region": "Europe"
+      "region": "America"
     },
     {
       "mapid": 4684,
@@ -3357,7 +3357,7 @@
       "x": 536,
       "y": 294,
       "direction": "left",
-      "region": "Regions"
+      "region": "Africa"
     },
     {
       "mapid": 3636,
@@ -3366,7 +3366,7 @@
       "x": 594,
       "y": 223,
       "direction": "right",
-      "region": "Regions"
+      "region": "MiddleEast"
     },
     {
       "mapid": 3636,
@@ -3375,7 +3375,7 @@
       "x": 500,
       "y": 165,
       "direction": "left",
-      "region": "Regions"
+      "region": "Europe"
     },
     {
       "mapid": 3636,
@@ -3384,7 +3384,7 @@
       "x": 729,
       "y": 218,
       "direction": "right",
-      "region": "Regions"
+      "region": "Asia"
     },
     {
       "mapid": 3636,
@@ -3393,7 +3393,7 @@
       "x": 231,
       "y": 274,
       "direction": "right",
-      "region": "Regions"
+      "region": "America"
     },
     {
       "mapid": 4234,
