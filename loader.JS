@@ -770,12 +770,9 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
                 return filterValue.some(contributionId => mission.forces.includes(contributionId));
 
             case "geography":
-                // Ensure filterValue is an array of geography regions.
-                const geographyFilter = Array.isArray(filterValue) ? filterValue : [filterValue];
-
                 // Find hotspots that match the selected geography regions.
                 const matchingHotspots = jsonData.hotspotCollections.filter(hotspot =>
-                    geographyFilter.some(region => hotspot.region.toLowerCase() === region.toLowerCase())
+                    filterValue.some(region => hotspot.region.toLowerCase() === region.toLowerCase())
                 );
 
                 // Extract IDs from the matching hotspots.
