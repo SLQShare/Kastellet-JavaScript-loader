@@ -731,11 +731,22 @@ function applyFiltersToFindMissions(jsonData, selectedFilters) {
     console.log("Filtered Mission IDs:", filteredMissionIds); // Debugging: Check the final filtered mission IDs.
     return filteredMissionIds;
 }
-// helping function to applyFiltersToFindMissions that checks each filter type
+
+/**
+ * Applies a specific filter type (e.g., period, contribution, geography) to a set of mission IDs.
+ *
+ * @param {Object} jsonData - The dataset containing all missions and related data.
+ * @param {Array} missionIds - The current list of mission IDs to filter.
+ * @param {String} filterType - The type of filter to apply (e.g., period, contribution, geography).
+ * @param {Array} filterValue - The value(s) to filter by (e.g., year range, contribution IDs, region names).
+ * @returns {Array} - The filtered list of mission IDs.
+ */
 function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
     return missionIds.filter(missionId => {
+        // Find the mission object corresponding to the current mission ID.
         const mission = jsonData.missions.find(m => m.id === missionId);
 
+        // If no mission is found, log a warning and skip this mission.
         if (!mission) {
             console.warn(`Mission with ID ${missionId} not found.`);
             return false;
@@ -743,13 +754,13 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
 
         switch (filterType) {
             case "period":
-                // Match missions within the period range
-                const { from, to } = mission.year;
-                const [startYear, endYear] = filterValue; // Assuming it's an array like [1940, 1949]
+                // Check if the mission's year range overlaps with the selected period range.
+                const { from, to } = mission.year; // Mission's start and end year.
+                const [startYear, endYear] = filterValue; // User-selected period range.
                 return (from >= startYear && from <= endYear) || (to >= startYear && to <= endYear);
 
             case "contribution":
-                // Compare `filterValue` (array of formatted IDs) to `mission.forces` (array of IDs)
+                // Check if the mission's forces include any of the selected contribution IDs.
                 return filterValue.some(contributionId => mission.forces.includes(contributionId));
 
             case "geography":
@@ -771,7 +782,7 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
 
             default:
                 console.warn(`Unknown filter type: ${filterType}`);
-                return true; // Do not filter out if the filter type is unknown
+                return true; // If filter type is unknown, do not filter out the mission.
         }
     });
 }
