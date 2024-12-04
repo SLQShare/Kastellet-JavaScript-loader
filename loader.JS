@@ -482,8 +482,27 @@ function createInfoScreenFilterButton(missionId, data) {
 function applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
     updateSelectedFilter(type, value); // Update queryable data
     updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
-    applyFiltersToFindMissions(data, selectedFilters)
-    //categorizeHotspotsAdvanced(data.hotspotCollections)
+    if (type === 'geography') {
+        // Normalize and handle value as an array or single string
+        const selectedRegion = Array.isArray(value) ? value[0] : value.trim().toLowerCase(); 
+
+        // Find matching location
+        const matchingLocation = data.locations.find(location => 
+            location.region.toLowerCase() === selectedRegion ||
+            location.title.toLowerCase() === selectedRegion
+        );
+        const location = matchingLocation.region.toLowerCase().replace(/\s/g, '')
+        debugger;
+        if (location) {
+            // Pass the matching location's coordinates (or any relevant data) to zoom
+            zoomToCoordinates(location, document.getElementById('infoScreenMap'));
+            debugger;
+        } else {
+            console.warn('No matching location found for:', selectedRegion);
+        }
+    }
+    debugger;
+    applyFiltersToFindMissions(data, selectedFilters);
 }
 
 function resetFilterObjects(data, type = null){
