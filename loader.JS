@@ -1,6 +1,6 @@
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
-const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/12/dk2-1.json';
+const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/12/dk2.json';
 // filter storage object
 const selectedFilters = {
     period: null,
@@ -33,7 +33,7 @@ function main(missionId, urlDk) {
 }
 
 // Function to fetch data and process it
-async function fetchAndProcessData(missionId,url) {
+async function fetchAndProcessData(missionId, url) {
     try {
         const jsonData = await jQuery.getJSON(url);
         console.log("Data received");
@@ -50,7 +50,6 @@ function processData(missionId , data) {
     console.log("dataDk:", dataDk);
     updateTheMissionsPage(missionId, data);
     updateTheInfoScreen(missionId, data);
-    
 }
 
 // update the missionspage with information
