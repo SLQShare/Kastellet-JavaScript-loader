@@ -664,23 +664,29 @@ function generateDataSet(startYear, endYear, intervalSize) {
     }
     return dataSet;
 }
-// helping function to applyFiltersToFindMissions that formats the buttons
+/**
+ * Formats selected filter values into a structured format for easier processing.
+ * Converts user-selected filter criteria into IDs or structured ranges where necessary.
+ *
+ * @param {Object} filters - The user-selected filters (e.g., period, contribution, geography).
+ * @param {Object} data - The dataset containing the mapping of filter names to IDs and other metadata.
+ * @returns {Object} formattedFilters - The formatted filters object with IDs or ranges.
+ */
 function formatSelectedFilterValues(filters, data) {
     const formattedFilters = {};
 
-    // Format period filter
+    // Format period filter: Converts "YYYY-YYYY" string to an array of [startYear, endYear].
     if (filters.period) {
         const [startYear, endYear] = filters.period.split("-").map(Number);
         formattedFilters.period = [startYear, endYear];
     }
 
-    // Format contribution filter
+    // Format contribution filter: Matches user-selected titles with their corresponding IDs in `data.forces`.
     if (filters.contribution) {
         const contributionIds = data.forces
-            .filter(force => filters.contribution.includes(force.title))
-            .map(force => force.id); 
+            .filter(force => filters.contribution.includes(force.title)) // Match selected titles.
+            .map(force => force.id); // Extract corresponding IDs.
         formattedFilters.contribution = contributionIds;
-        debugger;
     }
 
     // Format geography filter: Matches user-selected geography titles with region IDs in `data.locations`.
@@ -691,7 +697,7 @@ function formatSelectedFilterValues(filters, data) {
         formattedFilters.geography = geographyIds;
     }
 
-    console.log("Formatted Filters:", formattedFilters);
+    console.log("Formatted Filters:", formattedFilters); // Debugging: Check the resulting formatted filters.
     return formattedFilters;
 }
 
