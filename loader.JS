@@ -508,7 +508,10 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
 function resetFilterObjects(data, type = null){
     resetSelectedFilter(type);
     resetStateStorage(type);
-    applyFiltersToFindMissions(data, selectedFilters)
+    if (!type || type === 'geography') {
+        zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset
+    }
+    applyFiltersToFindMissions(data, selectedFilters);
     
 }
 
