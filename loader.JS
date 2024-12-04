@@ -753,8 +753,21 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
                 return filterValue.some(contributionId => mission.forces.includes(contributionId));
 
             case "geography":
-                // Match missions with at least one geography ID in the filter
-                return mission.hotspotCollections.some(hotspot => filterValue.includes(hotspot.id));
+                // Ensure filterValue is an array of geography regions.
+                const geographyFilter = Array.isArray(filterValue) ? filterValue : [filterValue];
+
+                // Find hotspots that match the selected geography regions.
+                const matchingHotspots = jsonData.hotspotCollections.filter(hotspot =>
+                    geographyFilter.some(region => hotspot.region.toLowerCase() === region.toLowerCase())
+                );
+
+                // Extract IDs from the matching hotspots.
+                const matchingHotspotIds = matchingHotspots.map(hotspot => hotspot.id);
+
+                // Check if the mission's hotspots include any of the matching hotspot IDs.
+                return mission.hotspotCollections.some(hotspotId =>
+                    matchingHotspotIds.includes(hotspotId)
+                );
 
             default:
                 console.warn(`Unknown filter type: ${filterType}`);
