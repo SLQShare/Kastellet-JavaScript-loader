@@ -378,15 +378,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// update the infoscreen
-function updateTheInfoScreen(missionId, data){
-    if (isOnMissionsPage('Missions')){
-        return
+// Update the info screen with missions and map pins
+function updateTheInfoScreen(missionId, data) {
+    if (isOnMissionsPage('Missions')) {
+        return; // Exit if on the Missions page
     }
+    // Create the filter buttons for the info screen
+    createInfoScreenFilterButton(missionId, data, ExcludedIdsManager.getExcludedIds());
     
-    createInfoScreenFilterButton(missionId, data)
+    // Update map pins based on the new filters
+    const mapContainer = document.getElementById('infoScreenMap');
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
 }
-function createInfoScreenFilterButton(missionId, data) {
+
+function createInfoScreenFilterButton(missionId, data, excludedIds) {
     const resetButton = document.createElement('div');
     resetButton.id = 'resetButton';
     resetButton.textContent = 'Nulstil'; // TODO hardcoded danish
@@ -495,7 +500,6 @@ function createInfoScreenFilterButton(missionId, data) {
             });
         } else if (parentButton.id === "geographyFilterButton") {
             parentButton.textContent = data.locations[6]?.title || 'Geography';
-            const excludedIds = [4690, 4691];
             data.locations.forEach((location) => {
                 if (!excludedIds.includes(location?.id)) {
                     const filterSelectorButton = createfilterSelectorButton(parentButton);
@@ -548,6 +552,9 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
         }
     }
     applyFiltersToFindMissions(data, selectedFilters);
+    // Update map pins based on the new filters
+    const mapContainer = document.getElementById('infoScreenMap');
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
 }
 
 function resetFilterObjects(data, type = null){
@@ -557,6 +564,9 @@ function resetFilterObjects(data, type = null){
         zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset
     }
     applyFiltersToFindMissions(data, selectedFilters);
+    // Update map pins based on the new filters
+    const mapContainer = document.getElementById('infoScreenMap');
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
     
 }
 
