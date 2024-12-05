@@ -996,3 +996,76 @@ function createMapPin(region, location, missions, forces, type = 'continent', x 
     // Return the complete pin component
     return mapPinContainer;
 }
+function updateMapPins(data, excludedIds, container, selectedFilters, forceColors) {
+    const existingPins = Array.from(container.children);
+
+    // Apply selected filters to data
+    const filteredMissions = applyFiltersToFindMissions(data, selectedFilters);
+    const matchingMissions = data.missions.filter(mission => filteredMissions.includes(mission.id))
+    // Iterate through locations to update or create pins
+    data.locations.forEach((location) => {
+        if (!excludedIds.includes(location?.id)) {
+            const formattedRegion = location.region.toLowerCase().replace(/\s/g, '');
+    
+            // Find matching hotspots for the location
+            const matchingHotspots = data.hotspotCollections.filter(hotspot =>
+                hotspot.region.toLowerCase().replace(/\s/g, '') === formattedRegion
+            );
+            const matchingHotspotIds = matchingHotspots.map(hotspot => hotspot.id);
+    
+            // **NEW: Filter missions specific to this location**
+            const missionsForLocation = matchingMissions.filter(mission =>
+                mission.hotspotCollections.some(hotspotId => matchingHotspotIds.includes(hotspotId))
+            );
+    
+            // **CHANGED: Use missions for the location**
+            const missionCount = missionsForLocation.length;
+    
+            // **CHANGED: Get colors specific to the missions for this location**
+            const matchingForceColors = getColorsForMissionForces(forceColors, missionsForLocation);
+    
+            // Check if a pin for this region already exists
+            let pin = existingPins.find(p => p.id === `pin-${formattedRegion}`);
+            if (pin) {
+                // Update existing pin
+                pin.querySelector('.mission-count').textContent = `${missionCount} Missions`;
+    
+                // **NEW: Update forces (flags/colors) dynamically**
+                const containerForForces = pin.querySelector('.mapPinForceColor');
+                if (containerForForces) {
+                    containerForForces.innerHTML = ''; // Clear existing flags
+                    createForceColorFlags(matchingForceColors, containerForForces); // Add updated flags
+                }
+            } else {
+                // Create a new pin
+                pin = createMapPin(
+                    formattedRegion,
+                    location.region,
+                    missionCount,
+                    matchingForceColors,
+                    'continent'
+                );
+                pin.id = `pin-${formattedRegion}`; // Add unique ID for easy reference
+                container.appendChild(pin);
+            }
+        }
+    });
+    
+
+    // Remove pins that no longer match the filters
+    existingPins.forEach(pin => {
+        const region = pin.id.replace('pin-', '');
+        const isRegionStillValid = data.locations.some(loc =>
+            loc.region.toLowerCase().replace(/\s/g, '') === region &&
+            matchingMissions.some(mission =>
+                mission.hotspotCollections.some(hotspotId =>
+                    data.hotspotCollections.some(h => h.id === hotspotId && h.region.toLowerCase().replace(/\s/g, '') === region)
+                )
+            )
+        );
+
+        if (!isRegionStillValid) {
+            pin.remove();
+        }
+    });
+}
