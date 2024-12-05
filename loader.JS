@@ -1015,6 +1015,20 @@ function getColorsForMissionForces(forceColors, missions) {
     console.log("Matching Colors:", matchingColors);
     return matchingColors;
 }
+function createForceColorFlags(forces, forceContainer){
+    // Add individual force indicators (small colored circles)
+    (forces || []).forEach(force => {
+        const mapPinForceColor = document.createElement('div');
+        Object.assign(mapPinForceColor.style, {
+            width: '20px',
+            height: '5px',
+            borderRadius: '1px',
+            margin: '0px 2px',
+            backgroundColor: force.backgroundColor || '#ccc', // Default to gray if no color provided
+        });
+        forceContainer.appendChild(mapPinForceColor);
+    });
+}
 function updateMapPins(data, excludedIds, container, selectedFilters, forceColors) {
     const existingPins = Array.from(container.children);
 
