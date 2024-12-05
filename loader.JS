@@ -25,6 +25,15 @@ const filterStateStorage = {
         activeFilterButton: null,
     },
 };
+const forceColors = {
+    1087: { backgroundColor: "#518346", textColor: "#ffffff" },
+    1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
+    1089: { backgroundColor: "#052854", textColor: "#ffffff" },
+    1090: { backgroundColor: "#8d1b3d", textColor: "#ffffff" },
+    1091: { backgroundColor: "#ffffff", textColor: "#81847e" }, 
+    1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
+    1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
+};
 
 main(missionId, urlDk2);
 
