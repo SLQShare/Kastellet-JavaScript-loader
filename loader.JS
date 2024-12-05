@@ -819,10 +819,8 @@ const mapCoordinatesForZoom = {
     middleeast: { scale: 1.6, x: -150, y: 50 },
     australia: { scale: 1.6, x: -150, y: 50 },
     default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
-}
 
-function zoomToCoordinates(regionName, backgroundMap){
-    const coordinates = mapCoordinatesForZoom[regionName]|| mapCoordinatesForZoom.default;
-    debugger;
-    backgroundMap.style.transform = `translate(${coordinates.x}px, ${coordinates.y}px) scale(${coordinates.scale})`;
+function zoomToCoordinates(regionName, backgroundMap) {
+    const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
+    backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
 }
