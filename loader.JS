@@ -1,13 +1,15 @@
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
 const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/12/dk2.json';
-// filter storage object
+
+//global variables
+// saved the selected filters for data query
 const selectedFilters = {
     period: null,
     contribution: null, 
     geography: null,
 };
-
+// stores the active state and filter buttons
 const filterStateStorage = {
     period: {
         isFilterActive: false,
@@ -35,6 +37,7 @@ const mapCoordinatesForZoom = {
     australia: { scale: 1.6, x: -15, y: 5 },
     default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
 };
+
 // map coordinates for placing continent map pins
 const mapCoordinatesForContinetMapPins = {
     africa: { x: 50, y: 55 },
@@ -45,6 +48,7 @@ const mapCoordinatesForContinetMapPins = {
     australia: { x: 50, y: 55 },
     default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
 };
+
 const forceColors = {
     1087: { backgroundColor: "#518346", textColor: "#ffffff" },
     1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
@@ -867,19 +871,14 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
     });
 }
 
-const mapCoordinatesForZoom = {
-    africa: { scale: 2.7, x: -10, y: -43 },
-    asia: { scale: 3, x: -60, y: -25 },
-    europe: { scale: 3.8, x: -13, y: 50 },
-    america: { scale: 1.4, x: 50, y: -13 },
-    middleeast: { scale: 6, x: -50, y: -15 },
-    australia: { scale: 1.6, x: -15, y: 5 },
-    default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
-};
+
 
 function zoomToCoordinates(regionName, backgroundMap) {
     const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
     backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
+};
+
+
 /**
  * Creates a map pin element for use on a map interface.
  *
@@ -1025,6 +1024,8 @@ function getColorsForMissionForces(forceColors, missions) {
     console.log("Matching Colors:", matchingColors);
     return matchingColors;
 }
+
+
 function createForceColorFlags(forces, forceContainer){
     // Add individual force indicators (small colored circles)
     (forces || []).forEach(force => {
@@ -1112,3 +1113,4 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
         }
     });
 }
+
