@@ -55,6 +55,26 @@ const forceColors = {
     1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
 };
 
+// Singleton for managing excludedIds
+const ExcludedIdsManager = (() => {
+    let excludedIds = [1240, 4690, 4691]; // Initial values
+
+    return {
+        getExcludedIds: () => [...excludedIds], // Return a copy of the array to avoid direct modification
+        addExcludedId: (id) => {
+            if (!excludedIds.includes(id)) {
+                excludedIds.push(id);
+            }
+        },
+        removeExcludedId: (id) => {
+            excludedIds = excludedIds.filter(item => item !== id);
+        },
+        clearExcludedIds: () => {
+            excludedIds = [];
+        }
+    };
+})();
+
 main(missionId, urlDk2);
 
 function main(missionId, urlDk) {
