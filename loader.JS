@@ -491,16 +491,13 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
             location.title.toLowerCase() === selectedRegion
         );
         const location = matchingLocation.region.toLowerCase().replace(/\s/g, '')
-        debugger;
         if (location) {
             // Pass the matching location's coordinates (or any relevant data) to zoom
             zoomToCoordinates(location, document.getElementById('infoScreenMap'));
-            debugger;
         } else {
             console.warn('No matching location found for:', selectedRegion);
         }
     }
-    debugger;
     applyFiltersToFindMissions(data, selectedFilters);
 }
 
