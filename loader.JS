@@ -870,4 +870,129 @@ const mapCoordinatesForZoom = {
 function zoomToCoordinates(regionName, backgroundMap) {
     const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
     backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
+/**
+ * Creates a map pin element for use on a map interface.
+ *
+ * @param {string} region - The region associated with the pin (e.g., "africa").
+ * @param {string} location - The display name for the pin's location (e.g., "Africa").
+ * @param {number} missions - The number of missions associated with the location.
+ * @param {Array} forces - An array of objects representing forces. Each object should have:
+ *                         - {string} name: The name of the force (e.g., "Army").
+ *                         - {string} color: The color associated with the force (e.g., "#00ff00").
+ * @param {string} type - The type of the map pin ('continent' or 'country'). Default is 'continent'.
+ * @param {number} x - The x-coordinate for country-specific pins (percentage). Default is 0.
+ * @param {number} y - The y-coordinate for country-specific pins (percentage). Default is 0.
+ * @returns {HTMLElement} - The constructed map pin element, styled and ready to append to the DOM.
+ *
+ * Usage:
+ * 1. For continent pins:
+ *    createMapPin('africa', 'Africa', 10, [{ name: 'Army', color: '#00ff00' }], 'continent');
+ *
+ * 2. For country-specific pins:
+ *    createMapPin('usa', 'USA', 5, [{ name: 'Navy', color: '#0000ff' }], 'country', 40, 60);
+ */
+function createMapPin(region, location, missions, forces, type = 'continent', x = 0, y = 0) {
+    // Create the main container for the map pin
+    const mapPinContainer = document.createElement('div');
+    Object.assign(mapPinContainer.style, {
+        position: 'absolute', // Position relative to the map
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0px', // Minimal gap between components
+        width: '20px',
+        height: 'auto',
+        zIndex: '7',
+    });
+
+    // Assign ID based on type (shared for continents, unique for countries)
+    if (type === 'continent') {
+        mapPinContainer.id = `map-pin-continent`; // Shared ID for continents
+    } else if (type === 'country') {
+        mapPinContainer.id = `map-pin-${region.toLowerCase()}-${location.replace(/\s/g, '-').toLowerCase()}`; // Unique ID for countries
+    }
+
+    // Set position and scale based on the pin type
+    if (type === 'continent') {
+        const coordinates = mapCoordinatesForContinetMapPins[region.toLowerCase()] || mapCoordinatesForContinetMapPins.default;
+        Object.assign(mapPinContainer.style, {
+            left: `${coordinates.x}%`, // Position in percentage relative to the viewport
+            top: `${coordinates.y}%`,
+        });
+    } else if (type === 'country') {
+        Object.assign(mapPinContainer.style, {
+            left: `${x}%`, // Custom x-coordinate for country-specific pins
+            top: `${y}%`, // Custom y-coordinate for country-specific pins
+        });
+    }
+
+    // Add the location name as a label
+    const mapPinLocation = document.createElement('span');
+    Object.assign(mapPinLocation.style, {
+        fontSize: '24px',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: 'white',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        fontFamily: 'Saira Stencil One, Sans-serif',
+    });
+    mapPinLocation.textContent = location || 'Unknown Location';
+
+    // Create a container for the forces associated with the location
+    const mapPinForceContainer = document.createElement('div');
+    mapPinForceContainer.classList.add('mapPinForceColor');
+    Object.assign(mapPinForceContainer.style, {
+        display: 'flex',
+    });
+    createForceColorFlags(forces, mapPinForceContainer)
+
+    // Create a container for the missions associated with the location
+    const mapPinMissionContainer = document.createElement('div');
+    Object.assign(mapPinMissionContainer.style, {
+        display: 'flex',
+    });
+
+    // Display the number of missions as a label
+    const amountOfMissions = document.createElement('span');
+    Object.assign(amountOfMissions.style, {
+        fontSize: '12px',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: 'white',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        fontFamily: 'Saira Stencil One, Sans-serif',
+    });
+    amountOfMissions.textContent = `${missions || 0} Missions`;
+    amountOfMissions.classList.add('mission-count')
+    mapPinMissionContainer.appendChild(amountOfMissions);
+
+    // Create a container for the map pin's icon
+    const mapPinImageContainer = document.createElement('div');
+    Object.assign(mapPinImageContainer.style, {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    });
+
+    // Add an image to the pin (currently using a placeholder style)
+    const mapPinImage = document.createElement('img');
+    Object.assign(mapPinImage.style, {
+        width: '20px',
+        height: '20px',
+        backgroundColor: 'blue', // Default placeholder
+    });
+    mapPinImageContainer.appendChild(mapPinImage);
+
+    // Assemble the map pin by appending all components
+    mapPinContainer.appendChild(mapPinLocation);
+    mapPinContainer.appendChild(mapPinForceContainer);
+    mapPinContainer.appendChild(mapPinMissionContainer);
+    mapPinContainer.appendChild(mapPinImageContainer);
+
+    // Return the complete pin component
+    return mapPinContainer;
 }
