@@ -25,6 +25,16 @@ const filterStateStorage = {
         activeFilterButton: null,
     },
 };
+// map coordinates for placing continent map pins
+const mapCoordinatesForContinetMapPins = {
+    africa: { x: 50, y: 55 },
+    asia: { x: 70, y: 45 },
+    europe: { x: 50, y: 35 },
+    america: { x: 25, y: 45 },
+    middleeast: { x: 58, y: 45 },
+    australia: { x: 50, y: 55 },
+    default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
+};
 const forceColors = {
     1087: { backgroundColor: "#518346", textColor: "#ffffff" },
     1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
