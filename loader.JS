@@ -996,6 +996,25 @@ function createMapPin(region, location, missions, forces, type = 'continent', x 
     // Return the complete pin component
     return mapPinContainer;
 }
+function getColorsForMissionForces(forceColors, missions) {
+    // Debugging input data
+    console.log("Input Force Colors:", forceColors);
+    console.log("Input Missions:", missions);
+
+    // Collect all force IDs from missions
+    const allForceIds = new Set(
+        missions.flatMap(mission => mission.forces) // Combine all force IDs into a single array
+    );
+    console.log("Collected Force IDs from Missions:", allForceIds);
+
+    // Find matching colors in forceColors
+    const matchingColors = Object.entries(forceColors)
+        .filter(([id]) => allForceIds.has(parseInt(id))) // Check if color ID matches any force ID
+        .map(([id, color]) => ({ id: parseInt(id), ...color })); // Return color object with ID included
+
+    console.log("Matching Colors:", matchingColors);
+    return matchingColors;
+}
 function updateMapPins(data, excludedIds, container, selectedFilters, forceColors) {
     const existingPins = Array.from(container.children);
 
