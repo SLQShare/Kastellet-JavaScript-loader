@@ -1118,7 +1118,9 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
                     location.region,
                     missionCount,
                     matchingForceColors,
-                    'continent'
+                    'continent',
+                    data,
+                    formattedTitle
                 );
                 pin.id = `pin-${formattedRegion}`; // Add unique ID for easy reference
                 pin.addEventListener('click', function() {
