@@ -1123,6 +1123,7 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
                     formattedTitle
                 );
                 pin.id = `pin-${formattedRegion}`; // Add unique ID for easy reference
+                container.appendChild(pin); // Append pins to the map container
                 pin.addEventListener('click', function() {
                     const parentButton = document.getElementById('geographyFilterButton');
                     const filterSelectorButton = document.getElementById(`filterSelectorButtonGeography-${formattedRegion}`);
