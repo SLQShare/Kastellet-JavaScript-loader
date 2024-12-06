@@ -466,6 +466,8 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            position: 'relative',
+            zIndex: '50',
         });
 
         // Move the button into the wrapper
