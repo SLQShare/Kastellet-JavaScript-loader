@@ -550,6 +550,7 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
         const location = matchingLocation.region.toLowerCase().replace(/\s/g, '')
         if (location) {
             // Pass the matching location's coordinates (or any relevant data) to zoom
+            hideOrShowMapPins('continent', 'none')
             zoomToCoordinates(location, document.getElementById('infoScreenMap'));
         } else {
             console.warn('No matching location found for:', selectedRegion);
@@ -577,6 +578,7 @@ function resetFilterObjects(data, type = null){
     resetSelectedFilter(type);
     resetStateStorage(type);
     if (!type || type === 'geography') {
+        hideOrShowMapPins('continent', 'block')
         zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset
     }
     applyFiltersToFindMissions(data, selectedFilters);
