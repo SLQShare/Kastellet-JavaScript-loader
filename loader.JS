@@ -560,6 +560,18 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
     const mapContainer = document.getElementById('infoScreenMap');
     updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
 }
+// type can be 'continent' or 'country'
+function hideOrShowMapPins(type, display) {
+    // Ensure `display` is a valid string
+    if (typeof display !== 'string') {
+        console.error('Invalid display value. Must be a string.');
+        return;
+    }
+    const pins = document.querySelectorAll(`[data-type="${type}"]`);
+    pins.forEach((pin) => {
+        pin.style.display = display; // Assign the validated display value
+    });
+}
 
 function resetFilterObjects(data, type = null){
     resetSelectedFilter(type);
