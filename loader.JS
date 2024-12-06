@@ -509,6 +509,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                     const filterSelectorButton = createfilterSelectorButton(parentButton);
                     filterSelectorButton.textContent = location?.title || 'Unknown Location';
                     filterSelectorContainer.appendChild(filterSelectorButton);
+                    filterSelectorButton.id = `filterSelectorButtonGeography-${location?.region.toLowerCase()}`;
                     filterSelectorButton.addEventListener('click', function(){applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
                 }
             });
