@@ -920,24 +920,22 @@ function zoomToCoordinates(regionName, backgroundMap) {
 function createMapPin(region, location, missions, forces, type = 'continent', x = 0, y = 0) {
     // Create the main container for the map pin
     const mapPinContainer = document.createElement('div');
+    mapPinContainer.removeAttribute('style');
     Object.assign(mapPinContainer.style, {
         position: 'absolute', // Position relative to the map
-        display: 'flex',
+        display: 'inlineFlex',
         flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
-        gap: '0px', // Minimal gap between components
-        width: '20px',
+        WebkitAlignItems: 'center',
+        WebkitJustifyContent: 'center',
+        width: 'auto',
         height: 'auto',
-        zIndex: '7',
+        zIndex: '100',
+        pointerEvents: 'auto',
+        minWidth: '20px', 
+        minHeight: '20px',
     });
-
-    // Assign ID based on type (shared for continents, unique for countries)
-    if (type === 'continent') {
-        mapPinContainer.id = `map-pin-continent`; // Shared ID for continents
-    } else if (type === 'country') {
-        mapPinContainer.id = `map-pin-${region.toLowerCase()}-${location.replace(/\s/g, '-').toLowerCase()}`; // Unique ID for countries
-    }
-
     // Set position and scale based on the pin type
     if (type === 'continent') {
         const coordinates = mapCoordinatesForContinetMapPins[region.toLowerCase()] || mapCoordinatesForContinetMapPins.default;
@@ -959,21 +957,27 @@ function createMapPin(region, location, missions, forces, type = 'continent', x 
     const mapPinLocation = document.createElement('span');
     Object.assign(mapPinLocation.style, {
         fontSize: '24px',
+        display: 'flex', // Keep flex for alignment
+        justifyContent: 'center', // Horizontally center text
+        alignItems: 'center', // Vertically center text
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        textAlign: 'center',
         color: 'white',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         fontFamily: 'Saira Stencil One, Sans-serif',
+        width: '100%', // Ensure the element spans its container
+        height: 'auto', // Adjust height based on content
     });
-    mapPinLocation.textContent = location || 'Unknown Location';
+    mapPinLocation.textContent = title || 'Unknown Location';
 
     // Create a container for the forces associated with the location
     const mapPinForceContainer = document.createElement('div');
     mapPinForceContainer.classList.add('mapPinForceColor');
     Object.assign(mapPinForceContainer.style, {
         display: 'flex',
+        justifyContent: 'center', // Horizontally center text
+        alignItems: 'center', // Vertically center text
     });
     createForceColorFlags(forces, mapPinForceContainer)
 
@@ -981,19 +985,25 @@ function createMapPin(region, location, missions, forces, type = 'continent', x 
     const mapPinMissionContainer = document.createElement('div');
     Object.assign(mapPinMissionContainer.style, {
         display: 'flex',
+        justifyContent: 'center', // Horizontally center text
+        alignItems: 'center', // Vertically center text
     });
 
     // Display the number of missions as a label
     const amountOfMissions = document.createElement('span');
     Object.assign(amountOfMissions.style, {
         fontSize: '12px',
+        display: 'flex', // Use flexbox for alignment
+        justifyContent: 'center', // Horizontally center text
+        alignItems: 'center', // Vertically center text
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        textAlign: 'center',
         color: 'white',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         fontFamily: 'Saira Stencil One, Sans-serif',
+        width: '100%', // Ensure it spans its container for proper alignment
+        height: 'auto', // Adjust height based on content
     });
     amountOfMissions.textContent = `${missions || 0} Missions`;
     amountOfMissions.classList.add('mission-count')
