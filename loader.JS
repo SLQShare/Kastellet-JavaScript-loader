@@ -942,11 +942,14 @@ function createMapPin(region, location, missions, forces, type = 'continent', x 
             left: `${coordinates.x}%`, // Position in percentage relative to the viewport
             top: `${coordinates.y}%`,
         });
+        mapPinContainer.setAttribute('data-type', 'continent');
     } else if (type === 'country') {
         Object.assign(mapPinContainer.style, {
             left: `${x}%`, // Custom x-coordinate for country-specific pins
             top: `${y}%`, // Custom y-coordinate for country-specific pins
         });
+        //mapPinContainer.id = `map-pin-${region.toLowerCase()}-${location.replace(/\s/g, '-').toLowerCase()}`; // Unique ID for countries
+        mapPinContainer.setAttribute('data-type', 'country');
     }
 
     // Add the location name as a label
