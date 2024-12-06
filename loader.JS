@@ -1090,7 +1090,18 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
                     'continent'
                 );
                 pin.id = `pin-${formattedRegion}`; // Add unique ID for easy reference
-                container.appendChild(pin);
+                pin.addEventListener('click', function() {
+                    const parentButton = document.getElementById('geographyFilterButton');
+                    const filterSelectorButton = document.getElementById(`filterSelectorButtonGeography-${formattedRegion}`);
+                    if (!filterSelectorButton || !parentButton) {
+                        console.error('Filter selector button or parent button not found.', {
+                            filterSelectorButton,
+                            parentButton,
+                        });
+                        return;
+                    }
+                    applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);
+                });
             }
         }
     });
