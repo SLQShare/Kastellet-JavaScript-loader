@@ -582,7 +582,7 @@ function resetFilterObjects(data, type = null){
     resetStateStorage(type);
     if (!type || type === 'geography') {
         hideOrShowMapPins('continent', 'block')
-        zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset
+        zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset       
     }
     applyFiltersToFindMissions(data, selectedFilters);
     // Update map pins based on the new filters
@@ -942,7 +942,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         Object.assign(mapPinContainer.style, {
             left: `${coordinates.x}%`, // Position in percentage relative to the viewport
             top: `${coordinates.y}%`,
-        });
+        });    
         mapPinContainer.setAttribute('data-type', 'continent');
     } else if (type === 'country') {
         Object.assign(mapPinContainer.style, {
@@ -952,7 +952,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         //mapPinContainer.id = `map-pin-${region.toLowerCase()}-${location.replace(/\s/g, '-').toLowerCase()}`; // Unique ID for countries
         mapPinContainer.setAttribute('data-type', 'country');
     }
-
+    
     // Add the location name as a label
     const mapPinLocation = document.createElement('span');
     Object.assign(mapPinLocation.style, {
@@ -970,7 +970,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         height: 'auto', // Adjust height based on content
     });
     mapPinLocation.textContent = title || 'Unknown Location';
-
+    
     // Create a container for the forces associated with the location
     const mapPinForceContainer = document.createElement('div');
     mapPinForceContainer.classList.add('mapPinForceColor');
@@ -1005,7 +1005,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         width: '100%', // Ensure it spans its container for proper alignment
         height: 'auto', // Adjust height based on content
     });
-    amountOfMissions.textContent = `${missions || 0} Missions`;
+    amountOfMissions.textContent = `${missions || 0} missioner`; //TODO hard coded
     amountOfMissions.classList.add('mission-count')
     mapPinMissionContainer.appendChild(amountOfMissions);
 
@@ -1031,7 +1031,6 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
     mapPinContainer.appendChild(mapPinForceContainer);
     mapPinContainer.appendChild(mapPinMissionContainer);
     mapPinContainer.appendChild(mapPinImageContainer);
-
     // Return the complete pin component
     return mapPinContainer;
 }
@@ -1050,7 +1049,7 @@ function getColorsForMissionForces(forceColors, missions) {
     const matchingColors = Object.entries(forceColors)
         .filter(([id]) => allForceIds.has(parseInt(id))) // Check if color ID matches any force ID
         .map(([id, color]) => ({ id: parseInt(id), ...color })); // Return color object with ID included
-
+    
     console.log("Matching Colors:", matchingColors);
     return matchingColors;
 }
@@ -1081,7 +1080,7 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
         if (!excludedIds.includes(location?.id)) {
             const formattedRegion = location.region.toLowerCase().replace(/\s/g, '');
             const formattedTitle = location.title;
-    
+            
             // Find matching hotspots for the location
             const matchingHotspots = data.hotspotCollections.filter(hotspot =>
                 hotspot.region.toLowerCase().replace(/\s/g, '') === formattedRegion
@@ -1104,8 +1103,6 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
             if (pin) {
                 // Update existing pin
                 pin.querySelector('.mission-count').textContent = `${missionCount} Missions`;
-    
-                // **NEW: Update forces (flags/colors) dynamically**
                 const containerForForces = pin.querySelector('.mapPinForceColor');
                 if (containerForForces) {
                     containerForForces.innerHTML = ''; // Clear existing flags
@@ -1136,11 +1133,10 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
                     }
                     applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);
                 });
-            }
+            }            
         }
     });
     
-
     // Remove pins that no longer match the filters
     existingPins.forEach(pin => {
         const region = pin.id.replace('pin-', '');
@@ -1158,4 +1154,3 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
         }
     });
 }
-
