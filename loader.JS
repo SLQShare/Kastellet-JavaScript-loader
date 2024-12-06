@@ -917,7 +917,7 @@ function zoomToCoordinates(regionName, backgroundMap) {
  * 2. For country-specific pins:
  *    createMapPin('usa', 'USA', 5, [{ name: 'Navy', color: '#0000ff' }], 'country', 40, 60);
  */
-function createMapPin(region, location, missions, forces, type = 'continent', x = 0, y = 0) {
+function createMapPin(region, location, missions, forces, type = 'continent', data, title) {
     // Create the main container for the map pin
     const mapPinContainer = document.createElement('div');
     mapPinContainer.removeAttribute('style');
@@ -1080,6 +1080,7 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
     data.locations.forEach((location) => {
         if (!excludedIds.includes(location?.id)) {
             const formattedRegion = location.region.toLowerCase().replace(/\s/g, '');
+            const formattedTitle = location.title;
     
             // Find matching hotspots for the location
             const matchingHotspots = data.hotspotCollections.filter(hotspot =>
