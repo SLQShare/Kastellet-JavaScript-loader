@@ -40,12 +40,12 @@ const mapCoordinatesForZoom = {
 
 // map coordinates for placing continent map pins
 const mapCoordinatesForContinetMapPins = {
-    africa: { x: 50, y: 55 },
-    asia: { x: 70, y: 45 },
-    europe: { x: 50, y: 35 },
-    america: { x: 25, y: 45 },
-    middleeast: { x: 58, y: 45 },
-    australia: { x: 50, y: 55 },
+    africa: { x: 45, y: 55 },
+    asia: { x: 65, y: 45 },
+    europe: { x: 45, y: 35 },
+    america: { x: 20, y: 45 },
+    middleeast: { x: 53, y: 45 },
+    australia: { x: 45, y: 55 },
     default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
 };
 
