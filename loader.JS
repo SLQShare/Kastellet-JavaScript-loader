@@ -4,11 +4,90 @@ const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/20
 
 //global variables
 // saved the selected filters for data query
-const selectedFilters = {
-    period: null,
-    contribution: null, 
-    geography: null,
-};
+class SelectedFilters {
+    constructor() {
+        if (SelectedFilters.instance) {
+            return SelectedFilters.instance;
+        }
+
+        this.period = null;
+        this.contribution = null;
+        this.geography = null;
+
+        SelectedFilters.instance = this;
+    }
+
+    // Methods to access and modify filters
+    getPeriod() {
+        return this.period;
+    }
+
+    setPeriod(value) {
+        this.period = value;
+    }
+
+    getContribution() {
+        return this.contribution;
+    }
+
+    setContribution(value) {
+        this.contribution = value;
+    }
+
+    getGeography() {
+        return this.geography;
+    }
+
+    setGeography(value) {
+        this.geography = value;
+    }
+
+    getAllFilters() {
+        return {
+            period: this.period,
+            contribution: this.contribution,
+            geography: this.geography
+        };
+    }
+
+    clearFilters() {
+        this.period = null;
+        this.contribution = null;
+        this.geography = null;
+    }
+
+    // Add updateSelectedFilter to the class
+    updateSelectedFilter(type, value) {
+        if (!type || value === undefined) {
+            console.error("Invalid filter type or value.");
+            return;
+        }
+
+        if (this.hasOwnProperty(type)) {
+            this[type] = value;
+        } else {
+            console.error(`Invalid filter type: ${type}`);
+        }
+    }
+
+    // Add resetSelectedFilter to the class
+    resetSelectedFilter(type = null) {
+        if (!type) {
+            this.clearFilters();
+            return;
+        }
+
+        if (this.hasOwnProperty(type)) {
+            this[type] = null;
+        } else {
+            console.error(`Invalid filter type: ${type}`);
+        }
+    }
+}
+
+// Create a singleton instance
+const selectedFilters = new SelectedFilters();
+
 // stores the active state and filter buttons
 const filterStateStorage = {
     period: {
