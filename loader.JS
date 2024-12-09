@@ -970,6 +970,16 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
 
 
 function zoomToCoordinates(regionName, backgroundMap) {
+    // the map coordinates for zooming in and placing continent map pins
+    const mapCoordinatesForZoom = {
+        africa: { scale: 2.7, x: -10, y: -43 },
+        asia: { scale: 3, x: -60, y: -25 },
+        europe: { scale: 3.8, x: -13, y: 50 },
+        america: { scale: 1.4, x: 50, y: -13 },
+        middleeast: { scale: 6, x: -50, y: -15 },
+        australia: { scale: 1.6, x: -15, y: 5 },
+        default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
+    };
     const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
     backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
 };
