@@ -1222,7 +1222,7 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
         }
     });
     // Remove pins that no longer match the filters
-    existingPins.forEach(pin => {
+    Array.from(container.children).forEach(pin => {
         const region = pin.id.replace('pin-', '');
         const isRegionStillValid = data.locations.some(loc =>
             loc.region.toLowerCase().replace(/\s/g, '') === region &&
@@ -1232,7 +1232,6 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                 )
             )
         );
-
         if (!isRegionStillValid) {
             pin.remove();
         }
