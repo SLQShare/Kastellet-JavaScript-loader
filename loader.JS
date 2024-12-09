@@ -107,17 +107,6 @@ const filterStateStorage = {
     },
 };
 
-// map coordinates for placing continent map pins
-const mapCoordinatesForContinetMapPins = {
-    africa: { x: 45, y: 55 },
-    asia: { x: 65, y: 45 },
-    europe: { x: 45, y: 35 },
-    america: { x: 20, y: 45 },
-    middleeast: { x: 53, y: 45 },
-    australia: { x: 45, y: 55 },
-    default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
-};
-
 const forceColors = {
     1087: { backgroundColor: "#518346", textColor: "#ffffff" },
     1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
@@ -969,6 +958,16 @@ function zoomToCoordinates(regionName, backgroundMap) {
 function createMapPin(region, location, missions, forces, type = 'continent', data, title) {
     // Create the main container for the map pin
     const mapPinContainer = document.createElement('div');
+    // map coordinates for placing continent map pins
+    const mapCoordinatesForContinetMapPins = {
+        africa: { x: 45, y: 55 },
+        asia: { x: 65, y: 45 },
+        europe: { x: 45, y: 35 },
+        america: { x: 20, y: 45 },
+        middleeast: { x: 53, y: 45 },
+        australia: { x: 45, y: 55 },
+        default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
+    };
     mapPinContainer.removeAttribute('style');
     Object.assign(mapPinContainer.style, {
         position: 'absolute', // Position relative to the map
