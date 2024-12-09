@@ -106,16 +106,6 @@ const filterStateStorage = {
         activeFilterButton: null,
     },
 };
-// the map coordinates for zooming in and placing continent map pins
-const mapCoordinatesForZoom = {
-    africa: { scale: 2.7, x: -10, y: -43 },
-    asia: { scale: 3, x: -60, y: -25 },
-    europe: { scale: 3.8, x: -13, y: 50 },
-    america: { scale: 1.4, x: 50, y: -13 },
-    middleeast: { scale: 6, x: -50, y: -15 },
-    australia: { scale: 1.6, x: -15, y: 5 },
-    default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
-};
 
 // map coordinates for placing continent map pins
 const mapCoordinatesForContinetMapPins = {
@@ -168,7 +158,6 @@ function main(missionId, urlDk) {
 async function fetchAndProcessData(missionId, url) {
     try {
         const jsonData = await jQuery.getJSON(url);
-        console.log("Data received");
         // Call a function to process the data
         processData(missionId, jsonData);
     } catch (error) {
@@ -208,7 +197,6 @@ function isOnMissionsPage(siteName) {
     const path = window.location.pathname.toLowerCase();
     const normalizedSiteName = siteName.trim().toLowerCase();
 
-    console.log(`Checking path: ${path} for /${normalizedSiteName}`);
     return path.includes(`/${normalizedSiteName}`);
 }
 
@@ -370,8 +358,6 @@ function updateImagesAndImageText(data, missionId) {
     const pictureSlider = document.getElementsByClassName('swiper-wrapper'); // Elementor carousel wrapper
     const missionInformation = getMissionById(data.missions, missionId);
     try {
-        console.log("missionInformation:", missionInformation);
-
         const missionImageArray = missionInformation.content.gallery.images;
         const existingSlides = Array.from(pictureSlider[0].querySelectorAll('.swiper-slide'));
 
@@ -466,9 +452,11 @@ function updateTheInfoScreen(missionId, data) {
     if (isOnMissionsPage('Missions')) {
         return; // Exit if on the Missions page
     }
+
     // Create the filter buttons for the info screen
     createInfoScreenFilterButton(missionId, data, ExcludedIdsManager.getExcludedIds());
-    
+    const selectedMission  = applyFiltersToFindMissions(data, selectedFilters.getAllFilters());
+
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
     updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors);
@@ -618,7 +606,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 
 // filter event listener function call
 function applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
-    updateSelectedFilter(type, value); // Update queryable data
+    selectedFilters.updateSelectedFilter(type, value); // Update queryable data
     updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
     if (type === 'geography') {
         // Normalize and handle value as an array or single string
@@ -638,7 +626,7 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
             console.warn('No matching location found for:', selectedRegion);
         }
     }
-    applyFiltersToFindMissions(data, selectedFilters);
+    const selectedMission  = applyFiltersToFindMissions(data, selectedFilters.getAllFilters());
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
     updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors);
@@ -657,13 +645,13 @@ function hideOrShowMapPins(type, display) {
 }
 
 function resetFilterObjects(data, type = null){
-    resetSelectedFilter(type);
+    selectedFilters.resetSelectedFilter(type);
     resetStateStorage(type);
     if (!type || type === 'geography') {
         hideOrShowMapPins('continent', 'block')
         zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset       
     }
-    applyFiltersToFindMissions(data, selectedFilters);
+
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
     updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, applyFiltersToFindMissions(data, selectedFilters.getAllFilters()), forceColors);
@@ -724,32 +712,6 @@ function resetStateStorage(type = null) {
     state.activeParentButton = null;
     state.activeFilterButton = null;
 }
-
-
-// data state
-function updateSelectedFilter(type, value) {
-    if (!type || value === undefined) {
-        console.error("Invalid filter type or value.");
-        return;
-    }
-    selectedFilters[type] = value;
-}
-
-function resetSelectedFilter(type = null) {
-    if (!type) {
-        for (const key in selectedFilters) {
-            selectedFilters[key] = null;
-        }
-        return;
-    }
-
-    if (selectedFilters.hasOwnProperty(type)) {
-        selectedFilters[type] = null;
-    } else {
-        console.error(`Invalid filter type: ${type}`);
-    }
-}
-
 
 // state indication for filter options
 function handleStateIndictionForFilters(type, parentButtonElement, filterButtonElement) {
@@ -850,7 +812,6 @@ function generateDataSet(startYear, endYear, intervalSize) {
  */
 function formatSelectedFilterValues(filters, data) {
     const formattedFilters = {};
-
     // Format period filter: Converts "YYYY-YYYY" string to an array of [startYear, endYear].
     if (filters.period) {
         const [startYear, endYear] = filters.period.split("-").map(Number);
@@ -1123,22 +1084,15 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
     return mapPinContainer;
 }
 function getColorsForMissionForces(forceColors, missions) {
-    // Debugging input data
-    console.log("Input Force Colors:", forceColors);
-    console.log("Input Missions:", missions);
-
     // Collect all force IDs from missions
     const allForceIds = new Set(
         missions.flatMap(mission => mission.forces) // Combine all force IDs into a single array
     );
-    console.log("Collected Force IDs from Missions:", allForceIds);
-
     // Find matching colors in forceColors
     const matchingColors = Object.entries(forceColors)
         .filter(([id]) => allForceIds.has(parseInt(id))) // Check if color ID matches any force ID
         .map(([id, color]) => ({ id: parseInt(id), ...color })); // Return color object with ID included
     
-    console.log("Matching Colors:", matchingColors);
     return matchingColors;
 }
 
