@@ -3,9 +3,6 @@ const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/
 //wp-content/uploads/2024/12/dk2.json
 //wp-content/themes/twentytwentyfive/js/dk.json
 let missionId = 1248; // default value
-const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
-const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/12/dk2.json';
-
 //global variables
 // saved the selected filters for data query
 class SelectedFilters {
@@ -178,19 +175,23 @@ function updateTheMissionsPage(missionId, data){
     }
 }
 
-
-
 // Checks if the current page matches the specified site name
 function isOnMissionsPage(siteName) {
-    if (!siteName || typeof siteName !== 'string') {
+    if (typeof siteName !== 'string') {
         console.error('Invalid siteName provided');
         return false;
     }
-    
-    const path = window.location.pathname.toLowerCase();
+
+    const url = new URL(window.location.href);
+    const normalizedPath = url.pathname.toLowerCase();
     const normalizedSiteName = siteName.trim().toLowerCase();
 
-    return path.includes(`/${normalizedSiteName}`);
+    // Handle root (landing page) case
+    if (normalizedSiteName === '') {
+        return normalizedPath === '/';
+    }
+
+    return normalizedPath.includes(`/${normalizedSiteName}`);
 }
 
 
@@ -447,8 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Update the info screen with missions and map pins
 function updateTheInfoScreen(missionId, data) {
-    if (isOnMissionsPage('Missions')) {
-        return; // Exit if on the Missions page
+    if (!isOnMissionsPage('')) {
+        return; // Exit if not on the landing page
     }
 
     // Create the filter buttons for the info screen
