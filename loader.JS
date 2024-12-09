@@ -471,7 +471,7 @@ function updateTheInfoScreen(missionId, data) {
     
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors);
 }
 
 function createInfoScreenFilterButton(missionId, data, excludedIds) {
@@ -641,7 +641,7 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
     applyFiltersToFindMissions(data, selectedFilters);
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors);
 }
 // type can be 'continent' or 'country'
 function hideOrShowMapPins(type, display) {
@@ -666,8 +666,7 @@ function resetFilterObjects(data, type = null){
     applyFiltersToFindMissions(data, selectedFilters);
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedFilters, forceColors);
-    
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, applyFiltersToFindMissions(data, selectedFilters.getAllFilters()), forceColors);
 }
 
 function updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement){
@@ -1158,12 +1157,10 @@ function createForceColorFlags(forces, forceContainer){
         forceContainer.appendChild(mapPinForceColor);
     });
 }
-function updateMapPins(data, excludedIds, container, selectedFilters, forceColors) {
+function updateMapPins(data, excludedIds, container, selectedMission, forceColors) {
     const existingPins = Array.from(container.children);
+    const matchingMissions = data.missions.filter(mission => selectedMission.includes(mission.id))
 
-    // Apply selected filters to data
-    const filteredMissions = applyFiltersToFindMissions(data, selectedFilters);
-    const matchingMissions = data.missions.filter(mission => filteredMissions.includes(mission.id))
     // Iterate through locations to update or create pins
     data.locations.forEach((location) => {
         if (!excludedIds.includes(location?.id)) {
@@ -1175,8 +1172,7 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
                 hotspot.region.toLowerCase().replace(/\s/g, '') === formattedRegion
             );
             const matchingHotspotIds = matchingHotspots.map(hotspot => hotspot.id);
-    
-            // **NEW: Filter missions specific to this location**
+            // Filter missions specific to this location
             const missionsForLocation = matchingMissions.filter(mission =>
                 mission.hotspotCollections.some(hotspotId => matchingHotspotIds.includes(hotspotId))
             );
@@ -1225,7 +1221,6 @@ function updateMapPins(data, excludedIds, container, selectedFilters, forceColor
             }            
         }
     });
-    
     // Remove pins that no longer match the filters
     existingPins.forEach(pin => {
         const region = pin.id.replace('pin-', '');
