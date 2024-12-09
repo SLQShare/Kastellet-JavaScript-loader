@@ -1,3 +1,7 @@
+const url = new URL(window.location.href);
+const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk2.json`;
+//wp-content/uploads/2024/12/dk2.json
+//wp-content/themes/twentytwentyfive/js/dk.json
 let missionId = 1248; // default value
 const urlDk = "https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/11/dk.json";
 const urlDk2 = 'https://staging-1732022352.gbplayground.dk/wp-content/uploads/2024/12/dk2.json';
@@ -137,7 +141,7 @@ const ExcludedIdsManager = (() => {
     };
 })();
 
-main(missionId, urlDk2);
+main(missionId, jsonDkPath);
 
 function main(missionId, urlDk) {
     fetchAndProcessData(missionId, urlDk);   
@@ -350,6 +354,10 @@ function updateImagesAndImageText(data, missionId) {
         const missionImageArray = missionInformation.content.gallery.images;
         const existingSlides = Array.from(pictureSlider[0].querySelectorAll('.swiper-slide'));
 
+        // Construct the base image path dynamically
+        const url = new URL(window.location.href);
+        const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/MissionImages/`;
+
         for (let i = 0; i < missionImageArray.length; i++) {
             const imageLocation = missionImageArray[i]?.url;
             const imageText = missionImageArray[i]?.caption;
@@ -358,7 +366,8 @@ function updateImagesAndImageText(data, missionId) {
                 // Update existing slides
                 const imageDiv = existingSlides[i].querySelector('.elementor-carousel-image');
                 if (imageDiv) {
-                    imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
+                    // Use the constructed base path dynamically
+                    imageDiv.style.backgroundImage = `url('${baseImagePath}${imageLocation}')`;
                     imageDiv.setAttribute('aria-label', imageText || '');
                 }
                 if (i === 0) {
@@ -377,7 +386,7 @@ function updateImagesAndImageText(data, missionId) {
                 const imageDiv = document.createElement('div');
                 imageDiv.className = 'elementor-carousel-image';
                 imageDiv.setAttribute('role', 'img');
-                imageDiv.style.backgroundImage = `url('https://staging-1732022352.gbplayground.dk/wp-content/uploads/MissionImages/${imageLocation}')`;
+                imageDiv.style.backgroundImage = `url('${baseImagePath}${imageLocation}')`;
                 imageDiv.setAttribute('aria-label', imageText || '');
 
                 wrapperDiv.appendChild(imageDiv);
