@@ -2,7 +2,7 @@ const url = new URL(window.location.href);
 const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk2.json`;
 //wp-content/uploads/2024/12/dk2.json
 //wp-content/themes/twentytwentyfive/js/dk.json
-let missionId = 1248; // default value
+let missionId = 5388; // default value
 //global variables
 // saved the selected filters for data query
 class SelectedFilters {
@@ -171,7 +171,9 @@ function updateTheMissionsPage(missionId, data){
         comparesTheForceTagsToMissionForces(data, missionId, "ForceContainer");
         assignMissionDuration(data, missionId, "MissionDuration")
         addTextFromDataToTable(data, missionId);
-        updateImagesAndImageText(data, missionId);   
+        //updateSwiperSlider(data, missionId);
+        updateSwiperSlider(data, missionId);
+        missionLocation(data, missionId);
     }
 }
 
@@ -297,12 +299,10 @@ function addTextFromDataToTable(data, missionId) {
 
     // Get text elements
     const textElementsByClass = Array.from(document.getElementsByClassName('TabText'));
-
     // Get header elements
     const filteredArrayOfElements = searchAndFindTextElements(table).filter(
         element => element instanceof HTMLElement && !(element.tagName.toLowerCase() === 'button' || element.tagName.toLowerCase() === 'p')
     );
-
     // Determine the number of sections to process (minimum of available data or elements)
     const numSections = Math.min(
         missionInformation.content.text.length,
@@ -347,59 +347,156 @@ function addTextFromDataToTable(data, missionId) {
         }
     }
 }
-// updates the images for the mission TODO: The image location is hard coded and need to be changed
-function updateImagesAndImageText(data, missionId) {
-    const pictureSlider = document.getElementsByClassName('swiper-wrapper'); // Elementor carousel wrapper
+
+window.onerror = function (message, source, lineno, colno, error) {
+    if (error && error.message.includes("Cannot read properties of undefined (reading 'stop')")) {
+        console.warn("Caught Swiper autoplay stop error:", error);
+        return true; // Prevent the error from propagating
+    }
+    return false; // Let other errors propagate
+};
+
+function updateSwiperSlider(data, missionId) {
+    const swiperContainer = document.querySelector('.swiper'); // Find the Swiper container
+    const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper'); // Find the Swiper wrapper
+
+    if (!swiperContainer || !swiperWrapper) {
+        console.error('Swiper container or wrapper not found.');
+        return;
+    }
+
+    // Fetch mission information from JSON data
     const missionInformation = getMissionById(data.missions, missionId);
-    try {
-        const missionImageArray = missionInformation.content.gallery.images;
-        const existingSlides = Array.from(pictureSlider[0].querySelectorAll('.swiper-slide'));
+    if (!missionInformation || !missionInformation.content || !missionInformation.content.gallery.images) {
+        console.error('Mission information or gallery images not found.');
+        return;
+    }
 
-        // Construct the base image path dynamically
-        const url = new URL(window.location.href);
-        const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/MissionImages/`;
+    const missionImageArray = missionInformation.content.gallery.images;
 
-        for (let i = 0; i < missionImageArray.length; i++) {
-            const imageLocation = missionImageArray[i]?.url;
-            const imageText = missionImageArray[i]?.caption;
+    // Construct the base image path dynamically
+    const url = new URL(window.location.href);
+    const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
 
-            if (i < existingSlides.length) {
-                // Update existing slides
-                const imageDiv = existingSlides[i].querySelector('.elementor-carousel-image');
-                if (imageDiv) {
-                    // Use the constructed base path dynamically
-                    imageDiv.style.backgroundImage = `url('${baseImagePath}${imageLocation}')`;
-                    imageDiv.setAttribute('aria-label', imageText || '');
-                }
-                if (i === 0) {
-                    const imageTextParagraphElement = findImageTextElement();
-                    updateSlideText(imageTextParagraphElement, 'swiper-slide');
-                }
-            } else {
-                // Create new slides
-                const wrapperDiv = document.createElement('div');
-                wrapperDiv.className = 'swiper-slide';
-                wrapperDiv.setAttribute('role', 'group');
-                wrapperDiv.setAttribute('aria-label', `${i + 1} / ${missionImageArray.length}`);
-                wrapperDiv.style.width = '423px';
-                wrapperDiv.style.marginRight = '10px';
+    // Clear existing slides
+    swiperWrapper.innerHTML = '';
 
-                const imageDiv = document.createElement('div');
-                imageDiv.className = 'elementor-carousel-image';
-                imageDiv.setAttribute('role', 'img');
-                imageDiv.style.backgroundImage = `url('${baseImagePath}${imageLocation}')`;
-                imageDiv.setAttribute('aria-label', imageText || '');
+    // Add new slides
+    missionImageArray.forEach((imageData) => {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        slide.innerHTML = `
+            <div class="elementor-element elementor-element-7f30c2c0 e-flex e-con-boxed e-con e-child">
+                <div class="e-con-inner">
+                    <div class="elementor-element elementor-element-a0ab922 elementor-widget elementor-widget-image">
+                        <div class="elementor-widget-container">
+                            <img src="${baseImagePath}${imageData.url}" alt="${imageData.caption}" loading="lazy" decoding="async">
+                        </div>
+                    </div>
+                    <div class="elementor-element elementor-element-9421eab elementor-widget elementor-widget-heading">
+                        <div class="elementor-widget-container">
+                            <h3 class="elementor-heading-title elementor-size-default">${imageData.caption}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        swiperWrapper.appendChild(slide);
+    });
 
-                wrapperDiv.appendChild(imageDiv);
+    // Destroy existing Swiper instance
+    if (swiperContainer.swiper) {
+        swiperContainer.swiper.destroy(true, true);
+    }
 
-                // Append the new slide to the swiper-wrapper
-                pictureSlider[0].appendChild(wrapperDiv);
-            }
+    // Extract settings dynamically
+    const settings = JSON.parse(swiperContainer.closest('[data-settings]').getAttribute('data-settings') || '{}');
+    const autoplaySpeed = parseInt(settings.autoplay_speed || 4000, 10);
+    const autoplayEnabled = settings.autoplay === 'yes';
+
+    // Reinitialize Swiper
+    const swiperInstance = new Swiper(swiperContainer, {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        loop: true,
+        autoplay: autoplayEnabled ? { delay: autoplaySpeed } : false,
+    });
+
+    // Handle autoplay resumption for navigation and pagination
+    const handleAutoplayResume = () => {
+        if (swiperInstance.autoplay) {
+            swiperInstance.autoplay.start();
         }
-    } catch (error) {
-        console.error("Error updating carousel:", error);
+    };
+
+    // Add event listeners for autoplay resumption
+    const navigationButtons = swiperContainer.querySelectorAll('.swiper-button-next, .swiper-button-prev');
+    navigationButtons.forEach((button) =>
+        button.addEventListener('click', handleAutoplayResume)
+    );
+
+    const paginationButtons = swiperContainer.querySelectorAll('.swiper-pagination-bullet');
+    paginationButtons.forEach((button) =>
+        button.addEventListener('click', handleAutoplayResume)
+    );
+
+    console.log(`Swiper updated with ${missionImageArray.length} slides.`);
+}
+
+function missionLocation(data, missionId) {
+    let location = null; // Variable to store the location if found
+    const locationButton = document.getElementById('MissionLocation');
+    const textElement = locationButton.querySelector('.elementor-button-text');
+    
+    const url = new URL(window.location.href);
+
+    // Iterate through each collection in the data
+    data.collections.forEach((collection) => {
+        // Check if the collection contains the mission with the given missionId
+        const foundMission = collection.missions.find(mission => mission === missionId);
+        if (foundMission) {
+            // If found, assign the location from the collection
+            location = collection.title; // Using collection.title as location
+        }
+    });
+
+    if (location) {
+        // Clear existing content inside `locationButton` if any
+        locationButton.innerHTML = '';
+
+        // Create a new <a> element
+        const linkElement = document.createElement('a');
+        linkElement.className = 'elementor-button elementor-button-link elementor-size-sm';
+        linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(location)}/`;
+        linkElement.rel = 'noopener noreferrer'; // Optional: For security
+
+        // Add the text inside the <a> element
+        const spanWrapper = document.createElement('span');
+        spanWrapper.className = 'elementor-button-content-wrapper';
+
+        const spanText = document.createElement('span');
+        spanText.className = 'elementor-button-text';
+        spanText.textContent = location;
+
+        // Append text to wrapper, wrapper to <a>, and <a> to button
+        spanWrapper.appendChild(spanText);
+        linkElement.appendChild(spanWrapper);
+        locationButton.appendChild(linkElement);
+    } else {
+        // If no location is found, hide the button
+        locationButton.style.display = 'none';
     }
 }
+
+
+
 function findImageTextElement(){
     const imageText = document.getElementById('figureTextId');
     const imageTextElementArray = searchAndFindTextElements(imageText);
@@ -424,34 +521,12 @@ function updateSlideText(textElement, classNameString) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (!isOnMissionsPage('missions')) {
-        return;     
-    }
-    const imageTextParagraphElement = findImageTextElement();
-
-    // Select the carousel wrapper
-    const carousel = document.querySelector('.swiper-wrapper'); // Adjust selector as needed
-
-    if (carousel) {
-        // Add event listener to detect changes in the slider
-        carousel.addEventListener('transitionend', () => {
-            updateSlideText(imageTextParagraphElement, 'swiper-slide-active');
-        });
-
-        // Initial update for the first active slide
-        updateSlideText(imageTextParagraphElement, 'swiper-slide-active');
-    } else {
-        console.error('Carousel element not found.');
-    }
-});
-
 // Update the info screen with missions and map pins
 function updateTheInfoScreen(missionId, data) {
     if (!isOnMissionsPage('')) {
         return; // Exit if not on the landing page
     }
-
+    debugger;
     // Create the filter buttons for the info screen
     createInfoScreenFilterButton(missionId, data, ExcludedIdsManager.getExcludedIds());
     const selectedMission  = applyFiltersToFindMissions(data, selectedFilters.getAllFilters());
