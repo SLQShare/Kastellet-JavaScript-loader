@@ -1187,11 +1187,10 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         alignItems: 'center',
         WebkitAlignItems: 'center',
         WebkitJustifyContent: 'center',
-        width: 'auto',
+        width: '150px',
         height: 'auto',
         zIndex: '100',
         pointerEvents: 'auto',
-        minWidth: '20px', 
         minHeight: '20px',
     });
     // Set position and scale based on the pin type
@@ -1214,7 +1213,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
     // Add the location name as a label
     const mapPinLocation = document.createElement('span');
     Object.assign(mapPinLocation.style, {
-        fontSize: '24px',
+        fontSize: '20px',
         display: 'flex', // Keep flex for alignment
         justifyContent: 'center', // Horizontally center text
         alignItems: 'center', // Vertically center text
@@ -1262,6 +1261,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         fontFamily: 'Saira Stencil One, Sans-serif',
         width: '100%', // Ensure it spans its container for proper alignment
         height: 'auto', // Adjust height based on content
+        marginTop: '5px',
     });
     amountOfMissions.textContent = `${missions || 0} missioner`; //TODO hard coded
     amountOfMissions.classList.add('mission-count')
@@ -1324,6 +1324,8 @@ function createForceColorFlags(forces, forceContainer){
             height: '5px',
             borderRadius: '1px',
             margin: '0px 2px',
+            overflow: 'visibile',
+            flexShrink: '0',
             backgroundColor: force.backgroundColor || '#ccc', // Default to gray if no color provided
         });
         forceContainer.appendChild(mapPinForceColor);
