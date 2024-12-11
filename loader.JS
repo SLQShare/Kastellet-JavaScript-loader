@@ -1361,7 +1361,7 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             let pin = existingPins.find(p => p.id === `pin-${formattedRegion}`);
             if (pin) {
                 // Update existing pin
-                pin.querySelector('.mission-count').textContent = `${missionCount} Missions`;
+                pin.querySelector('.mission-count').textContent = `${missionCount} Missioner`;
                 const containerForForces = pin.querySelector('.mapPinForceColor');
                 if (containerForForces) {
                     containerForForces.innerHTML = ''; // Clear existing flags
