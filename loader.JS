@@ -130,6 +130,7 @@ selectedFilters.addContributionListener((newContribution, data) => {
     });
 });
 
+
 // stores the active state and filter buttons
 const filterStateStorage = {
     period: {
@@ -148,6 +149,7 @@ const filterStateStorage = {
         activeFilterButton: null,
     },
 };
+
 
 const forceColors = {
     1087: { backgroundColor: "#518346", textColor: "#ffffff" },
@@ -182,7 +184,8 @@ const ExcludedIdsManager = (() => {
 main(missionId, jsonDkPath);
 
 function main(missionId, urlDk) {
-    fetchAndProcessData(missionId, urlDk);   
+    fetchAndProcessData(missionId, urlDk);
+       
 }
 
 // Function to fetch data and process it
@@ -204,6 +207,7 @@ function processData(missionId , data) {
     updateTheInfoScreen(missionId, data);
     selectedFilters.setData(data);
 }
+    
 
 // update the missionspage with information
 function updateTheMissionsPage(missionId, data){
@@ -213,8 +217,6 @@ function updateTheMissionsPage(missionId, data){
         comparesTheForceTagsToMissionForces(data, missionId, "ForceContainer");
         assignMissionDuration(data, missionId, "MissionDuration")
         addTextFromDataToTable(data, missionId);
-        //updateSwiperSlider(data, missionId);
-        updateSwiperSlider(data, missionId);
         missionLocation(data, missionId);
         parseMediaUrl(data, missionId);
     }
@@ -392,7 +394,7 @@ function addTextFromDataToTable(data, missionId) {
 }
 
 window.onerror = function (message, source, lineno, colno, error) {
-    if (error && error.message.includes("Cannot read properties of undefined (reading 'stop')")) {
+    if (error && error.message.includes("ReferenceError: Swiper is not defined")) {
         console.warn("Caught Swiper autoplay stop error:", error);
         return true; // Prevent the error from propagating
     }
@@ -406,13 +408,13 @@ function parseMediaUrl(data, missionId) {
         const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
         
         // Get mission information
-    const missionInformation = getMissionById(data.missions, missionId);
-    if (!missionInformation || !missionInformation.content || !missionInformation.content.gallery.images) {
-        console.error('Mission information or gallery images not found.');
-        return;
-    }
+        const missionInformation = getMissionById(data.missions, missionId);
+        if (!missionInformation || !missionInformation.content || !missionInformation.content.gallery.images) {
+            console.error('Mission information or gallery images not found.');
+            return;
+        }
 
-    const missionImageArray = missionInformation.content.gallery.images;
+        const missionImageArray = missionInformation.content.gallery.images;
         const emblemIds = [1689, 1658, 1693, 1688, 1686, 1687]; // IDs for emblem images
         const missionEmblems = [];
         const sortedImageContent  = [];
@@ -571,8 +573,6 @@ function updateSwiperSlider(imageArray, baseImagePath) {
     paginationButtons.forEach((button) =>
         button.addEventListener('click', handleAutoplayResume)
     );
-
-    console.log(`Swiper updated with ${missionImageArray.length} slides.`);
 }
 
 function missionLocation(data, missionId) {
@@ -651,7 +651,6 @@ function updateTheInfoScreen(missionId, data) {
     if (!isOnMissionsPage('')) {
         return; // Exit if not on the landing page
     }
-    debugger;
     // Create the filter buttons for the info screen
     createInfoScreenFilterButton(missionId, data, ExcludedIdsManager.getExcludedIds());
     const selectedMission  = applyFiltersToFindMissions(data, selectedFilters.getAllFilters());
@@ -667,7 +666,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
     resetButton.textContent = 'Nulstil'; // TODO hardcoded danish
     const referenceButton = document.getElementById('geographyFilterButton')
     referenceButton.insertAdjacentElement('afterend', resetButton);
-    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton', 'resetButton'];
+    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton']; // TODO removed resetButton
     const dataSet = generateDataSet(1940, 2029, 10);
     const contributionColors = {
         1087: { backgroundColor: "#518346", textColor: "#ffffff" },
