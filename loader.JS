@@ -202,6 +202,7 @@ function processData(missionId , data) {
     console.log("dataDk:", dataDk);
     updateTheMissionsPage(missionId, data);
     updateTheInfoScreen(missionId, data);
+    selectedFilters.setData(data);
 }
 
 // update the missionspage with information
