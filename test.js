@@ -8,9 +8,11 @@ main();
 
 function main() {
     console.log('Categorizing hotspots and saving...');
-    const categorizedData = categorizeHotspotsAdvanced(data.hotspotCollections);
+    //const categorizedData = categorizeHotspotsAdvanced(data.hotspotCollections);
     // Save the updated data to a new file
-    saveUpdatedData(data, categorizedData);
+    //saveUpdatedData(data, categorizedData);
+    saveUpdatedData(data, county);
+
 }
 
 function categorizeHotspotsAdvanced(hotspotCollections) {
@@ -61,4 +63,3 @@ function saveUpdatedData(originalData, updatedHotspotCollections) {
     fs.writeFileSync(outputFileName, JSON.stringify(originalData, null, 2), 'utf8');
     console.log(`Updated data saved to ${outputFileName}`);
 }
-
