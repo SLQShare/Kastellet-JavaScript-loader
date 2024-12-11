@@ -216,6 +216,7 @@ function updateTheMissionsPage(missionId, data){
         //updateSwiperSlider(data, missionId);
         updateSwiperSlider(data, missionId);
         missionLocation(data, missionId);
+        parseMediaUrl(data, missionId);
     }
 }
 
@@ -398,16 +399,13 @@ window.onerror = function (message, source, lineno, colno, error) {
     return false; // Let other errors propagate
 };
 
-function updateSwiperSlider(data, missionId) {
-    const swiperContainer = document.querySelector('.swiper'); // Find the Swiper container
-    const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper'); // Find the Swiper wrapper
-
-    if (!swiperContainer || !swiperWrapper) {
-        console.error('Swiper container or wrapper not found.');
-        return;
-    }
-
-    // Fetch mission information from JSON data
+function parseMediaUrl(data, missionId) {
+    try {
+        // Construct the base image path dynamically
+        const url = new URL(window.location.href);
+        const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
+        
+        // Get mission information
     const missionInformation = getMissionById(data.missions, missionId);
     if (!missionInformation || !missionInformation.content || !missionInformation.content.gallery.images) {
         console.error('Mission information or gallery images not found.');
@@ -415,10 +413,33 @@ function updateSwiperSlider(data, missionId) {
     }
 
     const missionImageArray = missionInformation.content.gallery.images;
+        const emblemIds = [1689, 1658, 1693, 1688, 1686, 1687]; // IDs for emblem images
+        const missionEmblems = [];
+        const sortedImageContent  = [];
 
-    // Construct the base image path dynamically
-    const url = new URL(window.location.href);
-    const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
+        // Process the images
+        missionImageArray.forEach((image, index) => {
+            if (typeof image.url !== 'string') {
+                console.warn('Invalid image format:', image);
+                return; // Skip invalid images
+            }
+
+            const imageId = parseInt(image.url.split('/').slice(-2, -1)[0], 10); // Extract ID from the URL
+            
+            if (emblemIds.includes(imageId)) {
+                missionEmblems.push(image); // Add emblems to missionEmblems array
+            } else {
+                sortedImageContent.push(image); // Add other images to sortedImages array
+            }
+        });
+
+        // Pass the sorted images and emblems to their respective functions
+        updateSwiperSlider(sortedImageContent, baseImagePath); // Assuming updateSwiperSlider is defined elsewhere
+        updateEmblemSection(missionEmblems, baseImagePath); // Assuming updateEmblemSection is defined elsewhere
+    } catch (error) {
+        console.error('Error in parseMediaUrl:', error);
+    }
+}
 
     // Clear existing slides
     swiperWrapper.innerHTML = '';
