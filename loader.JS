@@ -441,6 +441,58 @@ function parseMediaUrl(data, missionId) {
     }
 }
 
+function updateEmblemSection(newImages, baseImagePath) {
+    const container = document.getElementById('MissionForceContainer');
+    if (!container) {
+        console.error('MissionForceContainer not found.');
+        return;
+    }
+
+    // Remove all existing child elements
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+    Object.assign(container.style, {
+        maxHeight: '50px',
+        overflow: 'auto',
+    });
+    // Add new images
+    newImages.forEach((imageUrl) => {
+        // Create the outer element for each image
+        const imageElementWrapper = document.createElement('div');
+        imageElementWrapper.className = 'elementor-element elementor-widget elementor-widget-image';
+        imageElementWrapper.setAttribute('data-element_type', 'widget');
+        imageElementWrapper.setAttribute('data-widget_type', 'image.default');
+
+        // Create the widget container
+        const widgetContainer = document.createElement('div');
+        widgetContainer.className = 'elementor-widget-container';
+        const url = baseImagePath+imageUrl.url
+        // Create the image element
+        const img = document.createElement('img');
+        img.setAttribute('decoding', 'async');
+        img.setAttribute('loading', 'lazy');
+        img.src = url;
+        img.alt = 'New Image';
+        
+        // Style the image to limit its height and maintain aspect ratio
+        Object.assign(img.style, {
+            maxHeight: '50px', // Limit the image height
+            width: 'auto', // Allow the width to adjust proportionally
+            objectFit: 'contain', // Ensure the image fits within the bounds without cropping
+        });
+
+        // Append the image to the widget container
+        widgetContainer.appendChild(img);
+
+        // Append the widget container to the outer wrapper
+        imageElementWrapper.appendChild(widgetContainer);
+
+        // Append the outer wrapper to the main container
+        container.appendChild(imageElementWrapper);
+    });
+}
+
     // Clear existing slides
     swiperWrapper.innerHTML = '';
 
