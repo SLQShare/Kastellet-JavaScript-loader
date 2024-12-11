@@ -1165,7 +1165,7 @@ function zoomToCoordinates(regionName, backgroundMap) {
  * 2. For country-specific pins:
  *    createMapPin('usa', 'USA', 5, [{ name: 'Navy', color: '#0000ff' }], 'country', 40, 60);
  */
-function createMapPin(region, location, missions, forces, type = 'continent', data, title) {
+function createMapPin(region, location, missions, forces, type = 'continent', data, title, baseImagePath) {
     // Create the main container for the map pin
     const mapPinContainer = document.createElement('div');
     // map coordinates for placing continent map pins
@@ -1275,14 +1275,23 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         alignItems: 'center',
     });
 
-    // Add an image to the pin (currently using a placeholder style)
-    const mapPinImage = document.createElement('img');
-    Object.assign(mapPinImage.style, {
-        width: '20px',
-        height: '20px',
-        backgroundColor: 'blue', // Default placeholder
-    });
-    mapPinImageContainer.appendChild(mapPinImage);
+    // Fetch the SVG content dynamically
+    fetch(baseImagePath + '2024/12/location_on_24dp_UNDEFINED_FILL1_wght200_GRAD0_opsz24.svg')
+        .then(response => response.text())
+        .then(svgContent => {
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
+            const svgElement = svgDoc.querySelector('svg');
+
+            // Set the initial color and size of the SVG
+            svgElement.setAttribute('fill', '#72756f'); // Initial color
+            svgElement.style.width = '62px';
+            svgElement.style.height = '62px';
+
+            // Append the SVG to the wrapper
+            mapPinImageContainer.appendChild(svgElement); // Add to the DOM
+        })
+        .catch(err => console.error('Error fetching SVG:', err));
 
     // Assemble the map pin by appending all components
     mapPinContainer.appendChild(mapPinLocation);
@@ -1323,7 +1332,9 @@ function createForceColorFlags(forces, forceContainer){
 function updateMapPins(data, excludedIds, container, selectedMission, forceColors) {
     const existingPins = Array.from(container.children);
     const matchingMissions = data.missions.filter(mission => selectedMission.includes(mission.id))
-
+    // Construct the base image path dynamically
+    const url = new URL(window.location.href);
+    const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
     // Iterate through locations to update or create pins
     data.locations.forEach((location) => {
         if (!excludedIds.includes(location?.id)) {
@@ -1365,7 +1376,8 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                     matchingForceColors,
                     'continent',
                     data,
-                    formattedTitle
+                    formattedTitle,
+                    baseImagePath
                 );
                 pin.id = `pin-${formattedRegion}`; // Add unique ID for easy reference
                 container.appendChild(pin); // Append pins to the map container
