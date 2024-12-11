@@ -4,57 +4,45 @@ const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/
 //wp-content/themes/twentytwentyfive/js/dk.json
 let missionId = 5388; // default value
 //global variables
-// saved the selected filters for data query
+
 class SelectedFilters {
     constructor() {
         if (SelectedFilters.instance) {
             return SelectedFilters.instance;
         }
-
+        this.data = null;
         this.period = null;
         this.contribution = null;
         this.geography = null;
-
+        this.contributionListeners = [];
+        this.contributionColors = {
+            1087: { backgroundColor: "#518346", textColor: "#ffffff" },
+            1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
+            1089: { backgroundColor: "#052854", textColor: "#ffffff" },
+            1090: { backgroundColor: "#8d1b3d", textColor: "#ffffff" },
+            1091: { backgroundColor: "#ffffff", textColor: "#81847e" }, 
+            1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
+            1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
+        };
         SelectedFilters.instance = this;
     }
 
+    // Method to set the data
+    setData(data) {
+        this.data = data;
+    }
+
+    // Method to get stored data
+    getData() {
+        return this.data;
+    }
     // Methods to access and modify filters
-    getPeriod() {
-        return this.period;
-    }
-
-    setPeriod(value) {
-        this.period = value;
-    }
-
-    getContribution() {
-        return this.contribution;
-    }
-
-    setContribution(value) {
-        this.contribution = value;
-    }
-
-    getGeography() {
-        return this.geography;
-    }
-
-    setGeography(value) {
-        this.geography = value;
-    }
-
     getAllFilters() {
         return {
             period: this.period,
             contribution: this.contribution,
             geography: this.geography
         };
-    }
-
-    clearFilters() {
-        this.period = null;
-        this.contribution = null;
-        this.geography = null;
     }
 
     // Add updateSelectedFilter to the class
@@ -66,6 +54,10 @@ class SelectedFilters {
 
         if (this.hasOwnProperty(type)) {
             this[type] = value;
+
+            if (type === "contribution"){
+                this.notifyContributionListeners(value);
+            }
         } else {
             console.error(`Invalid filter type: ${type}`);
         }
@@ -80,13 +72,23 @@ class SelectedFilters {
 
         if (this.hasOwnProperty(type)) {
             this[type] = null;
+            if (type === "contribution"){
+                this.notifyContributionListeners(null);
+            }
         } else {
             console.error(`Invalid filter type: ${type}`);
         }
     }
+    // Add listener mechanism for contribution changes
+    addContributionListener(listener) {
+        if (typeof listener === "function") {
+            this.contributionListeners.push(listener);
+        }
+    }
+    notifyContributionListeners(value) {
+        this.contributionListeners.forEach(listener => listener(value));
+    }
 }
-
-// Create a singleton instance
 const selectedFilters = new SelectedFilters();
 
 // stores the active state and filter buttons
