@@ -492,6 +492,16 @@ function updateEmblemSection(newImages, baseImagePath) {
         container.appendChild(imageElementWrapper);
     });
 }
+function updateSwiperSlider(imageArray, baseImagePath) {
+    const swiperContainer = document.querySelector('.swiper'); // Find the Swiper container
+    const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper'); // Find the Swiper wrapper
+
+    if (!swiperContainer || !swiperWrapper) {
+        console.error('Swiper container or wrapper not found.');
+        return;
+    }
+
+    const missionImageArray = imageArray;
 
     // Clear existing slides
     swiperWrapper.innerHTML = '';
