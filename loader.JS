@@ -89,7 +89,46 @@ class SelectedFilters {
         this.contributionListeners.forEach(listener => listener(value));
     }
 }
+
 const selectedFilters = new SelectedFilters();
+//TODO - only change the color when the contribution filter changes
+selectedFilters.addContributionListener((newContribution, data) => {
+    console.log('Contribution changed:', newContribution);
+
+    const dataFromClass = selectedFilters.getData(); // Explicitly retrieve the data
+    console.log('Data from class:', dataFromClass);
+
+    let forceIdForColor = null;
+
+    if (newContribution && dataFromClass) {
+        const contributionIds = dataFromClass.forces
+            .filter(force => newContribution.includes(force.title))
+            .map(force => force.id);
+
+        console.log('Mapped Contribution IDs:', contributionIds);
+        forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null; // Take the first matching ID or null
+    }
+
+    // Select elements with IDs starting with "pin-"
+    const elements = document.querySelectorAll('[id^="pin-"]');
+
+    elements.forEach(element => {
+        console.log(`Found element with id: ${element.id}`);
+
+        // Find the SVG child element
+        const svgElement = element.querySelector('svg');
+
+        if (svgElement) {
+            const color = forceIdForColor && selectedFilters.contributionColors[forceIdForColor]
+                ? selectedFilters.contributionColors[forceIdForColor].backgroundColor
+                : '#72756f'; // Default color if no match
+
+            // Change the color by modifying the `fill` attribute
+            svgElement.setAttribute('fill', color);
+            console.log(`Updated color for ${element.id} to ${color}`);
+        }
+    });
+});
 
 // stores the active state and filter buttons
 const filterStateStorage = {
