@@ -3304,7 +3304,7 @@
       "y": 491,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": ""
     },
     {
       "mapid": 4684,
@@ -3314,7 +3314,7 @@
       "y": 408,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "Middle East"
+      "county": ""
     },
     {
       "mapid": 4684,
@@ -3324,7 +3324,7 @@
       "y": 317,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": ""
     },
     {
       "mapid": 4684,
@@ -3334,7 +3334,7 @@
       "y": 396,
       "direction": "left",
       "region": "Asia",
-      "county": "Asia"
+      "county": ""
     },
     {
       "mapid": 4684,
@@ -3344,7 +3344,7 @@
       "y": 503,
       "direction": "left",
       "region": "America",
-      "county": "America"
+      "county": ""
     },
     {
       "mapid": 4684,
@@ -3364,7 +3364,7 @@
       "y": 294,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": ""
     },
     {
       "mapid": 3636,
@@ -3374,7 +3374,7 @@
       "y": 223,
       "direction": "right",
       "region": "MiddleEast",
-      "county": "Middle East"
+      "county": ""
     },
     {
       "mapid": 3636,
@@ -3384,7 +3384,7 @@
       "y": 165,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": ""
     },
     {
       "mapid": 3636,
@@ -3394,7 +3394,7 @@
       "y": 218,
       "direction": "right",
       "region": "Asia",
-      "county": "Asia"
+      "county": ""
     },
     {
       "mapid": 3636,
@@ -3404,7 +3404,7 @@
       "y": 274,
       "direction": "right",
       "region": "America",
-      "county": "America"
+      "county": ""
     },
     {
       "mapid": 4234,
@@ -3584,7 +3584,7 @@
       "y": 506,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": "Serbia"
     },
     {
       "mapid": 4238,
@@ -3634,7 +3634,7 @@
       "y": 573,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": ""
     },
     {
       "mapid": 4238,
@@ -3734,7 +3734,7 @@
       "y": 371,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": "Estonia"
     },
     {
       "mapid": 4238,
@@ -3774,7 +3774,7 @@
       "y": 279,
       "direction": "left",
       "region": "Africa",
-      "county": "Sierra Leone"
+      "county": "sierraleone"
     },
     {
       "mapid": 4244,
@@ -3799,12 +3799,12 @@
     {
       "mapid": 4244,
       "id": 4472,
-      "title": "Vestsahara",
+      "title": "Sudan",
       "x": 35,
       "y": 120,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Sudan"
     },
     {
       "mapid": 4244,
@@ -3844,7 +3844,7 @@
       "y": 652,
       "direction": "left",
       "region": "Africa",
-      "county": "South Africa"
+      "county": "southafrica"
     },
     {
       "mapid": 4244,
@@ -3864,7 +3864,7 @@
       "y": 201,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Sudan"
     },
     {
       "mapid": 4244,
@@ -3874,7 +3874,7 @@
       "y": 292,
       "direction": "right",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Sudan"
     },
     {
       "mapid": 4244,
@@ -3894,7 +3894,7 @@
       "y": 293,
       "direction": "left",
       "region": "Africa",
-      "county": "Central African Republic"
+      "county": "CentralAfricanRepublic"
     },
     {
       "mapid": 4244,
@@ -3914,7 +3914,7 @@
       "y": 266,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Somalia"
     },
     {
       "mapid": 4244,
@@ -3933,7 +3933,7 @@
       "y": 136,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Somalia"
     },
     {
       "mapid": 4256,
@@ -4213,7 +4213,7 @@
       "y": 301,
       "direction": "left",
       "region": "Africa",
-      "county": "Sierra Leone"
+      "county": "sierraleone"
     },
     {
       "mapid": 4257,
@@ -4223,7 +4223,7 @@
       "y": 255,
       "direction": "left",
       "region": "Africa",
-      "county": "Sierra Leone"
+      "county": "sierraleone"
     },
     {
       "mapid": 4265,
@@ -4273,7 +4273,7 @@
       "y": 723,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "MiddleEast"
+      "county": "Iraq"
     },
     {
       "mapid": 4265,
@@ -4453,7 +4453,7 @@
       "y": 293,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": "Croatia"
     },
     {
       "mapid": 4434,
@@ -4473,7 +4473,7 @@
       "y": 115,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "MiddleEast"
+      "county": "Libya"
     },
     {
       "mapid": 4434,
@@ -4503,7 +4503,7 @@
       "y": 344,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "MiddleEast"
+      "county": "Cyprus"
     },
     {
       "mapid": 4438,
@@ -4513,7 +4513,7 @@
       "y": 307,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "MiddleEast"
+      "county": "morocco"
     },
     {
       "mapid": 4438,
@@ -4523,7 +4523,7 @@
       "y": 253,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "MiddleEast"
+      "county": ""
     },
     {
       "mapid": 4460,
@@ -4598,12 +4598,12 @@
     {
       "mapid": 4473,
       "id": 4474,
-      "title": "Vestsahara",
+      "title": "Sudan",
       "x": 508,
       "y": 355,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Sudan"
     },
     {
       "mapid": 4476,
@@ -4663,7 +4663,7 @@
       "y": 134,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": ""
     },
     {
       "mapid": 4494,
@@ -4672,7 +4672,7 @@
       "x": 449,
       "y": 272,
       "direction": "left",
-      "region": "Europe",
+      "region": "MiddleEast",
       "county": "Syria"
     },
     {
@@ -4758,32 +4758,32 @@
     {
       "mapid": 4521,
       "id": 4522,
-      "title": "Khartoum",
+      "title": "Sudan",
       "x": 578,
       "y": 277,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Sudan"
     },
     {
       "mapid": 4521,
       "id": 5096,
-      "title": "Darfur",
+      "title": "Sudan",
       "x": 452,
       "y": 263,
       "direction": "left",
       "region": "Africa",
-      "county": "Sydsudan"
+      "county": "Sudan"
     },
     {
       "mapid": 4524,
       "id": 4525,
-      "title": "Sydsudan",
+      "title": "Sudan",
       "x": 565,
       "y": 482,
       "direction": "left",
       "region": "Africa",
-      "county": "Sydsudan"
+      "county": "Sudan"
     },
     {
       "mapid": 4526,
@@ -4823,7 +4823,7 @@
       "y": 253,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": "Serbia"
     },
     {
       "mapid": 4526,
@@ -5103,7 +5103,7 @@
       "y": 368,
       "direction": "left",
       "region": "Africa",
-      "county": "South Africa"
+      "county": "southafrica"
     },
     {
       "mapid": 5137,
@@ -5113,7 +5113,7 @@
       "y": 772,
       "direction": "left",
       "region": "Africa",
-      "county": "Africa"
+      "county": "Somalia"
     },
     {
       "mapid": 5138,
@@ -5123,7 +5123,7 @@
       "y": 580,
       "direction": "left",
       "region": "Europe",
-      "county": "Europe"
+      "county": "Estonia"
     },
     {
       "mapid": 5146,
@@ -5133,7 +5133,7 @@
       "y": 518,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "MiddleEast"
+      "county": "Somalia"
     },
     {
       "mapid": 5321,
@@ -5143,7 +5143,7 @@
       "y": 379,
       "direction": "left",
       "region": "Europe",
-      "county": "Africa"
+      "county": "Cypern"
     },
     {
       "mapid": 5523,
@@ -5153,7 +5153,7 @@
       "y": 0,
       "direction": "left",
       "region": "MiddleEast",
-      "county": "Africa"
+      "county": "Yemen"
     },
     {
       "mapid": 6885,
