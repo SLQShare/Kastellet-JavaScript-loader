@@ -665,6 +665,18 @@ function updateTheInfoScreen(missionId, data) {
 
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
+    if (mapContainer) {
+        mapContainer.style.backgroundImage = 'url("https://kastellet.gbplayground.dk/wp-content/uploads/2024/12/verdenskort_8K.png")';
+        console.log('Background image', mapContainer.style.backgroundImage);
+        Object.assign(mapContainer.style, {
+            backgroundSize: 'cover', /* Or contain, depending on the design */
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            position: 'fixed',
+        });
+    } else {
+        console.error('Element with id "infoScreenMap" not found.');
+    }
     updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors);
 }
 

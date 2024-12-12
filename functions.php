@@ -24,3 +24,8 @@ function enqueue_custom_script() {
     }, 10, 3);
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_script');
+
+add_filter('big_image_size_threshold', '__return_false');
+add_filter('jpeg_quality', function() { return 100; });
+add_filter('wp_calculate_image_srcset', '__return_false');
+
