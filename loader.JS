@@ -24,9 +24,18 @@ class SelectedFilters {
             1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
             1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
         };
+        this.currentColor = '#72756f';
         SelectedFilters.instance = this;
     }
 
+    setCurrentColor(color){
+        this.currentColor = color
+    }
+
+    getCurrentColor(){
+        return this.currentColor;
+    }
+    
     // Method to set the data
     setData(data) {
         this.data = data;
@@ -94,7 +103,6 @@ const selectedFilters = new SelectedFilters();
 //TODO - only change the color when the contribution filter changes
 selectedFilters.addContributionListener((newContribution, data) => {
     console.log('Contribution changed:', newContribution);
-
     const dataFromClass = selectedFilters.getData(); // Explicitly retrieve the data
     console.log('Data from class:', dataFromClass);
 
@@ -122,7 +130,7 @@ selectedFilters.addContributionListener((newContribution, data) => {
             const color = forceIdForColor && selectedFilters.contributionColors[forceIdForColor]
                 ? selectedFilters.contributionColors[forceIdForColor].backgroundColor
                 : '#72756f'; // Default color if no match
-
+            selectedFilters.setCurrentColor(color);
             // Change the color by modifying the `fill` attribute
             svgElement.setAttribute('fill', color);
             console.log(`Updated color for ${element.id} to ${color}`);
@@ -1273,7 +1281,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         justifyContent: 'center',
         alignItems: 'center',
     });
-
+    const currentColor = selectedFilters.getCurrentColor();
     // Fetch the SVG content dynamically
     fetch(baseImagePath + '2024/12/location_on_24dp_UNDEFINED_FILL1_wght200_GRAD0_opsz24.svg')
         .then(response => response.text())
@@ -1283,7 +1291,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
             const svgElement = svgDoc.querySelector('svg');
 
             // Set the initial color and size of the SVG
-            svgElement.setAttribute('fill', '#72756f'); // Initial color
+            svgElement.setAttribute('fill', currentColor); // Initial color
             svgElement.style.width = '62px';
             svgElement.style.height = '62px';
 
@@ -1352,12 +1360,12 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                 mission.hotspotCollections.some(hotspotId => matchingHotspotIds.includes(hotspotId))
             );
     
-            // **CHANGED: Use missions for the location**
+            // Use missions for the location**
             const missionCount = missionsForLocation.length;
     
-            // **CHANGED: Get colors specific to the missions for this location**
-            const matchingForceColors = getColorsForMissionForces(forceColors, missionsForLocation);
-    
+            // Get colors specific to the missions for this location**
+            const matchingForceColors= getColorsForMissionForces(forceColors, missionsForLocation);
+
             // Check if a pin for this region already exists
             let pin = existingPins.find(p => p.id === `pin-${formattedRegion}`);
             if (pin) {
