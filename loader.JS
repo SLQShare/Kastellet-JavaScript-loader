@@ -1239,7 +1239,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         textTransform: 'uppercase',
         fontWeight: 'bold',
         color: 'white',
-        overflow: 'hidden',
+        overflow: 'visible',
         whiteSpace: 'nowrap',
         fontFamily: 'Saira Stencil One, Sans-serif',
         width: '100%', // Ensure the element spans its container
