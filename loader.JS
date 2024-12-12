@@ -681,11 +681,11 @@ function updateTheInfoScreen(missionId, data) {
 }
 
 function createInfoScreenFilterButton(missionId, data, excludedIds) {
-    const resetButton = document.createElement('div');
-    resetButton.id = 'resetButton';
-    resetButton.textContent = 'Nulstil'; // TODO hardcoded danish
-    const referenceButton = document.getElementById('geographyFilterButton')
-    referenceButton.insertAdjacentElement('afterend', resetButton);
+    //const resetButton = document.createElement('div');
+    //resetButton.id = 'resetButton';
+    //resetButton.textContent = 'Nulstil'; // TODO hardcoded danish
+    //const referenceButton = document.getElementById('geographyFilterButton')
+    //referenceButton.insertAdjacentElement('afterend', resetButton);
     const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton']; // TODO removed resetButton
     const dataSet = generateDataSet(1940, 2029, 10);
     const contributionColors = {
