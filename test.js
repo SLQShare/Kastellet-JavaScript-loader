@@ -12,7 +12,7 @@ function main() {
     // Save the updated data to a new file
     //saveUpdatedData(data, categorizedData);
     saveUpdatedData(data, county);
-    
+    // test
 }
 
 function categorizeHotspotsAdvanced(hotspotCollections) {
