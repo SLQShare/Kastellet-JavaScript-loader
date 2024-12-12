@@ -1,5 +1,5 @@
 const url = new URL(window.location.href);
-const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk2.json`;
+const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
 //wp-content/uploads/2024/12/dk2.json
 //wp-content/themes/twentytwentyfive/js/dk.json
 let missionId = 5388; // default value
