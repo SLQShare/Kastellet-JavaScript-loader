@@ -1202,26 +1202,64 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
     };
 
     const mapCoordinatesForCountyMapPins = {
-        usa: { x: 15, y: 35 }, // done
-        chile: { x: 24, y: 65 }, // done
-        haiti: { x: 23, y: 43 }, // move south 
-        congo: { x: 50, y: 57 }, // done
-        libya: { x: 47, y: 40 }, // done
-        liberia: { x: 40, y: 50 }, // done
-        sierraleone: { x: 40, y: 50 },
-        ethiopia: { x: 52.5, y: 51 }, // done
-        eritrea: { x: 53, y: 47 }, // done
-        namibia: { x: 47.5, y: 68 }, // done
-        somalia: { x: 56, y: 52 }, // done
-        mali: { x: 43, y: 45 }, // done
-        sydsudan: { x: 50, y: 47 }, // done
-        turkey: { x: 48, y: 50 },// TODO remove from africa
-        syria: { x: 48, y: 50 }, // TODO remove from africa
-        jordan: { x: 48, y: 50 }, // TODO remove from africa
-        centralafricanrepublic: { x: 48, y: 50 }, // done
-        kenya: { x: 52, y: 55 }, // done
-        southafrica: { x: 48, y: 65 }, // TODO fix white space
-        saudiarabia: { x: 48, y: 50 }, // TODO remove from africa
+        usa: { x: 15, y: 35 }, // America
+        chile: { x: 24, y: 65 }, // America
+        haiti: { x: 23, y: 43 }, // America 
+        congo: { x: 50, y: 57 }, // Africa
+        libya: { x: 47, y: 40 }, // Africa
+        liberia: { x: 41, y: 52 }, // Africa
+        sierraleone: { x: 39, y: 50 }, // Africa
+        ethiopia: { x: 52.5, y: 51 }, // Africa
+        eritrea: { x: 53, y: 47 }, // Africa
+        namibia: { x: 47.5, y: 68 }, // Africa
+        somalia: { x: 56, y: 52 }, // Africa
+        mali: { x: 43, y: 45 }, // Africa
+        sudan: { x: 50, y: 47 }, // Africa
+        centralafricanrepublic: { x: 48, y: 51 }, // Africa
+        kenya: { x: 52, y: 55 }, // Africa
+        southafrica: { x: 49, y: 72 }, // Africa
+        morocco: { x: 41, y: 40 }, // Africa
+        lebanon: { x: 52.5, y: 39.1 }, // Middle East
+        cyprus: { x: 51.6, y: 38.5 }, // Middle East
+        iraq: { x: 55, y: 40.2 }, // Middle East
+        palestine: { x: 52.2, y: 40.7 }, // Middle East
+        yemen: { x: 55, y: 47 }, // Middle East
+        iran: { x: 56, y: 38.8 }, // Middle East
+    	turkey: { x: 50.5, y: 37.5 }, // Middle East
+        syria: { x: 53.4, y: 38.7 }, // Middle East
+        egypt: { x: 50, y: 42 }, // Middle East
+        jordan: { x: 53.3, y: 40.2 }, // Middle East
+        saudiarabia: { x: 56, y: 45 }, // Middle East
+        tajikistan: { x: 63, y: 34 }, // Asia
+        nepal: { x: 66.7, y: 40 }, // Asia
+        pakistan: { x: 61, y: 42 }, // Asia
+        india: { x: 63.3, y: 46.1 }, // Asia
+        korea: { x: 77.3, y: 35.7 }, // Asia
+        afghanistan: { x: 63.5, y: 39.2 }, // Asia
+        georgia: { x: 55, y: 35 }, // Asia
+        easttimor: { x: 77, y: 58.7 }, // Asia
+        indonesia: { x: 73.5, y: 55 }, // Asia
+        srilanka: { x: 64.8, y: 51 }, // Asia
+        myanmar: { x: 68.8, y: 46 }, // Asia
+        japan: { x: 80.5, y: 36 }, // Asia
+        philippines: { x: 76, y: 49 }, // Asia
+        //balkan: { x: 49, y: 33.5 }, // Europe -rename to serbia
+        albania: { x: 448, y: 35.5 }, // Europe
+        kosovo: { x: 49, y: 33.5 }, // Europe
+        croatia: { x: 46.5, y: 32.5 }, // Europe
+        iceland: { x: 38, y: 19.5 }, // Europe
+        estonia: { x: 49.5, y: 24 }, // Europe
+        macedonia: { x: 49.5, y: 35.5 }, // Europe
+        bosnia: { x: 47.5, y: 33.5 }, // Europe
+        holland: { x: 44, y: 29 }, // Europe done
+        hungary: { x: 47.5, y: 31.5 }, // Europe done
+        poland: { x: 47, y: 27.8 }, // Europe done
+        russia: { x: 54, y: 27.5 }, // Europe done
+        romania: { x: 50, y: 32.5 }, // Europe done
+        czechrepublic: { x: 46.5, y: 30 }, // Europe done
+        ukraine: { x: 51.5, y: 30 }, // Europe done
+        latvia: { x: 49, y: 27 }, // Europe done
+        unitedkingdom: { x: 42.4, y: 27.5 }, // Europe done
         default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
     };
     
