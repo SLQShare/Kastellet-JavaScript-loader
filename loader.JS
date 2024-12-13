@@ -1409,6 +1409,17 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
         const continentHotspots = data.hotspotCollections.filter(hotspot =>
             hotspot.region.toLowerCase().replace(/\s+/g, '') === currentContinent
         );
+        // use continentHotspots to select scale value
+        // countryPin.style.transform = 'scale(0.36)';
+        const scaleValues = {
+            africa: { scale: 0.36 },
+            asia: { scale: 0.5 },
+            europe: { scale: 0.2 },
+            america: { scale: 0.7 },
+            middleeast: { scale: 0.15 },
+            australia: {scale: 1 },
+            default: { scale: 1 } // Default zoom for reset or unmatched regions
+        }
 
         // Extract valid country names from the filtered hotspots
         const validCountries = new Set(
@@ -1483,7 +1494,8 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                         baseImagePath // Path to assets
                     );
                     // Apply scaling to reduce size by XX%
-                    countryPin.style.transform = 'scale(0.36)';
+                    const scaleValue = scaleValues[currentContinent]?.scale || scaleValues.default.scale;
+                    countryPin.style.transform = `scale(${scaleValue})`;
                     countryPin.style.transformOrigin = 'center'; // Ensure scaling happens relative to the center of the pin
 
                     // Assign unique ID and attributes
