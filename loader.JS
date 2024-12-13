@@ -799,6 +799,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                     filterSelectorButton.id = `filterSelectorButtonGeography-${location?.region.toLowerCase().replace(/\s+/g, '')}`;
                     filterSelectorButton.addEventListener('click', function(){applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
                 }
+                debugger;
             });
         }
 
@@ -1157,7 +1158,7 @@ function zoomToCoordinates(regionName, backgroundMap) {
         asia: { scale: 2, x: -60, y: 0 },
         europe: { scale: 3.8, x: -5, y: 65 },
         america: { scale: 1.4, x: 40, y: 0 },
-        middleeast: { scale: 4, x: -35, y: 18 },
+        middleeast: { scale: 7, x: -60, y: 27 },
         australia: { scale: 1.6, x: -15, y: 5 },
         default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
     };
@@ -1442,11 +1443,12 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             location.title.toLowerCase().replace(/\s+/g, '') === normalizedInput
         );
         const currentContinent = matchingLocation.region.toLowerCase().replace(/\s+/g, '');
-        debugger;
+
         // Filter hotspots to ensure they belong to the selected continent
         const continentHotspots = data.hotspotCollections.filter(hotspot =>
             hotspot.region.toLowerCase().replace(/\s+/g, '') === currentContinent
         );
+
         // use continentHotspots to select scale value
         // countryPin.style.transform = 'scale(0.36)';
         const scaleValues = {
@@ -1481,7 +1483,6 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             // Associate each country with the mission ID
             hotspots.forEach((hotspot) => {
                 const country = hotspot.county.toLowerCase().replace(/\s+/g, ''); // Normalize country name
-
                 // Only include countries in the current continent
                 if (validCountries.has(country)) {
                     if (!countryMissionMap.has(country)) {
@@ -1492,6 +1493,30 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             });
         });
         console.log(countryMissionMap)
+        if (countryMissionMap.has('balkan')) {
+            // Get all the mission IDs from other countries
+            const otherCountryMissions = new Set();
+        
+            // Collect all mission IDs from countries other than "balkan"
+            countryMissionMap.forEach((missions, country) => {
+                if (country !== 'balkan') {
+                    missions.forEach(missionId => otherCountryMissions.add(missionId));
+                }
+            });
+        
+            // Get the current Balkan mission list
+            const balkanMissions = countryMissionMap.get('balkan');
+        
+            // Filter out mission IDs that are present in other countries
+            const filteredBalkanMissions = balkanMissions.filter(missionId => !otherCountryMissions.has(missionId));
+        
+            // Update the Balkan missions in the map
+            countryMissionMap.set('balkan', filteredBalkanMissions);
+        
+            console.log('Updated Balkan Mission List:', filteredBalkanMissions);
+            console.log('Updated Country Mission Map:', countryMissionMap);
+        }
+        
         debugger;
     
         // Iterate over the countryMissionMap to create pins
@@ -1531,11 +1556,12 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                         countryHotspot.title, // Tooltip or title for the pin
                         baseImagePath // Path to assets
                     );
+                  	debugger;
                     // Apply scaling to reduce size by XX%
                     const scaleValue = scaleValues[currentContinent]?.scale || scaleValues.default.scale;
                     countryPin.style.transform = `scale(${scaleValue})`;
                     countryPin.style.transformOrigin = 'center'; // Ensure scaling happens relative to the center of the pin
-
+                    
                     // Assign unique ID and attributes
                     countryPin.id = `pin-c-${country.toLowerCase()}`; // Unique ID for the country pin
                     countryPin.setAttribute('data-type', 'country');
@@ -1596,6 +1622,7 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                 pin.addEventListener('click', function() {
                     const parentButton = document.getElementById('geographyFilterButton');
                     const filterSelectorButton = document.getElementById(`filterSelectorButtonGeography-${formattedRegion}`);
+                    debugger;
                     if (!filterSelectorButton || !parentButton) {
                         console.error('Filter selector button or parent button not found.', {
                             filterSelectorButton,
