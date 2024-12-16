@@ -1759,3 +1759,189 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
         }
     });
 }
+
+function createMissionSelectormenu(missionsIdArray, title) {
+    const parentElement = document.getElementById('InfoScreenContainer');
+
+    // Create the mission menu container
+    const missionMenuContainer = document.createElement('div');
+    Object.assign(missionMenuContainer.style, {
+        position: 'fixed',
+        bottom: '0', // Position at the bottom of the screen
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        opacity: '1',
+        width: '100vw',
+        height: '60vh',
+        overflow: 'hidden',
+        zIndex: '10001', // Ensure it stays above the overlay
+        borderRadius: '12px 12px 0 0', // Rounded corners at the top
+        boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)', // Subtle shadow at the top
+    });
+
+    // Create title
+    const menuTitle = document.createElement('span');
+    Object.assign(menuTitle.style, {
+        fontSize: '50px',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        color: 'black',
+        marginTop: '3vh',
+        marginBottom: '3vh',
+        fontFamily: 'Saira Stencil One, Sans-serif',
+    });
+    menuTitle.textContent = `Missioner i ${title}`;
+    missionMenuContainer.appendChild(menuTitle);
+
+    // Create a full-screen overlay that blocks interactions
+    const backgroundOverlay = document.createElement('div');
+    Object.assign(backgroundOverlay.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw', // Cover the entire viewport width
+        height: '40vh', // Cover the entire viewport height
+        //backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+        zIndex: '10000', // Ensure it's below the menu
+        pointerEvents: 'auto', // Allow clicks on the overlay
+    });
+
+    // Close the menu when clicking the overlay
+    backgroundOverlay.addEventListener('click', () => {
+        missionMenuContainer.style.display = 'none'; // Hide the menu
+        backgroundOverlay.style.display = 'none'; // Hide the overlay
+    });
+
+    // Create the close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '&times;'; // "×" symbol
+    Object.assign(closeButton.style, {
+        position: 'absolute',
+        fontWeight: 'lighter',
+        top: '10px',
+        right: '10px',
+        backgroundColor: 'transparent',
+        color: 'black',
+        border: 'none',
+        fontSize: '36px', // Reduce size for better alignment
+        zIndex: '10',
+        width: '60px',           // Fixed width for the circle
+        height: '60px',          // Fixed height for the circle
+        borderRadius: '50%',     // Makes the element a perfect circle
+        display: 'flex',         // Flexbox for centering the text
+        justifyContent: 'center', // Center the text horizontally
+        alignItems: 'center',    // Center the text vertically
+        border: '3px solid #000',
+        textAlign: 'center',
+        fontFamily: 'Saira Stencil One, Sans-serif',
+        lineHeight: '1',         // Normalize line height
+        boxSizing: 'border-box', // Include padding and border in 
+    });
+
+    // Close the menu when clicking the close button
+    closeButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent the click from propagating to the overlay
+        missionMenuContainer.style.display = 'none'; // Hide the menu
+        backgroundOverlay.style.display = 'none'; // Hide the overlay
+    });
+
+    // Append the overlay and close button to the document body
+    document.body.appendChild(backgroundOverlay);
+    missionMenuContainer.appendChild(closeButton);
+
+
+    
+    // Create a slider container
+    const sliderContainer = document.createElement('div');
+    Object.assign(sliderContainer.style, {
+        display: 'flex',
+        justifyContent: 'start',
+        alignItems: 'center',
+        overflowX: 'auto',
+        scrollSnapType: 'x mandatory',
+        width: '1280px',
+        height: '100%',
+        scrollBehavior: 'smooth',
+        marginBottom: '4vh',
+        boxSizing: 'border-box', // Ensure consistent sizing
+    });
+ 
+    // Loop through the missions and create mission cards
+    missionsIdArray.forEach((missionId) => {
+        const missionCard = document.createElement('div');
+        Object.assign(missionCard.style, {
+            flex: '0 0 auto',
+            scrollSnapAlign: 'start',
+            backgroundColor: '#e6e6e6',
+            margin: '10px', // Space between cards
+            width: '300px', // Fixed width for consistent rendering
+            height: 'calc(100% - 20px)', // Adjust height based on parent and spacing
+            textAlign: 'center',
+            display: 'flex', // Flexbox for child alignment
+            flexDirection: 'column', // Stack child elements
+            justifyContent: 'space-between',
+            boxSizing: 'border-box', // Include padding and border in the size
+        });
+
+        // Add custom content to the mission card
+        createMissionCard(missionCard, missionId);
+
+        // Add mission-specific content dynamically (optional)
+        const missionContent = document.createElement('div');
+        missionContent.style.marginTop = '10px'; // Adjust margin for spacing
+        missionCard.appendChild(missionContent);
+
+        // Append mission card to the slider container
+        sliderContainer.appendChild(missionCard);
+    });
+    
+ 
+     // Add slider to the container
+     missionMenuContainer.appendChild(sliderContainer);
+ 
+     // Add progress text below the slider
+     const progressText = document.createElement('span');
+     Object.assign(progressText.style, {
+         fontSize: '20px',
+         fontFamily: 'Saira Stencil One, Sans-serif',
+         textTransform: 'uppercase',
+         fontWeight: 'bold',
+         color: 'black',
+         marginBottom: '3vh',
+     });
+     missionMenuContainer.appendChild(progressText);
+ 
+     // Conditional CSS: Adjust snapping and justifyContent
+     if (missionsIdArray.length < 4) {
+         sliderContainer.style.justifyContent = 'center'; // Center cards
+         sliderContainer.style.scrollSnapType = 'none';  // Disable snapping
+     } else {
+         sliderContainer.style.justifyContent = 'start'; // Align cards to the left
+         sliderContainer.style.scrollSnapType = 'x mandatory'; // Enable snapping
+     }
+ 
+     // Update progress dynamically
+     const updateProgress = () => {
+         const cardWidth = 310; // Width of each card including margin
+         const visibleCards = Math.min(
+             Math.ceil(sliderContainer.scrollLeft / cardWidth), // Count based on scroll position
+             missionsIdArray.length // Ensure it doesn't exceed total cards
+         );
+         if (missionsIdArray.length < 4) {
+             progressText.textContent = `VISER ALLE ${missionsIdArray.length} MISSIONER `;
+         } else {
+             progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
+         }
+    };
+
+    // Listen to scroll events
+    sliderContainer.addEventListener('scroll', updateProgress);
+
+    // Initialize progress text
+    updateProgress();
+
+    // Add the mission menu container to the parent element
+    parentElement.appendChild(missionMenuContainer);
+}
