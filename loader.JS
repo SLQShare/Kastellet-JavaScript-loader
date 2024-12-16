@@ -1519,34 +1519,11 @@ function createForceColorFlags(forces, forceContainer){
 function updateMapPins(data, excludedIds, container, selectedMission, forceColors, type = 'continent') {
     const existingPins = Array.from(container.children);
     const matchingMissions = data.missions.filter(mission => selectedMission.includes(mission.id));
-    
     // Construct the base image path dynamically
     const url = new URL(window.location.href);
     const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
 
     if (type === 'country') {
-        // Clear existing country pins
-        existingPins
-            .filter(pin => pin.getAttribute('data-type') === 'country')
-            .forEach(countryPin => countryPin.remove());
-        //find and tie all missions to a country 
-        // Assume `currentContinent` contains the normalized name of the selected continent (e.g., 'africa').
-        const currentContinent2 = selectedFilters.getAllFilters().geography.toLowerCase();
-        const normalizedInput = currentContinent2.toLowerCase().replace(/\s+/g, '');
-
-        // Match the input against location data in `title` or `region`
-        const matchingLocation = data.locations.find(location => 
-            location.region.toLowerCase().replace(/\s+/g, '') === normalizedInput ||
-            location.title.toLowerCase().replace(/\s+/g, '') === normalizedInput
-        );
-        const currentContinent = matchingLocation.region.toLowerCase().replace(/\s+/g, '');
-
-        // Filter hotspots to ensure they belong to the selected continent
-        const continentHotspots = data.hotspotCollections.filter(hotspot =>
-            hotspot.region.toLowerCase().replace(/\s+/g, '') === currentContinent
-        );
-
-        // use continentHotspots to select scale value
         // countryPin.style.transform = 'scale(0.36)';
         const scaleValues = {
             africa: { scale: 0.36 },
@@ -1559,11 +1536,9 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
         }
 
         // Extract valid country names from the filtered hotspots
-        const validCountries = new Set(
-            continentHotspots
-                .filter(hotspot => hotspot.county && typeof hotspot.county === 'string') // Ensure county exists and is a string
-                .map(hotspot => hotspot.county.toLowerCase().replace(/\s+/g, '')) // Normalize county name
-        );
+        const validCountriesAndCurrentCountry = selectedFilters.getFilteredCountries()
+        const validCountries = validCountriesAndCurrentCountry[0]
+        const currentContinent = validCountriesAndCurrentCountry[1]
 
         // Create a Map to store country-to-missions associations
         const countryMissionMap = new Map();
@@ -1589,7 +1564,6 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                 }
             });
         });
-        console.log(countryMissionMap)
         if (countryMissionMap.has('balkan')) {
             // Get all the mission IDs from other countries
             const otherCountryMissions = new Set();
@@ -1610,31 +1584,25 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             // Update the Balkan missions in the map
             countryMissionMap.set('balkan', filteredBalkanMissions);
         
-            console.log('Updated Balkan Mission List:', filteredBalkanMissions);
-            console.log('Updated Country Mission Map:', countryMissionMap);
-        }
+            //console.log('Updated Balkan Mission List:', filteredBalkanMissions);
+            //console.log('Updated Country Mission Map:', countryMissionMap);
         
-        debugger;
-    
+        }
         // Iterate over the countryMissionMap to create pins
         countryMissionMap.forEach((missions, country) => {
             const countryHotspot = data.hotspotCollections.find(h =>
                 h.county && h.county.toLowerCase() === country.toLowerCase()
             );
-
             if (countryHotspot) {
-                console.log("Creating pin for country:", country, countryHotspot);
 
                 // Get the mission count directly from the map
                 const missionCount = missions.length;
 
                 // Determine the force colors for these missions
                 const matchingForceColors = getColorsForMissionForces(forceColors, matchingMissions);
-                
-                let countryPin = existingPins.find(pin => pin.id ===`pin-c-${country.toLowerCase()}`)
+                let countryPin = existingPins.find(pin => pin.id ===`pin-${country.toLowerCase()}`)
                 if (countryPin){
                     //update
-                    debugger;
                     countryPin.querySelector('.mission-count').textContent = `${missionCount} Missioner`;
                     const containerForForces = countryPin.querySelector('.mapPinForceColor');
                     if (containerForForces) {
@@ -1653,26 +1621,34 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                         countryHotspot.title, // Tooltip or title for the pin
                         baseImagePath // Path to assets
                     );
-                  	debugger;
                     // Apply scaling to reduce size by XX%
                     const scaleValue = scaleValues[currentContinent]?.scale || scaleValues.default.scale;
                     countryPin.style.transform = `scale(${scaleValue})`;
                     countryPin.style.transformOrigin = 'center'; // Ensure scaling happens relative to the center of the pin
                     
+                    
                     // Assign unique ID and attributes
-                    countryPin.id = `pin-c-${country.toLowerCase()}`; // Unique ID for the country pin
+                    countryPin.id = `pin-${country.toLowerCase()}`; // Unique ID for the country pin
                     countryPin.setAttribute('data-type', 'country');
 
                     // Append the pin to the map container
                     container.appendChild(countryPin);
+
+                    // Add event listener for continent pin
+                    countryPin.addEventListener('click', function() {
+                        const missionIdsInStringFormat = countryPin.getAttribute('data-mission-ids');
+                        const missionIds = missionIdsInStringFormat ? missionIdsInStringFormat.split(',').map(Number):[];
+                        const countryName = countryPin.querySelector('span')
+                        createMissionSelectormenu(missionIds, countryName.textContent);
+                        console.log('missionIds', missionIds)
+                    });
                 }
+                countryPin.setAttribute('data-mission-ids', missions.join(',')); // Add mission IDs as a comma-separated list
             } else {
                 console.warn("No matching hotspot found for country:", country);
             }
+
         });
-
-
-        return; // Exit early to skip continent pin processing
     }
 
     // Continue with continent pin processing
@@ -1719,7 +1695,6 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                 pin.addEventListener('click', function() {
                     const parentButton = document.getElementById('geographyFilterButton');
                     const filterSelectorButton = document.getElementById(`filterSelectorButtonGeography-${formattedRegion}`);
-                    debugger;
                     if (!filterSelectorButton || !parentButton) {
                         console.error('Filter selector button or parent button not found.', {
                             filterSelectorButton,
@@ -1735,17 +1710,52 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
 
     // Remove pins that no longer match the filters
     Array.from(container.children).forEach(pin => {
-        const region = pin.id.replace('pin-', '');
+        const pinType = pin.getAttribute('data-type'); // Get the pin type (continent or country)
+        const region = pin.id.replace('pin-', ''); // Extract the region from the pin ID
+        const currentFilters = selectedFilters.getAllFilters(); // Get active filters
+        const pinMissionIds = (pin.getAttribute('data-mission-ids') || "").split(',').map(Number); // Get mission IDs from the pin
+    
+        if (pinType === 'country') {
+            if (currentFilters.geography === null) {
+                console.log(`Removing country pin due to no geography filter: ${region}`);
+                pin.remove(); // Remove all country pins if no geography filter
+                return;
+            }
+    
+            // Get valid countries for the current continent
+            const validCountries = selectedFilters.getFilteredCountries()[0];
+            if (!validCountries.has(region)) {
+                console.log(`Removing country pin not in valid countries: ${region}`);
+                pin.remove(); // Remove pin if country is not valid for the geography filter
+                return;
+            }
+    
+            // Check if any mission ID in the pin matches the filtered mission IDs
+            const isCountryStillValid = pinMissionIds.some(missionId => selectedMission.includes(missionId));
+    
+            if (!isCountryStillValid) {
+                console.log(`Removing country pin not matching filters: ${region}`);
+                pin.remove(); // Remove pin if it doesn't match the filters
+            }
+        } else if (pinType === 'continent') {
         const isRegionStillValid = data.locations.some(loc =>
-            loc.region.toLowerCase().replace(/\s/g, '') === region &&
+                loc.region.toLowerCase().replace(/\s/g, '') === region && // Match location region
             matchingMissions.some(mission =>
                 mission.hotspotCollections.some(hotspotId =>
-                    data.hotspotCollections.some(h => h.id === hotspotId && h.region.toLowerCase().replace(/\s/g, '') === region)
+                        data.hotspotCollections.some(h =>
+                            h.id === hotspotId &&
+                            h.region.toLowerCase().replace(/\s/g, '') === region
+                        )
                 )
             )
         );
+    
         if (!isRegionStillValid) {
-            //pin.remove();
+                console.log(`Removing continent pin: ${region}`);
+                pin.remove(); // Remove invalid continent pin
+            }
+        } else {
+            console.warn('Unknown pin type:', pinType);
         }
     });
 }
