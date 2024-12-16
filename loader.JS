@@ -1945,3 +1945,10 @@ function createMissionSelectormenu(missionsIdArray, title) {
     // Add the mission menu container to the parent element
     parentElement.appendChild(missionMenuContainer);
 }
+    missionButton.textContent = 'View Mission';
+    contentContainer.appendChild(missionButton);
+
+    missionCard.appendChild(missionTime);
+    missionCard.appendChild(imageContainer);
+    missionCard.appendChild(contentContainer);
+}
