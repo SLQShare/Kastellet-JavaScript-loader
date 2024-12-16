@@ -15,6 +15,8 @@ class SelectedFilters {
         this.contribution = null;
         this.geography = null;
         this.contributionListeners = [];
+        this.filterListeners = []; // Add a list for general filter listeners
+
         this.contributionColors = {
             1087: { backgroundColor: "#518346", textColor: "#ffffff" },
             1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
@@ -64,15 +66,17 @@ class SelectedFilters {
         if (this.hasOwnProperty(type)) {
             this[type] = value;
 
-            if (type === "contribution"){
+            if (type === "contribution") {
                 this.notifyContributionListeners(value);
             }
+
+            // Notify general filter listeners
+            this.notifyFilterListeners(type, value);
         } else {
             console.error(`Invalid filter type: ${type}`);
         }
     }
 
-    // Add resetSelectedFilter to the class
     resetSelectedFilter(type = null) {
         if (!type) {
             this.clearFilters();
@@ -81,62 +85,151 @@ class SelectedFilters {
 
         if (this.hasOwnProperty(type)) {
             this[type] = null;
-            if (type === "contribution"){
+            if (type === "contribution") {
                 this.notifyContributionListeners(null);
             }
+
+            // Notify general filter listeners of reset
+            this.notifyFilterListeners(type, null);
         } else {
             console.error(`Invalid filter type: ${type}`);
         }
     }
-    // Add listener mechanism for contribution changes
+
+    getFilteredCountries(){
+        const currentContinent2 = selectedFilters.getAllFilters().geography.toLowerCase();
+        const normalizedInput = currentContinent2.toLowerCase().replace(/\s+/g, '');
+    
+        // Match the input against location data in `title` or `region`
+        const matchingLocation = this.data.locations.find(location => 
+            location.region.toLowerCase().replace(/\s+/g, '') === normalizedInput ||
+            location.title.toLowerCase().replace(/\s+/g, '') === normalizedInput
+        );
+        const currentContinent = matchingLocation.region.toLowerCase().replace(/\s+/g, '');
+    
+        // Filter hotspots to ensure they belong to the selected continent
+        const continentHotspots = this.data.hotspotCollections.filter(hotspot =>
+            hotspot.region.toLowerCase().replace(/\s+/g, '') === currentContinent
+        );
+    
+        // Extract valid country names from the filtered hotspots
+        const validCountries = new Set(
+            continentHotspots
+                .filter(hotspot => hotspot.county && typeof hotspot.county === 'string') // Ensure county exists and is a string
+                .map(hotspot => hotspot.county.toLowerCase().replace(/\s+/g, '')) // Normalize county name
+        );
+        return [validCountries, currentContinent];
+    }
+
     addContributionListener(listener) {
         if (typeof listener === "function") {
             this.contributionListeners.push(listener);
         }
     }
+
     notifyContributionListeners(value) {
         this.contributionListeners.forEach(listener => listener(value));
     }
+
+    // Add a general-purpose filter listener
+    addFilterListener(listener) {
+        if (typeof listener === "function") {
+            this.filterListeners.push(listener);
+        }
+    }
+
+    notifyFilterListeners(type, value) {
+        this.filterListeners.forEach(listener => listener(type, value));
+    }
 }
+
 
 const selectedFilters = new SelectedFilters();
 //TODO - only change the color when the contribution filter changes
-selectedFilters.addContributionListener((newContribution, data) => {
-    console.log('Contribution changed:', newContribution);
-    const dataFromClass = selectedFilters.getData(); // Explicitly retrieve the data
-    console.log('Data from class:', dataFromClass);
-
+selectedFilters.addFilterListener((type, value) => {
+    console.log(`Filter changed: ${type} = ${value}`);
+    const data = selectedFilters.getData();
+    const mapContainer = document.getElementById('infoScreenMap');
+    const currentFilters = selectedFilters.getAllFilters();
+    const selectedMission = applyFiltersToFindMissions(data, currentFilters);
     let forceIdForColor = null;
+    data.forces.forEach(force => {
+        console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);
+    });
 
-    if (newContribution && dataFromClass) {
-        const contributionIds = dataFromClass.forces
-            .filter(force => newContribution.includes(force.title))
+    if (currentFilters.contribution) {
+        const contributionIds = data.forces
+            .filter(force => currentFilters.contribution.includes(force.title))
             .map(force => force.id);
-
         console.log('Mapped Contribution IDs:', contributionIds);
-        forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null; // Take the first matching ID or null
+        forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null;
+        selectedFilters.setCurrentColor(selectedFilters.contributionColors[forceIdForColor].backgroundColor);
+        
+    } else {
+        selectedFilters.setCurrentColor('#72756f');
     }
+    // Handle Geography Filter
+    if (currentFilters.geography === null) {
+        console.log('Geography filter is null. Showing continent pins...');
+        //hideOrShowMapPins('continent', 'block'); // Show continent pins
+        //hideOrShowMapPins('country', 'none'); // Hide country pins
+        zoomToCoordinates('default', mapContainer); // Reset zoom to default
+        updatePinColors(forceIdForColor, selectedFilters.contributionColors);
+        updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'continent');
+        hideOrShowMapPins('continent', 'block'); // Show continent pins
+        return; // Exit since geography is null
+        }
+        
+    if (currentFilters.geography){
+        // Handle Country Updates (Geography Filter is Active)
+        const geographyFilter = currentFilters.geography.trim().toLowerCase();
+        const matchingLocation = data.locations.find(location =>
+            location.region.toLowerCase() === geographyFilter ||
+            location.title.toLowerCase() === geographyFilter
+        );
 
-    // Select elements with IDs starting with "pin-"
+        if (matchingLocation) {
+            const location = matchingLocation.region.toLowerCase().replace(/\s/g, '');
+            console.log('Geography filter active. Updating country pins...');
+            hideOrShowMapPins('continent', 'none'); // Hide continent pins
+            //hideOrShowMapPins('country', 'block'); // Show country pins
+            zoomToCoordinates(location, mapContainer); // Zoom to selected geography
+            updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'country');
+            updatePinColors(forceIdForColor, selectedFilters.contributionColors);
+            hideOrShowMapPins('continent', 'none'); // Hide continent pins
+            return; // Exit after updating country pins
+        } else {
+            console.warn('No matching location found for:', geographyFilter);
+        }
+    }
+});
+
+
+// Helper: Reset pin colors to default
+function resetPinColorsToDefault() {
     const elements = document.querySelectorAll('[id^="pin-"]');
-
     elements.forEach(element => {
-        console.log(`Found element with id: ${element.id}`);
-
-        // Find the SVG child element
         const svgElement = element.querySelector('svg');
-
         if (svgElement) {
-            const color = forceIdForColor && selectedFilters.contributionColors[forceIdForColor]
-                ? selectedFilters.contributionColors[forceIdForColor].backgroundColor
-                : '#72756f'; // Default color if no match
-            selectedFilters.setCurrentColor(color);
-            // Change the color by modifying the `fill` attribute
-            svgElement.setAttribute('fill', color);
-            console.log(`Updated color for ${element.id} to ${color}`);
+            svgElement.setAttribute('fill', '#72756f'); // Default color
         }
     });
+}
+
+// Helper: Update pin colors based on contribution filter
+function updatePinColors(forceIdForColor, contributionColors) {
+    const elements = document.querySelectorAll('[id^="pin-"]');
+    elements.forEach(element => {
+        const svgElement = element.querySelector('svg');
+        if (svgElement) {
+            const color = forceIdForColor && contributionColors[forceIdForColor]
+                ? contributionColors[forceIdForColor].backgroundColor
+                : '#72756f'; // Default color
+            svgElement.setAttribute('fill', color);
+        }
 });
+    
+}
 
 
 // stores the active state and filter buttons
@@ -815,9 +908,12 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                 const type = parentButton.id.replace('FilterButton','').toLowerCase()
                 if (filterStateStorage[type].isFilterActive){
                     resetFilterObjects(data, type);
-                }
+                } else {
                 const isDisplayed = filterSelectorContainer.style.display === 'flex';
+                    closeAllFilterContainers()
                 filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
+                }
+                
             });
         }
     });
@@ -867,17 +963,18 @@ function hideOrShowMapPins(type, display) {
 }
 
 function resetFilterObjects(data, type = null){
-    selectedFilters.resetSelectedFilter(type);
+    selectedFilters.resetSelectedFilter(type); // Notify listener via reset
     resetStateStorage(type);
-    if (!type || type === 'geography') {
-        hideOrShowMapPins('continent', 'block')
-        zoomToCoordinates('default', document.getElementById('infoScreenMap')); // Reset zoom to default when geography is reset       
-    }
-
-    // Update map pins based on the new filters
-    const mapContainer = document.getElementById('infoScreenMap');
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, applyFiltersToFindMissions(data, selectedFilters.getAllFilters()), forceColors, 'continent');
+    closeAllFilterContainers();
 }
+
+function closeAllFilterContainers() {
+    const allContainers = document.querySelectorAll('.filterSelectorContainer');
+    allContainers.forEach(container => {
+        container.style.display = 'none'; // Hide all filter containers
+    });
+}
+
 
 function updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement){
     // Check if a filter is already active
