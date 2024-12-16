@@ -14,6 +14,8 @@ class SelectedFilters {
         this.period = null;
         this.contribution = null;
         this.geography = null;
+        this.currentMissionId = 5388;
+
         this.contributionListeners = [];
         this.filterListeners = []; // Add a list for general filter listeners
 
@@ -22,32 +24,37 @@ class SelectedFilters {
             1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
             1089: { backgroundColor: "#052854", textColor: "#ffffff" },
             1090: { backgroundColor: "#8d1b3d", textColor: "#ffffff" },
-            1091: { backgroundColor: "#ffffff", textColor: "#81847e" }, 
+            1091: { backgroundColor: "#ffffff", textColor: "#81847e" },
             1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
             1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
         };
         this.currentColor = '#72756f';
         SelectedFilters.instance = this;
     }
-
-    setCurrentColor(color){
-        this.currentColor = color
+    setMissionId(missionid) {
+        this.currentMissionId = missionid;
     }
 
-    getCurrentColor(){
+    getMissionId() {
+        return this.currentMissionId;
+    }
+
+    setCurrentColor(color) {
+        this.currentColor = color;
+    }
+
+    getCurrentColor() {
         return this.currentColor;
     }
-    
-    // Method to set the data
+
     setData(data) {
         this.data = data;
     }
 
-    // Method to get stored data
     getData() {
         return this.data;
     }
-    // Methods to access and modify filters
+
     getAllFilters() {
         return {
             period: this.period,
@@ -56,7 +63,6 @@ class SelectedFilters {
         };
     }
 
-    // Add updateSelectedFilter to the class
     updateSelectedFilter(type, value) {
         if (!type || value === undefined) {
             console.error("Invalid filter type or value.");
@@ -227,7 +233,7 @@ function updatePinColors(forceIdForColor, contributionColors) {
                 : '#72756f'; // Default color
             svgElement.setAttribute('fill', color);
         }
-});
+    });
     
 }
 
@@ -282,19 +288,63 @@ const ExcludedIdsManager = (() => {
     };
 })();
 
-main(missionId, jsonDkPath);
+main(jsonDkPath);
 
-function main(missionId, urlDk) {
-    fetchAndProcessData(missionId, urlDk);
-       
+function main(apiUrl) {
+    // Get mission ID from selected filters or local storage
+    const defaultMissionId = selectedFilters.getMissionId();
+    let missionId = localStorage.getItem('currentMissionId') || defaultMissionId;
+
+    // Validate missionId before storing in local storage
+    if (!localStorage.getItem('currentMissionId') && defaultMissionId) {
+        localStorage.setItem('currentMissionId', defaultMissionId);
+    }
+
+    // Ensure missionId is valid before proceeding
+    if (!missionId) {
+        console.error('Mission ID is not available.');
+        return; // Exit the function if no mission ID is found
+    }
+
+    // Fetch and process data with the determined mission ID
+    fetchAndProcessData(missionId, apiUrl);
 }
+
+
+function checkIdTypes(missionsArray, storedId) {
+    if (!Array.isArray(missionsArray)) {
+        throw new Error("Invalid missions data: Expected an array.");
+    }
+
+    const dataIdType = typeof missionsArray[0]?.id; // Check the type of the first ID in the array
+    const storedIdType = typeof storedId; // Check the type of the stored ID
+
+    console.log(`Data ID type: ${dataIdType}`);
+    console.log(`Stored ID type: ${storedIdType}`);
+
+    if (dataIdType !== storedIdType) {
+        console.warn("Type mismatch detected. Converting stored ID to match data ID type.");
+        if (dataIdType === "number") {
+            return Number(storedId);
+        } else if (dataIdType === "string") {
+            return String(storedId);
+        } else {
+            throw new Error("Unsupported ID type in data.");
+        }
+    }
+
+    return storedId; // If types match, return the stored ID as-is
+}
+
+
 
 // Function to fetch data and process it
 async function fetchAndProcessData(missionId, url) {
     try {
         const jsonData = await jQuery.getJSON(url);
+        const typeCheckedKissionId = checkIdTypes(jsonData.missions, missionId)
         // Call a function to process the data
-        processData(missionId, jsonData);
+        processData(typeCheckedKissionId, jsonData);
     } catch (error) {
         console.error("Error fetching JSON:", error);
     }
@@ -892,7 +942,6 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                     filterSelectorButton.id = `filterSelectorButtonGeography-${location?.region.toLowerCase().replace(/\s+/g, '')}`;
                     filterSelectorButton.addEventListener('click', function(){applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
                 }
-                debugger;
             });
         }
 
@@ -909,9 +958,9 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                 if (filterStateStorage[type].isFilterActive){
                     resetFilterObjects(data, type);
                 } else {
-                const isDisplayed = filterSelectorContainer.style.display === 'flex';
+                    const isDisplayed = filterSelectorContainer.style.display === 'flex';
                     closeAllFilterContainers()
-                filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
+                    filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
                 }
                 
             });
@@ -923,30 +972,6 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 function applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
     selectedFilters.updateSelectedFilter(type, value); // Update queryable data
     updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
-    const selectedMission  = applyFiltersToFindMissions(data, selectedFilters.getAllFilters());
-    const mapContainer = document.getElementById('infoScreenMap');
-    if (type === 'geography') {
-        // Normalize and handle value as an array or single string
-        const selectedRegion = Array.isArray(value) ? value[0] : value.trim().toLowerCase(); 
-
-        // Find matching location
-        const matchingLocation = data.locations.find(location => 
-            location.region.toLowerCase() === selectedRegion ||
-            location.title.toLowerCase() === selectedRegion
-        );
-        const location = matchingLocation.region.toLowerCase().replace(/\s/g, '')
-        if (location) {
-            // Pass the matching location's coordinates (or any relevant data) to zoom
-            hideOrShowMapPins('continent', 'none')
-            zoomToCoordinates(location, document.getElementById('infoScreenMap'));
-            // add country map pins
-            updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'country');
-        } else {
-            console.warn('No matching location found for:', selectedRegion);
-        }
-    }
-    // Update map pins based on the new filters
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'continent');
 }
 
 // type can be 'continent' or 'country'
@@ -1460,6 +1485,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         alignItems: 'center',
     });
     const currentColor = selectedFilters.getCurrentColor();
+    
     // Fetch the SVG content dynamically
     fetch(baseImagePath + '2024/12/location_on_24dp_UNDEFINED_FILL1_wght200_GRAD0_opsz24.svg')
         .then(response => response.text())
@@ -1478,6 +1504,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
         })
         .catch(err => console.error('Error fetching SVG:', err));
 
+    
     // Assemble the map pin by appending all components
     mapPinContainer.appendChild(mapPinLocation);
     mapPinContainer.appendChild(mapPinForceContainer);
@@ -1485,7 +1512,7 @@ function createMapPin(region, location, missions, forces, type = 'continent', da
     mapPinContainer.appendChild(mapPinImageContainer);
     // Return the complete pin component
     return mapPinContainer;
-}
+} 
 function getColorsForMissionForces(forceColors, missions) {
     // Collect all force IDs from missions
     const allForceIds = new Set(
@@ -1534,7 +1561,7 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             australia: {scale: 1 },
             default: { scale: 1 } // Default zoom for reset or unmatched regions
         }
-
+        
         // Extract valid country names from the filtered hotspots
         const validCountriesAndCurrentCountry = selectedFilters.getFilteredCountries()
         const validCountries = validCountriesAndCurrentCountry[0]
@@ -1586,7 +1613,7 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
         
             //console.log('Updated Balkan Mission List:', filteredBalkanMissions);
             //console.log('Updated Country Mission Map:', countryMissionMap);
-        
+
         }
         // Iterate over the countryMissionMap to create pins
         countryMissionMap.forEach((missions, country) => {
@@ -1738,19 +1765,19 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
                 pin.remove(); // Remove pin if it doesn't match the filters
             }
         } else if (pinType === 'continent') {
-        const isRegionStillValid = data.locations.some(loc =>
+            const isRegionStillValid = data.locations.some(loc =>
                 loc.region.toLowerCase().replace(/\s/g, '') === region && // Match location region
-            matchingMissions.some(mission =>
-                mission.hotspotCollections.some(hotspotId =>
+                matchingMissions.some(mission =>
+                    mission.hotspotCollections.some(hotspotId =>
                         data.hotspotCollections.some(h =>
                             h.id === hotspotId &&
                             h.region.toLowerCase().replace(/\s/g, '') === region
                         )
+                    )
                 )
-            )
-        );
+            );
     
-        if (!isRegionStillValid) {
+            if (!isRegionStillValid) {
                 console.log(`Removing continent pin: ${region}`);
                 pin.remove(); // Remove invalid continent pin
             }
@@ -1945,6 +1972,158 @@ function createMissionSelectormenu(missionsIdArray, title) {
     // Add the mission menu container to the parent element
     parentElement.appendChild(missionMenuContainer);
 }
+function createMissionCard(missionCard, missionId) {
+    const data = selectedFilters.getData();
+    // Create the mission time container
+    const missionTime = document.createElement('div');
+    Object.assign(missionTime.style, {
+        width: '100%',             // Fully respect parent padding
+        height: '30px',            // Fixed height for clarity
+        backgroundColor: '#212521',
+        padding: '10px',
+        boxSizing: 'border-box',   // Include padding in the dimensions
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        borderRadius: '5px 5px 0 0',
+    });
+
+    const menuTitle = document.createElement('span');
+    Object.assign(menuTitle.style, {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: 'white',
+        fontFamily: 'Saira Stencil One, Sans-serif',
+        textTransform: 'uppercase',
+    });
+    menuTitle.textContent = `1991 - 2000`; // Example time range
+    missionTime.appendChild(menuTitle);
+
+    // Create image container
+    const imageContainer = document.createElement('div');
+    Object.assign(imageContainer.style, {
+        position: 'relative',
+        width: '100%',
+        height: '50%',             // Proportionate height
+        backgroundColor: '#e6e6e6',
+        overflow: 'hidden',
+        borderBottom: '1px solid #ccc',
+    });
+
+    const forceFlag = document.createElement('div');
+    Object.assign(forceFlag.style, {
+        position: 'absolute',
+        top: '10px',
+        left: '10px',
+        backgroundColor: '#e03d3d',
+        width: '60px',
+        height: '30px',
+        borderRadius: '3px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: 'white',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        fontFamily: 'Arial, sans-serif',
+        textAlign: 'center',
+    });
+    forceFlag.textContent = 'Flag';
+    imageContainer.appendChild(forceFlag);
+
+    // Create content container
+    const contentContainer = document.createElement('div');
+    Object.assign(contentContainer.style, {
+        width: '100%',
+        height: '40%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        backgroundColor: '#e6e6e6',
+        boxSizing: 'border-box',
+        padding: '10px',
+    });
+
+    const title = document.createElement('h3');
+    Object.assign(title.style, {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        fontFamily: 'Saira Stencil One, Sans-serif',
+        margin: '5px 0',
+    });
+    title.textContent = 'Mission Title'; // Placeholder title
+    contentContainer.appendChild(title);
+
+    const subtitle = document.createElement('p');
+    Object.assign(subtitle.style, {
+        fontSize: '14px',
+        fontFamily: 'Arial, sans-serif',
+        margin: '5px 0',
+    });
+    subtitle.textContent = 'Subtitle goes here'; // Placeholder subtitle
+    contentContainer.appendChild(subtitle);
+
+    const emblemContainer = document.createElement('div');
+    Object.assign(emblemContainer.style, {
+        display: 'flex',
+        gap: '5px',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        margin: '10px 0',
+    });
+
+    for (let i = 0; i < 3; i++) {
+        const emblem = document.createElement('div');
+        Object.assign(emblem.style, {
+            width: '30px',
+            height: '30px',
+            backgroundColor: '#de8130',
+            borderRadius: '50%',
+            border: '1px solid #ccc',
+        });
+        emblemContainer.appendChild(emblem);
+    }
+    contentContainer.appendChild(emblemContainer);
+
+    const missionButton = document.createElement('button');
+    Object.assign(missionButton.style, {
+        padding: '10px 20px',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: 'white',
+        backgroundColor: '#518346',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontFamily: 'Arial, sans-serif',
+    });
+    missionButton.addEventListener('click', () => {
+        selectedFilters.setMissionId(missionId);
+    
+        // Validate and convert the mission ID to ensure it's stored as a number
+        const convertedMissionId = typeof missionId === 'string' ? Number(missionId) : missionId;
+        if (isNaN(convertedMissionId)) {
+            console.error('Invalid mission ID: Cannot store in localStorage');
+            return; // Exit if the ID is not a valid number
+        }
+    
+        // Store the converted mission ID in localStorage
+        localStorage.setItem('currentMissionId', convertedMissionId);
+        console.log('Mission ID stored:', convertedMissionId);
+    
+        if (localStorage.getItem('currentMissionId')) {
+            console.log('local storage missionId:', localStorage.getItem('currentMissionId'));
+    
+            // Redirect to the new page
+            const url = new URL(window.location.href);
+            const newPagePath = `${url.protocol}//${url.hostname}/missionstest-1/`;
+            window.location.href = newPagePath; // Replace with the actual target URL
+        } else {
+            console.error('Mission ID did not get stored in localStorage');
+        }
+    });
+    
     missionButton.textContent = 'View Mission';
     contentContainer.appendChild(missionButton);
 
