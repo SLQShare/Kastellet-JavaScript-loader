@@ -1807,8 +1807,8 @@ function createMissionSelectormenu(missionsIdArray, title) {
         height: '60vh',
         overflow: 'hidden',
         zIndex: '10001', // Ensure it stays above the overlay
-        borderRadius: '12px 12px 0 0', // Rounded corners at the top
-        boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)', // Subtle shadow at the top
+        //borderRadius: '12px 12px 0 0', // Rounded corners at the top
+        //boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)', // Subtle shadow at the top
     });
 
     // Create title
@@ -1819,7 +1819,7 @@ function createMissionSelectormenu(missionsIdArray, title) {
         fontWeight: 'bold',
         color: 'black',
         marginTop: '3vh',
-        marginBottom: '3vh',
+        marginBottom: '1vh',
         fontFamily: 'Saira Stencil One, Sans-serif',
     });
     menuTitle.textContent = `Missioner i ${title}`;
@@ -1894,8 +1894,10 @@ function createMissionSelectormenu(missionsIdArray, title) {
         width: '1280px',
         height: '100%',
         scrollBehavior: 'smooth',
-        marginBottom: '4vh',
+        marginBottom: '3vh',
         boxSizing: 'border-box', // Ensure consistent sizing
+        msOverflowStyle: 'none',  /* IE and Edge */
+        scrollbarWidth: 'none',     /* Firefox */
     });
  
     // Loop through the missions and create mission cards
@@ -1944,7 +1946,7 @@ function createMissionSelectormenu(missionsIdArray, title) {
      missionMenuContainer.appendChild(progressText);
  
      // Conditional CSS: Adjust snapping and justifyContent
-     if (missionsIdArray.length < 4) {
+     if (missionsIdArray.length < 5) {
          sliderContainer.style.justifyContent = 'center'; // Center cards
          sliderContainer.style.scrollSnapType = 'none';  // Disable snapping
      } else {
@@ -1959,7 +1961,7 @@ function createMissionSelectormenu(missionsIdArray, title) {
              Math.ceil(sliderContainer.scrollLeft / cardWidth), // Count based on scroll position
              missionsIdArray.length // Ensure it doesn't exceed total cards
          );
-         if (missionsIdArray.length < 4) {
+         if (missionsIdArray.length < 5) {
              progressText.textContent = `VISER ALLE ${missionsIdArray.length} MISSIONER `;
          } else {
              progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
@@ -1975,6 +1977,7 @@ function createMissionSelectormenu(missionsIdArray, title) {
     // Add the mission menu container to the parent element
     parentElement.appendChild(missionMenuContainer);
 }
+
 function createMissionCard(missionCard, missionId) {
     const data = selectedFilters.getData();
     const missionInformation = getMissionById(data.missions, missionId);
