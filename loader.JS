@@ -1977,6 +1977,54 @@ function createMissionSelectormenu(missionsIdArray, title) {
         }
     };
 
+    // Navigation Buttons
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = '←';
+    Object.assign(prevButton.style, {
+        position: 'absolute',
+        left: '10px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: '10',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '50%',
+        width: '40px',
+        height: '40px',
+        cursor: 'pointer',
+    });
+
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = '→';
+    Object.assign(nextButton.style, {
+        position: 'absolute',
+        right: '10px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: '10',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '50%',
+        width: '40px',
+        height: '40px',
+        cursor: 'pointer',
+    });
+
+    // Scroll Behavior for Buttons
+    const cardWidth = 320; // Adjust to match card width + margin
+
+    prevButton.addEventListener('click', () => {
+        sliderContainer.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    });
+
+    nextButton.addEventListener('click', () => {
+        sliderContainer.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    });
+    missionMenuContainer.appendChild(prevButton);
+    missionMenuContainer.appendChild(nextButton);
+
     // Listen to scroll events
     sliderContainer.addEventListener('scroll', updateProgress);
 
