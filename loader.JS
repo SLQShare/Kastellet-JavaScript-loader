@@ -1977,29 +1977,40 @@ function createMissionSelectormenu(missionsIdArray, title) {
 }
 function createMissionCard(missionCard, missionId) {
     const data = selectedFilters.getData();
+    const missionInformation = getMissionById(data.missions, missionId);
+    console.log('missionInformation', missionInformation);
+    
     // Create the mission time container
     const missionTime = document.createElement('div');
     Object.assign(missionTime.style, {
         width: '100%',             // Fully respect parent padding
-        height: '30px',            // Fixed height for clarity
+        height: '50px',            // Fixed height for clarity
         backgroundColor: '#212521',
         padding: '10px',
         boxSizing: 'border-box',   // Include padding in the dimensions
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        borderRadius: '5px 5px 0 0',
+        //borderRadius: '5px 5px 0 0',
     });
 
     const menuTitle = document.createElement('span');
     Object.assign(menuTitle.style, {
-        fontSize: '18px',
+        fontSize: '26px',
         fontWeight: 'bold',
         color: 'white',
         fontFamily: 'Saira Stencil One, Sans-serif',
         textTransform: 'uppercase',
     });
-    menuTitle.textContent = `1991 - 2000`; // Example time range
+    let endYear = null
+    if (missionInformation.year.to === 0) {
+        endYear = 2000;
+    } else {
+        endYear = missionInformation.year.to;
+    }
+    const missionDuration = missionInformation.year.from + '-' + endYear; 
+    console.log('missionDuration', missionDuration)
+    menuTitle.textContent = missionDuration; // Example time range
     missionTime.appendChild(menuTitle);
 
     // Create image container
@@ -2013,26 +2024,68 @@ function createMissionCard(missionCard, missionId) {
         borderBottom: '1px solid #ccc',
     });
 
+    // add image to the container 
+    const url = new URL(window.location.href);
+    const thumbNailUrl = `${url.protocol}//${url.hostname}/wp-content/uploads/`+missionInformation.content.thumb.url;
+    
+    // Check if the thumbnail URL exists before creating the image
+    if (missionInformation?.content?.thumb?.url) {
+        const image = document.createElement('img');
+    
+        // Apply styles to ensure the image fits the container
+        Object.assign(image.style, {
+            width: '100%',
+            height: 'auto', // Maintain aspect ratio
+            display: 'block', // Avoid inline spacing issues
+            objectFit: 'cover', // Ensure it fits within its container neatly
+        });
+    
+        // Set the image source and append it to the container
+        image.src = thumbNailUrl;
+        image.alt = 'Mission Thumbnail'; // Always include alt text for accessibility
+        imageContainer.appendChild(image);
+    } else {
+        console.error('Thumbnail URL is missing or invalid.');
+    }    
+    const forceFlagContainer = document.createElement('div');
+    Object.assign(forceFlagContainer.style, {
+        position: 'absolute',
+        top: '0px',
+        width: '100%',
+        height: '15px',
+        display: 'flex',
+        justifyContent: 'start',
+        alignItems: 'start',
+    });
+
+    // Get relevant forces and their associated contribution colors
+    const forces = missionInformation.forces; // Array of force IDs like [1087, 1088]
+    const contributionColors = selectedFilters.getContributionColors();
+    //const containerWidth = forceFlagContainer.getBoundingClientRect();
+    const width = (300/7)+'px'
+    // Iterate over the forces to create flags dynamically
+    forces.forEach(forceId => {
+        const forceColor = contributionColors[forceId]; // Access backgroundColor and textColor
+        
+        if (forceColor) { // Check if the force ID exists in contributionColors
+            // Create a flag container
     const forceFlag = document.createElement('div');
     Object.assign(forceFlag.style, {
-        position: 'absolute',
-        top: '10px',
-        left: '10px',
-        backgroundColor: '#e03d3d',
-        width: '60px',
-        height: '30px',
-        borderRadius: '3px',
+                backgroundColor: forceColor.backgroundColor,
+                width: width,
+                height: '100%',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: 'white',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        fontFamily: 'Arial, sans-serif',
-        textAlign: 'center',
+                justifyContent: 'start',
+                alignItems: 'start',
+            });
+            // Append the flag to the desired parent container
+            forceFlagContainer.appendChild(forceFlag);
+        } else {
+            console.warn(`No color configuration found for force ID: ${forceId}`);
+        }
     });
-    forceFlag.textContent = 'Flag';
-    imageContainer.appendChild(forceFlag);
+
+    imageContainer.appendChild(forceFlagContainer);
 
     // Create content container
     const contentContainer = document.createElement('div');
@@ -2041,8 +2094,8 @@ function createMissionCard(missionCard, missionId) {
         height: '40%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        justifyContent: 'start',
+        alignItems: 'start',
         backgroundColor: '#e6e6e6',
         boxSizing: 'border-box',
         padding: '10px',
@@ -2050,13 +2103,36 @@ function createMissionCard(missionCard, missionId) {
 
     const title = document.createElement('h3');
     Object.assign(title.style, {
-        fontSize: '18px',
         fontWeight: 'bold',
         fontFamily: 'Saira Stencil One, Sans-serif',
         margin: '5px 0',
+        overflow: 'hidden',        // Hide overflowing content
+        whiteSpace: 'nowrap',      // Prevent text from wrapping
+        textOverflow: 'ellipsis',  // Show "..." for truncated text
+        fontSize: '18px',          // Default font size
+        maxWidth: '100%',          // Ensure the title doesn't grow beyond its container
     });
-    title.textContent = 'Mission Title'; // Placeholder title
+    
+    title.textContent = missionInformation.title;
     contentContainer.appendChild(title);
+    reduceFontSizeToFit(title, 18, 12);
+
+    function reduceFontSizeToFit(element, maxFontSize = 20, minFontSize = 10) {
+        let fontSize = maxFontSize;
+    
+        // Apply initial font size
+        element.style.fontSize = fontSize + 'px';
+    
+        // Check if the text overflows the container
+        while (element.scrollWidth > element.offsetWidth && fontSize > minFontSize) {
+            fontSize -= 1; // Reduce font size
+            element.style.fontSize = fontSize + 'px';
+        }
+    }
+    
+    // Call the function for the title element
+    reduceFontSizeToFit(title, 18, 12);
+    
 
     const subtitle = document.createElement('p');
     Object.assign(subtitle.style, {
@@ -2064,27 +2140,44 @@ function createMissionCard(missionCard, missionId) {
         fontFamily: 'Arial, sans-serif',
         margin: '5px 0',
     });
-    subtitle.textContent = 'Subtitle goes here'; // Placeholder subtitle
+    subtitle.textContent = missionInformation.subtitle;
     contentContainer.appendChild(subtitle);
 
     const emblemContainer = document.createElement('div');
     Object.assign(emblemContainer.style, {
         display: 'flex',
         gap: '5px',
+        width: '100%',
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'start',
         margin: '10px 0',
     });
+    // Get mission information
+    
+    
+    const missionImageArray = missionInformation.content.gallery.images;
     const emblemIds = selectedFilters.getEmblemIds();
+    const missionEmblems = [];
+    // Process the images
+    missionImageArray.forEach((image, index) => {
+        if (typeof image.url !== 'string') {
+            console.warn('Invalid image format:', image);
+            return; // Skip invalid images
+        }
+
+        const imageId = parseInt(image.url.split('/').slice(-2, -1)[0], 10); // Extract ID from the URL
+        
+        if (emblemIds.includes(imageId)) {
+            missionEmblems.push(image); // Add emblems to missionEmblems array
+            const emblem = document.createElement('img');
         Object.assign(emblem.style, {
-            width: '30px',
+                width: 'auto',
             height: '30px',
-            backgroundColor: '#de8130',
-            borderRadius: '50%',
-            border: '1px solid #ccc',
         });
+            emblem.src = `${url.protocol}//${url.hostname}/wp-content/uploads/`+image.url;;
         emblemContainer.appendChild(emblem);
     }
+    });
     contentContainer.appendChild(emblemContainer);
 
     const missionButton = document.createElement('button');
@@ -2093,14 +2186,18 @@ function createMissionCard(missionCard, missionId) {
         fontSize: '14px',
         fontWeight: 'bold',
         color: 'white',
-        backgroundColor: '#518346',
+        backgroundColor: '#212521',
         border: 'none',
-        borderRadius: '5px',
+        borderRadius: '15px',
         cursor: 'pointer',
         fontFamily: 'Arial, sans-serif',
     });
     missionButton.addEventListener('click', () => {
         selectedFilters.setMissionId(missionId);
+        
+        const data = selectedFilters.getData();
+        const missionInformation = getMissionById(data.missions, missionId);
+        console.log('missionInformation', missionInformation);
     
         // Validate and convert the mission ID to ensure it's stored as a number
         const convertedMissionId = typeof missionId === 'string' ? Number(missionId) : missionId;
@@ -2125,7 +2222,7 @@ function createMissionCard(missionCard, missionId) {
         }
     });
     
-    missionButton.textContent = 'View Mission';
+    missionButton.textContent = 'GÅ TIL';
     contentContainer.appendChild(missionButton);
 
     missionCard.appendChild(missionTime);
