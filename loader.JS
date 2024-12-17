@@ -1,7 +1,5 @@
 const url = new URL(window.location.href);
 const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
-//wp-content/uploads/2024/12/dk2.json
-//wp-content/themes/twentytwentyfive/js/dk.json
 let missionId = 5388; // default value
 //global variables
 
@@ -159,7 +157,6 @@ class SelectedFilters {
 
 
 const selectedFilters = new SelectedFilters();
-//TODO - only change the color when the contribution filter changes
 selectedFilters.addFilterListener((type, value) => {
     console.log(`Filter changed: ${type} = ${value}`);
     const data = selectedFilters.getData();
@@ -167,10 +164,11 @@ selectedFilters.addFilterListener((type, value) => {
     const currentFilters = selectedFilters.getAllFilters();
     const selectedMission = applyFiltersToFindMissions(data, currentFilters);
     let forceIdForColor = null;
+
     data.forces.forEach(force => {
         console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);
     });
-
+ 
     if (currentFilters.contribution) {
         const contributionIds = data.forces
             .filter(force => currentFilters.contribution.includes(force.title))
@@ -178,7 +176,6 @@ selectedFilters.addFilterListener((type, value) => {
         console.log('Mapped Contribution IDs:', contributionIds);
         forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null;
         selectedFilters.setCurrentColor(selectedFilters.contributionColors[forceIdForColor].backgroundColor);
-        
     } else {
         selectedFilters.setCurrentColor('#72756f');
     }
@@ -1612,24 +1609,34 @@ function updateMapPins(data, excludedIds, container, selectedMission, forceColor
             const filteredBalkanMissions = balkanMissions.filter(missionId => !otherCountryMissions.has(missionId));
         
             // Update the Balkan missions in the map
-            countryMissionMap.set('balkan', filteredBalkanMissions);
-        
             //console.log('Updated Balkan Mission List:', filteredBalkanMissions);
             //console.log('Updated Country Mission Map:', countryMissionMap);
-
+            countryMissionMap.set('balkan', filteredBalkanMissions);
         }
+        // remove dublicate mission ids. Dublicates can happen when using hotspots to find missions
+        countryMissionMap.forEach((value, key) => {
+            const uniqueValues = [...new Set(value)];
+            countryMissionMap.set(key, uniqueValues);
+        })
+       
         // Iterate over the countryMissionMap to create pins
         countryMissionMap.forEach((missions, country) => {
             const countryHotspot = data.hotspotCollections.find(h =>
                 h.county && h.county.toLowerCase() === country.toLowerCase()
             );
+     
             if (countryHotspot) {
-
+                
                 // Get the mission count directly from the map
                 const missionCount = missions.length;
 
-                // Determine the force colors for these missions
-                const matchingForceColors = getColorsForMissionForces(forceColors, matchingMissions);
+                // Determine the force colors for each missions
+                const missionForForces = []
+                missions.forEach((mission) => {
+                    const missionInformation = getMissionById(data.missions, mission);
+                    missionForForces.push(missionInformation)
+                })
+                const matchingForceColors = getColorsForMissionForces(forceColors, missionForForces);
                 let countryPin = existingPins.find(pin => pin.id ===`pin-${country.toLowerCase()}`)
                 if (countryPin){
                     //update
@@ -2072,12 +2079,12 @@ function createMissionCard(missionCard, missionId) {
         
         if (forceColor) { // Check if the force ID exists in contributionColors
             // Create a flag container
-    const forceFlag = document.createElement('div');
-    Object.assign(forceFlag.style, {
+            const forceFlag = document.createElement('div');
+            Object.assign(forceFlag.style, {
                 backgroundColor: forceColor.backgroundColor,
                 width: width,
                 height: '100%',
-        display: 'flex',
+                display: 'flex',
                 justifyContent: 'start',
                 alignItems: 'start',
             });
@@ -2173,13 +2180,13 @@ function createMissionCard(missionCard, missionId) {
         if (emblemIds.includes(imageId)) {
             missionEmblems.push(image); // Add emblems to missionEmblems array
             const emblem = document.createElement('img');
-        Object.assign(emblem.style, {
+            Object.assign(emblem.style, {
                 width: 'auto',
-            height: '30px',
-        });
+                height: '30px',
+            });
             emblem.src = `${url.protocol}//${url.hostname}/wp-content/uploads/`+image.url;;
-        emblemContainer.appendChild(emblem);
-    }
+            emblemContainer.appendChild(emblem);
+        }
     });
     contentContainer.appendChild(emblemContainer);
 
@@ -2201,7 +2208,7 @@ function createMissionCard(missionCard, missionId) {
         const data = selectedFilters.getData();
         const missionInformation = getMissionById(data.missions, missionId);
         console.log('missionInformation', missionInformation);
-    
+
         // Validate and convert the mission ID to ensure it's stored as a number
         const convertedMissionId = typeof missionId === 'string' ? Number(missionId) : missionId;
         if (isNaN(convertedMissionId)) {
