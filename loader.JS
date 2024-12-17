@@ -1968,8 +1968,10 @@ function createMissionSelectormenu(missionsIdArray, title) {
              Math.ceil(sliderContainer.scrollLeft / cardWidth), // Count based on scroll position
              missionsIdArray.length // Ensure it doesn't exceed total cards
          );
-         if (missionsIdArray.length < 5) {
-             progressText.textContent = `VISER ALLE ${missionsIdArray.length} MISSIONER `;
+         if (missionsIdArray.length === 1) {
+             progressText.textContent = `VISER ${missionsIdArray.length} MISSION `;
+         } else if (missionsIdArray.length < 5) {
+             progressText.textContent = `VISER ${missionsIdArray.length} MISSIONER`;
          } else {
              progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
          }
