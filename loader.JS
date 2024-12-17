@@ -914,7 +914,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 
         // Populate the container with filter buttons based on type
         if (parentButton.id === "PeriodFilterButton") {
-            parentButton.textContent = 'Period';
+            parentButton.textContent = 'Periode';
             dataSet.forEach((dataItem) => {
                 const filterSelectorButton = createfilterSelectorButton(parentButton);
                 filterSelectorButton.textContent = dataItem.description;
