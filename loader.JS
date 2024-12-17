@@ -830,16 +830,11 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
     //const referenceButton = document.getElementById('geographyFilterButton')
     //referenceButton.insertAdjacentElement('afterend', resetButton);
     const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton']; // TODO removed resetButton
-    const dataSet = generateDataSet(1940, 2029, 10);
-    const contributionColors = {
-        1087: { backgroundColor: "#518346", textColor: "#ffffff" },
-        1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
-        1089: { backgroundColor: "#052854", textColor: "#ffffff" },
-        1090: { backgroundColor: "#8d1b3d", textColor: "#ffffff" },
-        1091: { backgroundColor: "#ffffff", textColor: "#81847e" }, 
-        1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
-        1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
-    };
+    const originalArray = generateDataSet(1940, 2029, 10);
+    // Remove the item with description "1970-1979"
+    const dataSet = originalArray.filter(item => item.description !== "1970-1979");
+    const contributionColors = selectedFilters.getContributionColors();
+
     
     buttonIds.forEach(buttonId => {
         const parentButton = document.getElementById(buttonId);
