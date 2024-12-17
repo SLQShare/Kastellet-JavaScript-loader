@@ -15,7 +15,7 @@ class SelectedFilters {
         this.contribution = null;
         this.geography = null;
         this.currentMissionId = 5388;
-
+        this.emblemIds = [1689, 1658, 1693, 1688, 1686, 1687, 1690, 1691]; 
         this.contributionListeners = [];
         this.filterListeners = []; // Add a list for general filter listeners
 
@@ -31,9 +31,14 @@ class SelectedFilters {
         this.currentColor = '#72756f';
         SelectedFilters.instance = this;
     }
+    getEmblemIds(){
+        return this.emblemIds;
+    }
+
     getContributionColors(){
         return this.contributionColors;
     }
+
     setMissionId(missionid) {
         this.currentMissionId = missionid;
     }
@@ -569,7 +574,7 @@ function parseMediaUrl(data, missionId) {
         }
 
         const missionImageArray = missionInformation.content.gallery.images;
-        const emblemIds = [1689, 1658, 1693, 1688, 1686, 1687]; // IDs for emblem images
+        const emblemIds = selectedFilters.getEmblemIds();
         const missionEmblems = [];
         const sortedImageContent  = [];
 
@@ -2070,9 +2075,7 @@ function createMissionCard(missionCard, missionId) {
         alignItems: 'center',
         margin: '10px 0',
     });
-
-    for (let i = 0; i < 3; i++) {
-        const emblem = document.createElement('div');
+    const emblemIds = selectedFilters.getEmblemIds();
         Object.assign(emblem.style, {
             width: '30px',
             height: '30px',
