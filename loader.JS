@@ -814,7 +814,7 @@ function updateTheInfoScreen(missionId, data) {
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
     if (mapContainer) {
-        mapContainer.style.backgroundImage = 'url("https://kastellet.gbplayground.dk/wp-content/uploads/2024/12/verdenskort_8K.png")';
+        mapContainer.style.backgroundImage = 'url("https://kastellet.gbplayground.dk/wp-content/uploads/2024/12/verdenskort_8K.png")'; //TODO fixed this monster
         console.log('Background image', mapContainer.style.backgroundImage);
         Object.assign(mapContainer.style, {
             backgroundSize: 'cover', /* Or contain, depending on the design */
@@ -1973,8 +1973,8 @@ function createMissionSelectormenu(missionsIdArray, title) {
          } else if (missionsIdArray.length < 5) {
              progressText.textContent = `VISER ${missionsIdArray.length} MISSIONER`;
          } else {
-             progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
-         }
+            progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
+        }
     };
 
     // Listen to scroll events
