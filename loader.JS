@@ -1866,11 +1866,11 @@ function createMissionSelectormenu(missionsIdArray, title) {
         zIndex: '10',
         width: '60px',           // Fixed width for the circle
         height: '60px',          // Fixed height for the circle
-        borderRadius: '50%',     // Makes the element a perfect circle
+        //borderRadius: '50%',     // Makes the element a perfect circle
         display: 'flex',         // Flexbox for centering the text
         justifyContent: 'center', // Center the text horizontally
         alignItems: 'center',    // Center the text vertically
-        border: '3px solid #000',
+        //border: '3px solid #000',
         textAlign: 'center',
         fontFamily: 'Saira Stencil One, Sans-serif',
         lineHeight: '1',         // Normalize line height
@@ -1888,7 +1888,6 @@ function createMissionSelectormenu(missionsIdArray, title) {
     document.body.appendChild(backgroundOverlay);
     missionMenuContainer.appendChild(closeButton);
 
-
     
     // Create a slider container
     const sliderContainer = document.createElement('div');
@@ -1898,10 +1897,10 @@ function createMissionSelectormenu(missionsIdArray, title) {
         alignItems: 'center',
         overflowX: 'auto',
         scrollSnapType: 'x mandatory',
-        width: '1280px',
+        width: '1275px',
         height: '100%',
         scrollBehavior: 'smooth',
-        marginBottom: '3vh',
+        marginBottom: '1vh',
         boxSizing: 'border-box', // Ensure consistent sizing
         msOverflowStyle: 'none',  /* IE and Edge */
         scrollbarWidth: 'none',     /* Firefox */
@@ -1920,7 +1919,7 @@ function createMissionSelectormenu(missionsIdArray, title) {
             textAlign: 'center',
             display: 'flex', // Flexbox for child alignment
             flexDirection: 'column', // Stack child elements
-            justifyContent: 'space-between',
+            //justifyContent: 'space-between',
             boxSizing: 'border-box', // Include padding and border in the size
         });
 
@@ -1937,9 +1936,6 @@ function createMissionSelectormenu(missionsIdArray, title) {
     });
     
  
-     // Add slider to the container
-     missionMenuContainer.appendChild(sliderContainer);
- 
      // Add progress text below the slider
      const progressText = document.createElement('span');
      Object.assign(progressText.style, {
@@ -1950,7 +1946,7 @@ function createMissionSelectormenu(missionsIdArray, title) {
          color: 'black',
          marginBottom: '3vh',
      });
-     missionMenuContainer.appendChild(progressText);
+     
  
      // Conditional CSS: Adjust snapping and justifyContent
      if (missionsIdArray.length < 5) {
@@ -1974,44 +1970,64 @@ function createMissionSelectormenu(missionsIdArray, title) {
              progressText.textContent = `VISER ${missionsIdArray.length} MISSIONER`;
          } else {
             progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
+            prevButton.style.display = 'block';
+            nextButton.style.display = 'block';
         }
     };
-
+    
+    const navigationcontainer = document.createElement('div');
+    Object.assign(navigationcontainer.style, {
+        display: 'flex',         // Flexbox for centering the text
+        justifyContent: 'center', // Center the text horizontally
+        alignItems: 'center',    //
+        width: '100%',
+        height: '100%',
+    });
+    // Add slider to the container
+    //missionMenuContainer.appendChild(sliderContainer);
     // Navigation Buttons
     const prevButton = document.createElement('button');
-    prevButton.innerHTML = '←';
+    prevButton.innerHTML = '<';
     Object.assign(prevButton.style, {
-        position: 'absolute',
         left: '10px',
         top: '50%',
         transform: 'translateY(-50%)',
         zIndex: '10',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        color: 'white',
+        backgroundColor: 'transparent',
+        color: 'black',
         border: 'none',
         borderRadius: '50%',
         width: '40px',
         height: '40px',
-        cursor: 'pointer',
+        padding: '5px 60px 5px 5px',
+        fontSize: '50px',
+        display: 'none',
     });
 
     const nextButton = document.createElement('button');
-    nextButton.innerHTML = '→';
+    nextButton.innerHTML = '>';
     Object.assign(nextButton.style, {
-        position: 'absolute',
         right: '10px',
         top: '50%',
         transform: 'translateY(-50%)',
         zIndex: '10',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        color: 'white',
+        backgroundColor: 'transparent',
+        color: 'black',
         border: 'none',
         borderRadius: '50%',
         width: '40px',
         height: '40px',
-        cursor: 'pointer',
+        padding: '5px',
+        fontSize: '50px',
+        display: 'none',
     });
-
+    
+    
+    navigationcontainer.appendChild(prevButton);
+    navigationcontainer.appendChild(sliderContainer);
+    navigationcontainer.appendChild(nextButton);
+    missionMenuContainer.appendChild(navigationcontainer);
+    missionMenuContainer.appendChild(progressText);
     // Scroll Behavior for Buttons
     const cardWidth = 320; // Adjust to match card width + margin
 
@@ -2022,8 +2038,8 @@ function createMissionSelectormenu(missionsIdArray, title) {
     nextButton.addEventListener('click', () => {
         sliderContainer.scrollBy({ left: cardWidth, behavior: 'smooth' });
     });
-    missionMenuContainer.appendChild(prevButton);
-    missionMenuContainer.appendChild(nextButton);
+    //missionMenuContainer.appendChild(prevButton);
+    //missionMenuContainer.appendChild(nextButton);
 
     // Listen to scroll events
     sliderContainer.addEventListener('scroll', updateProgress);
@@ -2044,7 +2060,7 @@ function createMissionCard(missionCard, missionId) {
     const missionTime = document.createElement('div');
     Object.assign(missionTime.style, {
         width: '100%',             // Fully respect parent padding
-        height: '50px',            // Fixed height for clarity
+        height: 'auto',            // Fixed height for clarity
         backgroundColor: '#212521',
         padding: '10px',
         boxSizing: 'border-box',   // Include padding in the dimensions
@@ -2078,10 +2094,11 @@ function createMissionCard(missionCard, missionId) {
     Object.assign(imageContainer.style, {
         position: 'relative',
         width: '100%',
-        height: '50%',             // Proportionate height
+        //height: '50%',             // Proportionate height
         backgroundColor: '#e6e6e6',
         overflow: 'hidden',
-        borderBottom: '1px solid #ccc',
+        display: 'flex',
+        alignItems: 'center',
     });
 
     // add image to the container 
@@ -2151,7 +2168,7 @@ function createMissionCard(missionCard, missionId) {
     const contentContainer = document.createElement('div');
     Object.assign(contentContainer.style, {
         width: '100%',
-        height: '40%',
+        height: 'auto',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'start',
@@ -2159,12 +2176,14 @@ function createMissionCard(missionCard, missionId) {
         backgroundColor: '#e6e6e6',
         boxSizing: 'border-box',
         padding: '10px',
+        position: 'relative',
     });
 
     const title = document.createElement('h3');
     Object.assign(title.style, {
         fontWeight: 'bold',
         fontFamily: 'Saira Stencil One, Sans-serif',
+        textTransform: 'uppercase',
         margin: '5px 0',
         overflow: 'hidden',        // Hide overflowing content
         whiteSpace: 'nowrap',      // Prevent text from wrapping
