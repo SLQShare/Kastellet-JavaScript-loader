@@ -28,6 +28,7 @@ class SelectedFilters {
             1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
             1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
         };
+
         this.currentColor = '#72756f';
         SelectedFilters.instance = this;
     }
@@ -188,7 +189,7 @@ selectedFilters.addFilterListener((type, value) => {
         //hideOrShowMapPins('country', 'none'); // Hide country pins
         zoomToCoordinates('default', mapContainer); // Reset zoom to default
         updatePinColors(forceIdForColor, selectedFilters.contributionColors);
-        updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'continent');
+        updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
         hideOrShowMapPins('continent', 'block'); // Show continent pins
         return; // Exit since geography is null
         }
@@ -207,7 +208,7 @@ selectedFilters.addFilterListener((type, value) => {
             hideOrShowMapPins('continent', 'none'); // Hide continent pins
             //hideOrShowMapPins('country', 'block'); // Show country pins
             zoomToCoordinates(location, mapContainer); // Zoom to selected geography
-            updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'country');
+            updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'country');
             updatePinColors(forceIdForColor, selectedFilters.contributionColors);
             hideOrShowMapPins('continent', 'none'); // Hide continent pins
             return; // Exit after updating country pins
@@ -262,17 +263,6 @@ const filterStateStorage = {
         activeParentButton: null,
         activeFilterButton: null,
     },
-};
-
-
-const forceColors = {
-    1087: { backgroundColor: "#518346", textColor: "#ffffff" },
-    1088: { backgroundColor: "#4a9fd8", textColor: "#ffffff" },
-    1089: { backgroundColor: "#052854", textColor: "#ffffff" },
-    1090: { backgroundColor: "#8d1b3d", textColor: "#ffffff" },
-    1091: { backgroundColor: "#ffffff", textColor: "#81847e" }, 
-    1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
-    1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
 };
 
 // Singleton for managing excludedIds
@@ -446,7 +436,7 @@ function updateTheInfoScreen(missionId, data) {
     } else {
         console.error('Element with id "infoScreenMap" not found.');
     }
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, forceColors, 'continent');
+    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
 }
 
 function createInfoScreenFilterButton(missionId, data, excludedIds) {
