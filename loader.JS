@@ -218,18 +218,6 @@ selectedFilters.addFilterListener((type, value) => {
     }
 });
 
-
-// Helper: Reset pin colors to default
-function resetPinColorsToDefault() {
-    const elements = document.querySelectorAll('[id^="pin-"]');
-    elements.forEach(element => {
-        const svgElement = element.querySelector('svg');
-        if (svgElement) {
-            svgElement.setAttribute('fill', '#72756f'); // Default color
-        }
-    });
-}
-
 // Helper: Update pin colors based on contribution filter
 function updatePinColors(forceIdForColor, contributionColors) {
     const elements = document.querySelectorAll('[id^="pin-"]');
