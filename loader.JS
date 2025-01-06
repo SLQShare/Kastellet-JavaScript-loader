@@ -2300,7 +2300,7 @@ function createMissionCard(missionCard, missionId) {
         color: 'white',
         backgroundColor: '#212521',
         border: 'none',
-        borderRadius: '15px',
+        borderRadius: '25px',
         cursor: 'pointer',
         fontFamily: 'Arial, sans-serif',
     });
