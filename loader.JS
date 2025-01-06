@@ -1,7 +1,9 @@
+import { MissionPage } from './missionPage.js'
+
+//global variables
 const url = new URL(window.location.href);
 const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
 let missionId = 5388; // default value
-//global variables
 
 class SelectedFilters {
     constructor() {
@@ -341,15 +343,13 @@ function checkIdTypes(missionsArray, storedId) {
     return storedId; // If types match, return the stored ID as-is
 }
 
-
-
 // Function to fetch data and process it
 async function fetchAndProcessData(missionId, url) {
     try {
         const jsonData = await jQuery.getJSON(url);
-        const typeCheckedKissionId = checkIdTypes(jsonData.missions, missionId)
+        const typeCheckedMissionId = checkIdTypes(jsonData.missions, missionId)
         // Call a function to process the data
-        processData(typeCheckedKissionId, jsonData);
+        processData(typeCheckedMissionId, jsonData);
     } catch (error) {
         console.error("Error fetching JSON:", error);
     }
@@ -357,24 +357,27 @@ async function fetchAndProcessData(missionId, url) {
 
 // Function to process the data
 function processData(missionId , data) {
-    const dataDk = data;
-    console.log("dataDk:", dataDk);
+    console.log("dataDk:", data);
+    selectedFilters.setData(data);
     updateTheMissionsPage(missionId, data);
     updateTheInfoScreen(missionId, data);
-    selectedFilters.setData(data);
 }
     
 
 // update the missionspage with information
 function updateTheMissionsPage(missionId, data){
     if (isOnMissionsPage('missions')) {
-        headerInformation(data, missionId, 'MissionTitle', 'name');
-        headerInformation(data, missionId, 'MissionSubtitle', 'subtitle');
-        comparesTheForceTagsToMissionForces(data, missionId, "ForceContainer");
-        assignMissionDuration(data, missionId, "MissionDuration")
-        addTextFromDataToTable(data, missionId);
-        missionLocation(data, missionId);
-        parseMediaUrl(data, missionId);
+        // Create an instance of MissionPage
+        const missionPage = new MissionPage(data, missionId);
+
+        missionPage.headerInformation(data, missionId, 'MissionTitle', 'name');
+        missionPage.headerInformation(data, missionId, 'MissionSubtitle', 'subtitle');
+        missionPage.comparesTheForceTagsToMissionForces(data, missionId, "ForceContainer");
+        missionPage.assignMissionDuration(data, missionId, "MissionDuration")
+        missionPage.addTextFromDataToTable(data, missionId);
+        missionPage.missionLocation(data, missionId);
+        const emblemIds = selectedFilters.getEmblemIds();
+        missionPage.parseMediaUrl(data, missionId, emblemIds);
     }
 }
 
@@ -398,15 +401,7 @@ function isOnMissionsPage(siteName) {
 }
 
 
-// finds element by Id
-function findElementById(id) {
-    return document.getElementById(id);
-}
 
-// checks HTML element for text
-function hasNonEmptyText(element) {
-    return element.textContent.trim().length > 0;
-}
 
 // removes placeholder text and adds long text in chunks to save TODO: likely needs to be deleted
 function addLongStringInChunks(element, longString, chunkSize = 1000) {
@@ -425,19 +420,6 @@ function addLongStringInChunks(element, longString, chunkSize = 1000) {
     }
 }
 
-// searches all child elements of element and store all elements containing text 
-function searchAndFindTextElements(element){
-    if (!element) {
-        console.error(element +' not found.');
-        return;
-    }
-    const childElements = Array.from(element.querySelectorAll('*'));
-
-    const filteredArray = childElements.filter(element => 
-        element.tagName.toLowerCase() !== 'div' && hasNonEmptyText(element)
-    );
-    return filteredArray
-}
 
 function getMissionById(missionsArray, id) {
     if (!Array.isArray(missionsArray)) {
@@ -452,103 +434,8 @@ function getMissionById(missionsArray, id) {
     }
 }
 
-// headerInformation(data, missionId, cssId, informationType
-function headerInformation(data, missionId, cssId, informationType){
-    const missionInformation = getMissionById(data.missions, missionId);
-    const elementArray = searchAndFindTextElements(findElementById(cssId));
-    try {
-        elementArray[0].innerHTML = missionInformation[informationType];
-    } catch (error) {
-        log.error("invalide information passed into headerInformation", error)
-    }
-}
-
-// loop child elements and compare each element to mission forces
-function comparesTheForceTagsToMissionForces(data, missionId, cssId){
-    const missionInformation = getMissionById(data.missions, missionId);
-    const elementForcesArray = Array.from(findElementById(cssId).querySelectorAll('*'));
-    const missionForces = missionInformation.forces;
-    
-    elementForcesArray.forEach(element => {
-        const elementId = parseInt(element.id, 10)
-        if (!missionForces.includes(elementId)){
-            element.style.display = 'none'
-        }
-    });
-}
-
-// concatenate from and to into the year
-function assignMissionDuration(data, missionId, cssId){
-    const missionInformation = getMissionById(data.missions, missionId);
-    const missionDuration = searchAndFindTextElements(findElementById(cssId));
-    try {
-        missionDuration[0].innerHTML = String(missionInformation.year.from) +'-'+String(missionInformation.year.to);
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-function addTextFromDataToTable(data, missionId) {
-    const table = findElementById('MissionTabs');
-    const missionInformation = getMissionById(data.missions, missionId);
-
-    // Ensure the mission data is valid
-    if (!missionInformation || !missionInformation.content || !missionInformation.content.text) {
-        console.error("Invalid mission data or content structure.");
-        return;
-    }
-
-    // Get text elements
-    const textElementsByClass = Array.from(document.getElementsByClassName('TabText'));
-    // Get header elements
-    const filteredArrayOfElements = searchAndFindTextElements(table).filter(
-        element => element instanceof HTMLElement && !(element.tagName.toLowerCase() === 'button' || element.tagName.toLowerCase() === 'p')
-    );
-    // Determine the number of sections to process (minimum of available data or elements)
-    const numSections = Math.min(
-        missionInformation.content.text.length,
-        textElementsByClass.length,
-        Math.floor(filteredArrayOfElements.length / 2) // Two headers per section
-    );
-
-    // Loop through text entries for text assignments
-    for (let i = 0; i < numSections; i++) {
-        const textEntry = missionInformation.content.text[i];
-
-        // Assign text content
-        if (textEntry && textEntry.text && textElementsByClass[i]) {
-            textElementsByClass[i].innerHTML = textEntry.text; // Assign text
-        } else {
-            console.warn(`No text or element found for index ${i}`);
-        }
-    }
-
-    // Loop through header assignments and hide unused buttons
-    for (let i = 0; i < filteredArrayOfElements.length; i++) {
-        const headerEntry = missionInformation.content.text[i]?.heading;
-        const buttonElement = filteredArrayOfElements[i].closest('button'); // Find the closest parent button
-
-        if (i < numSections) {
-            // Assign header content
-            if (headerEntry) {
-                filteredArrayOfElements[i].textContent = headerEntry; // Assign heading
-                if (buttonElement) {
-                    buttonElement.style.display = ''; // Show the button
-                }
-            } else {
-                if (buttonElement) {
-                    buttonElement.style.display = 'none'; // Hide the button
-                }
-            }
-        } else {
-            // Hide the button for unused headers
-            if (buttonElement) {
-                buttonElement.style.display = 'none';
-            }
-        }
-    }
-}
-
+// error handler for the mission page swiper.
+// TODO remove after swiper rework
 window.onerror = function (message, source, lineno, colno, error) {
     if (error && error.message.includes("ReferenceError: Swiper is not defined")) {
         console.warn("Caught Swiper autoplay stop error:", error);
@@ -557,227 +444,7 @@ window.onerror = function (message, source, lineno, colno, error) {
     return false; // Let other errors propagate
 };
 
-function parseMediaUrl(data, missionId) {
-    try {
-        // Construct the base image path dynamically
-        const url = new URL(window.location.href);
-        const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
-        
-        // Get mission information
-        const missionInformation = getMissionById(data.missions, missionId);
-        if (!missionInformation || !missionInformation.content || !missionInformation.content.gallery.images) {
-            console.error('Mission information or gallery images not found.');
-            return;
-        }
-
-        const missionImageArray = missionInformation.content.gallery.images;
-        const emblemIds = selectedFilters.getEmblemIds();
-        const missionEmblems = [];
-        const sortedImageContent  = [];
-
-        // Process the images
-        missionImageArray.forEach((image, index) => {
-            if (typeof image.url !== 'string') {
-                console.warn('Invalid image format:', image);
-                return; // Skip invalid images
-            }
-
-            const imageId = parseInt(image.url.split('/').slice(-2, -1)[0], 10); // Extract ID from the URL
-            
-            if (emblemIds.includes(imageId)) {
-                missionEmblems.push(image); // Add emblems to missionEmblems array
-            } else {
-                sortedImageContent.push(image); // Add other images to sortedImages array
-            }
-        });
-
-        // Pass the sorted images and emblems to their respective functions
-        updateSwiperSlider(sortedImageContent, baseImagePath); // Assuming updateSwiperSlider is defined elsewhere
-        updateEmblemSection(missionEmblems, baseImagePath); // Assuming updateEmblemSection is defined elsewhere
-    } catch (error) {
-        console.error('Error in parseMediaUrl:', error);
-    }
-}
-
-function updateEmblemSection(newImages, baseImagePath) {
-    const container = document.getElementById('MissionForceContainer');
-    if (!container) {
-        console.error('MissionForceContainer not found.');
-        return;
-    }
-
-    // Remove all existing child elements
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
-    Object.assign(container.style, {
-        maxHeight: '50px',
-        overflow: 'auto',
-    });
-    // Add new images
-    newImages.forEach((imageUrl) => {
-        // Create the outer element for each image
-        const imageElementWrapper = document.createElement('div');
-        imageElementWrapper.className = 'elementor-element elementor-widget elementor-widget-image';
-        imageElementWrapper.setAttribute('data-element_type', 'widget');
-        imageElementWrapper.setAttribute('data-widget_type', 'image.default');
-
-        // Create the widget container
-        const widgetContainer = document.createElement('div');
-        widgetContainer.className = 'elementor-widget-container';
-        const url = baseImagePath+imageUrl.url
-        // Create the image element
-        const img = document.createElement('img');
-        img.setAttribute('decoding', 'async');
-        img.setAttribute('loading', 'lazy');
-        img.src = url;
-        img.alt = 'New Image';
-        
-        // Style the image to limit its height and maintain aspect ratio
-        Object.assign(img.style, {
-            maxHeight: '50px', // Limit the image height
-            width: 'auto', // Allow the width to adjust proportionally
-            objectFit: 'contain', // Ensure the image fits within the bounds without cropping
-        });
-
-        // Append the image to the widget container
-        widgetContainer.appendChild(img);
-
-        // Append the widget container to the outer wrapper
-        imageElementWrapper.appendChild(widgetContainer);
-
-        // Append the outer wrapper to the main container
-        container.appendChild(imageElementWrapper);
-    });
-}
-function updateSwiperSlider(imageArray, baseImagePath) {
-    const swiperContainer = document.querySelector('.swiper'); // Find the Swiper container
-    const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper'); // Find the Swiper wrapper
-
-    if (!swiperContainer || !swiperWrapper) {
-        console.error('Swiper container or wrapper not found.');
-        return;
-    }
-
-    const missionImageArray = imageArray;
-
-    // Clear existing slides
-    swiperWrapper.innerHTML = '';
-
-    // Add new slides
-    missionImageArray.forEach((imageData) => {
-        const slide = document.createElement('div');
-        slide.className = 'swiper-slide';
-        slide.innerHTML = `
-            <div class="elementor-element elementor-element-7f30c2c0 e-flex e-con-boxed e-con e-child">
-                <div class="e-con-inner">
-                    <div class="elementor-element elementor-element-a0ab922 elementor-widget elementor-widget-image">
-                        <div class="elementor-widget-container">
-                            <img src="${baseImagePath}${imageData.url}" alt="${imageData.caption}" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-                    <div class="elementor-element elementor-element-9421eab elementor-widget elementor-widget-heading">
-                        <div class="elementor-widget-container">
-                            <h3 class="elementor-heading-title elementor-size-default">${imageData.caption}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        swiperWrapper.appendChild(slide);
-    });
-
-    // Destroy existing Swiper instance
-    if (swiperContainer.swiper) {
-        swiperContainer.swiper.destroy(true, true);
-    }
-
-    // Extract settings dynamically
-    const settings = JSON.parse(swiperContainer.closest('[data-settings]').getAttribute('data-settings') || '{}');
-    const autoplaySpeed = parseInt(settings.autoplay_speed || 4000, 10);
-    const autoplayEnabled = settings.autoplay === 'yes';
-
-    // Reinitialize Swiper
-    const swiperInstance = new Swiper(swiperContainer, {
-        slidesPerView: 1,
-        spaceBetween: 10,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        loop: true,
-        autoplay: autoplayEnabled ? { delay: autoplaySpeed } : false,
-    });
-
-    // Handle autoplay resumption for navigation and pagination
-    const handleAutoplayResume = () => {
-        if (swiperInstance.autoplay) {
-            swiperInstance.autoplay.start();
-        }
-    };
-
-    // Add event listeners for autoplay resumption
-    const navigationButtons = swiperContainer.querySelectorAll('.swiper-button-next, .swiper-button-prev');
-    navigationButtons.forEach((button) =>
-        button.addEventListener('click', handleAutoplayResume)
-    );
-
-    const paginationButtons = swiperContainer.querySelectorAll('.swiper-pagination-bullet');
-    paginationButtons.forEach((button) =>
-        button.addEventListener('click', handleAutoplayResume)
-    );
-}
-
-function missionLocation(data, missionId) {
-    let location = null; // Variable to store the location if found
-    const locationButton = document.getElementById('MissionLocation');
-    const textElement = locationButton.querySelector('.elementor-button-text');
-    
-    const url = new URL(window.location.href);
-
-    // Iterate through each collection in the data
-    data.collections.forEach((collection) => {
-        // Check if the collection contains the mission with the given missionId
-        const foundMission = collection.missions.find(mission => mission === missionId);
-        if (foundMission) {
-            // If found, assign the location from the collection
-            location = collection.title; // Using collection.title as location
-        }
-    });
-
-    if (location) {
-        // Clear existing content inside `locationButton` if any
-        locationButton.innerHTML = '';
-
-        // Create a new <a> element
-        const linkElement = document.createElement('a');
-        linkElement.className = 'elementor-button elementor-button-link elementor-size-sm';
-        linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(location)}/`;
-        linkElement.rel = 'noopener noreferrer'; // Optional: For security
-
-        // Add the text inside the <a> element
-        const spanWrapper = document.createElement('span');
-        spanWrapper.className = 'elementor-button-content-wrapper';
-
-        const spanText = document.createElement('span');
-        spanText.className = 'elementor-button-text';
-        spanText.textContent = location;
-
-        // Append text to wrapper, wrapper to <a>, and <a> to button
-        spanWrapper.appendChild(spanText);
-        linkElement.appendChild(spanWrapper);
-        locationButton.appendChild(linkElement);
-    } else {
-        // If no location is found, hide the button
-        locationButton.style.display = 'none';
-    }
-}
-
-
-
+// TODO - not used? then remove
 function findImageTextElement(){
     const imageText = document.getElementById('figureTextId');
     const imageTextElementArray = searchAndFindTextElements(imageText);
@@ -791,6 +458,7 @@ function findImageTextElement(){
     }
 }
 // Function to update the text for the active slide
+// TODO - not used? then remove
 function updateSlideText(textElement, classNameString) {
     if (!textElement) return;
     const activeSlide = document.querySelector('.'+classNameString);
