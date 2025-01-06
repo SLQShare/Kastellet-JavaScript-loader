@@ -2145,7 +2145,7 @@ function createMissionCard(missionCard, missionId) {
         // Apply styles to ensure the image fits the container
         Object.assign(image.style, {
             width: '100%',
-            height: 'auto', // Maintain aspect ratio
+            height: '225px', // Maintain aspect ratio
             display: 'block', // Avoid inline spacing issues
             objectFit: 'cover', // Ensure it fits within its container neatly
         });
