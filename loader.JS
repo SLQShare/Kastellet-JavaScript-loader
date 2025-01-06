@@ -1814,8 +1814,6 @@ function createMissionSelectormenu(missionsIdArray, title) {
         height: '60vh',
         overflow: 'hidden',
         zIndex: '10001', // Ensure it stays above the overlay
-        //borderRadius: '12px 12px 0 0', // Rounded corners at the top
-        //boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)', // Subtle shadow at the top
     });
 
     // Create title
@@ -1847,8 +1845,15 @@ function createMissionSelectormenu(missionsIdArray, title) {
 
     // Close the menu when clicking the overlay
     backgroundOverlay.addEventListener('click', () => {
-        missionMenuContainer.style.display = 'none'; // Hide the menu
-        backgroundOverlay.style.display = 'none'; // Hide the overlay
+        // Apply the closing animation
+        Object.assign(missionMenuContainer.style, {
+            animation: 'slideDown 0.5s ease-out forwards', // Play reverse animation
+        });
+        // Listen for the animation to complete
+        missionMenuContainer.addEventListener('animationend', () => {
+            missionMenuContainer.style.display = 'none'; // Hide the menu after animation
+            backgroundOverlay.style.display = 'none'; // Hide the overlay
+        }, { once: true }); // Ensure the event listener is triggered only once
     });
 
     // Create the close button
@@ -1880,9 +1885,18 @@ function createMissionSelectormenu(missionsIdArray, title) {
     // Close the menu when clicking the close button
     closeButton.addEventListener('click', (event) => {
         event.stopPropagation(); // Prevent the click from propagating to the overlay
-        missionMenuContainer.style.display = 'none'; // Hide the menu
-        backgroundOverlay.style.display = 'none'; // Hide the overlay
+
+        // Apply the closing animation
+        Object.assign(missionMenuContainer.style, {
+            animation: 'slideDown 0.5s ease-out forwards', // Play reverse animation
+        });
+        // Listen for the animation to complete
+        missionMenuContainer.addEventListener('animationend', () => {
+            missionMenuContainer.style.display = 'none'; // Hide the menu after animation
+            backgroundOverlay.style.display = 'none'; // Hide the overlay
+        }, { once: true }); // Ensure the event listener is triggered only once
     });
+
 
     // Append the overlay and close button to the document body
     document.body.appendChild(backgroundOverlay);
@@ -1893,11 +1907,11 @@ function createMissionSelectormenu(missionsIdArray, title) {
     const sliderContainer = document.createElement('div');
     Object.assign(sliderContainer.style, {
         display: 'flex',
-        justifyContent: 'start',
+        justifyContent: 'center',
         alignItems: 'center',
         overflowX: 'auto',
         scrollSnapType: 'x mandatory',
-        width: '1275px',
+        width: '1258px',
         height: '100%',
         scrollBehavior: 'smooth',
         marginBottom: '1vh',
@@ -2050,12 +2064,12 @@ function createMissionSelectormenu(missionsIdArray, title) {
          transform: 'rotate(45deg) translate(7px, 7px)',  // Position as right side of arrow
          borderRadius: '5px',            // Optional rounding
          display: 'inherit',
-    });
-    
+     });
+ 
      // Append arrow parts to the button
      nextButton.appendChild(leftBoxNext);
      nextButton.appendChild(rightBoxNext);
-    
+
     navigationcontainer.appendChild(prevButton);
     navigationcontainer.appendChild(sliderContainer);
     navigationcontainer.appendChild(nextButton);
@@ -2082,6 +2096,40 @@ function createMissionSelectormenu(missionsIdArray, title) {
 
     // Add the mission menu container to the parent element
     parentElement.appendChild(missionMenuContainer);
+    
+    // Define keyframes dynamically
+    const styleSheet = document.styleSheets[0];
+
+    // Add popUp keyframes
+    styleSheet.insertRule(`
+        @keyframes popUp {
+            from {
+                transform: translateY(100%); /* Start off-screen */
+            }
+            to {
+                transform: translateY(0);   /* End at the final position */
+            }
+        }
+    `, styleSheet.cssRules.length);
+
+    // Add slideDown keyframes
+    styleSheet.insertRule(`
+        @keyframes slideDown {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+    `, styleSheet.cssRules.length);
+
+    // Apply animation to the missionMenuContainer
+    Object.assign(missionMenuContainer.style, {
+        animation: 'popUp 0.5s ease-out forwards', // Apply popUp animation
+    });
 }
 
 function createMissionCard(missionCard, missionId) {
@@ -2227,7 +2275,6 @@ function createMissionCard(missionCard, missionId) {
     
     title.textContent = missionInformation.title;
     contentContainer.appendChild(title);
-    reduceFontSizeToFit(title, 18, 12);
 
     function reduceFontSizeToFit(element, maxFontSize = 20, minFontSize = 10) {
         let fontSize = maxFontSize;
@@ -2242,10 +2289,6 @@ function createMissionCard(missionCard, missionId) {
         }
     }
     
-    // Call the function for the title element
-    reduceFontSizeToFit(title, 18, 12);
-    
-
     const subtitle = document.createElement('p');
     Object.assign(subtitle.style, {
         fontSize: '14px',
@@ -2269,10 +2312,10 @@ function createMissionCard(missionCard, missionId) {
         alignItems: 'start',
         margin: '10px 0',
     });
-    
+
     // Call the function for the title element
     reduceFontSizeToFit(title, 18, 12);
-    
+
     // Get mission information
     const missionImageArray = missionInformation.content.gallery.images;
     const emblemIds = selectedFilters.getEmblemIds();
