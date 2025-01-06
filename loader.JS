@@ -2301,7 +2301,7 @@ function createMissionCard(missionCard, missionId) {
         }
     });
     
-    missionButton.textContent = 'GÅ TIL';
+    missionButton.textContent = 'GÅ TIL'; //TODO change from hard coded when adding english support
     contentContainer.appendChild(missionButton);
 
     missionCard.appendChild(missionTime);
