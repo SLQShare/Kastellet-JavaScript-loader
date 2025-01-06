@@ -2251,6 +2251,11 @@ function createMissionCard(missionCard, missionId) {
         fontSize: '14px',
         fontFamily: 'Arial, sans-serif',
         margin: '5px 0',
+        overflow: 'hidden',        // Hide overflowing content
+        whiteSpace: 'nowrap',      // Prevent text from wrapping
+        textOverflow: 'ellipsis',  // Show "..." for truncated text
+        fontSize: '18px',          // Default font size
+        maxWidth: '100%',          // Ensure the title doesn't grow beyond its container
     });
     subtitle.textContent = missionInformation.subtitle;
     contentContainer.appendChild(subtitle);
@@ -2264,9 +2269,11 @@ function createMissionCard(missionCard, missionId) {
         alignItems: 'start',
         margin: '10px 0',
     });
+    
+    // Call the function for the title element
+    reduceFontSizeToFit(title, 18, 12);
+    
     // Get mission information
-    
-    
     const missionImageArray = missionInformation.content.gallery.images;
     const emblemIds = selectedFilters.getEmblemIds();
     const missionEmblems = [];
