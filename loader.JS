@@ -400,27 +400,6 @@ function isOnMissionsPage(siteName) {
     return normalizedPath.includes(`/${normalizedSiteName}`);
 }
 
-
-
-
-// removes placeholder text and adds long text in chunks to save TODO: likely needs to be deleted
-function addLongStringInChunks(element, longString, chunkSize = 1000) {
-    if (!element) {
-        console.error("Element not found.");
-        return;
-    }
-    element.textContent = "";
-    let currentIndex = 0;
-    const totalLength = longString.length;
-
-    while (currentIndex < totalLength) {
-        const chunk = longString.slice(currentIndex, currentIndex + chunkSize);
-        element.textContent += chunk; // Append the current chunk
-        currentIndex += chunkSize;
-    }
-}
-
-
 function getMissionById(missionsArray, id) {
     if (!Array.isArray(missionsArray)) {
         throw new Error("Invalid missions data: Expected an array.");
@@ -443,32 +422,6 @@ window.onerror = function (message, source, lineno, colno, error) {
     }
     return false; // Let other errors propagate
 };
-
-// TODO - not used? then remove
-function findImageTextElement(){
-    const imageText = document.getElementById('figureTextId');
-    const imageTextElementArray = searchAndFindTextElements(imageText);
- 
-    // Determine the target element for updating text
-    if (imageTextElementArray.length === 1) {
-        return imageTextElementArray[0];
-    } else {
-        console.warn('Unable to determine single imageTextParagraphElement.');
-        return;
-    }
-}
-// Function to update the text for the active slide
-// TODO - not used? then remove
-function updateSlideText(textElement, classNameString) {
-    if (!textElement) return;
-    const activeSlide = document.querySelector('.'+classNameString);
-    if (activeSlide) {
-        const childElementArray = Array.from(activeSlide.querySelectorAll('*'));
-        textElement.textContent = childElementArray[0].attributes["aria-label"].nodeValue;
-    } else {
-        console.warn('No active slide found.');
-    }
-}
 
 // Update the info screen with missions and map pins
 function updateTheInfoScreen(missionId, data) {
@@ -780,22 +733,22 @@ function createfilterSelectorButton(parentButton) {
     return filterSelectorButton;
 }
 
-// Function to copy all computed styles from one element to another
-function copyAllStyles(sourceElement, targetElement, stringArray = []) {
-    if (!sourceElement || !targetElement) {
-        console.error("Source or target element not found.");
-        return;
-    }
-    const computedStyles = window.getComputedStyle(sourceElement);
-    const excludedProperties = stringArray; // Use the passed array or default to an empty array
+// // Function to copy all computed styles from one element to another
+// function copyAllStyles(sourceElement, targetElement, stringArray = []) {
+//     if (!sourceElement || !targetElement) {
+//         console.error("Source or target element not found.");
+//         return;
+//     }
+//     const computedStyles = window.getComputedStyle(sourceElement);
+//     const excludedProperties = stringArray; // Use the passed array or default to an empty array
 
-    // Apply all computed styles except those in the excluded list
-    Array.from(computedStyles).forEach(property => {
-        if (!excludedProperties.includes(property)) {
-            targetElement.style[property] = computedStyles.getPropertyValue(property);
-        }
-    });
-}
+//     // Apply all computed styles except those in the excluded list
+//     Array.from(computedStyles).forEach(property => {
+//         if (!excludedProperties.includes(property)) {
+//             targetElement.style[property] = computedStyles.getPropertyValue(property);
+//         }
+//     });
+// }
 
 // Function to apply styles
 function applyStyles(element, styles) {
