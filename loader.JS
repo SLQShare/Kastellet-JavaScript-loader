@@ -1982,46 +1982,79 @@ function createMissionSelectormenu(missionsIdArray, title) {
         alignItems: 'center',    //
         width: '100%',
         height: '100%',
+        gap: '20px'
     });
-    // Add slider to the container
-    //missionMenuContainer.appendChild(sliderContainer);
     // Navigation Buttons
     const prevButton = document.createElement('button');
-    prevButton.innerHTML = '<';
+    const nextButton = document.createElement('button');
+    
+    // Style the navigation button
     Object.assign(prevButton.style, {
-        left: '10px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        zIndex: '10',
-        backgroundColor: 'transparent',
-        color: 'black',
-        border: 'none',
-        borderRadius: '50%',
         width: '40px',
-        height: '40px',
-        padding: '5px 60px 5px 5px',
-        fontSize: '50px',
-        display: 'none',
+        height: '55px',
+        backgroundColor: 'transparent', // Transparent base
+        border: 'none',
+        display: 'none',                // Center arrow elements
     });
 
-    const nextButton = document.createElement('button');
-    nextButton.innerHTML = '>';
+    // Add the arrow shape using two divs
+    const leftBoxPrev = document.createElement('div');
+    Object.assign(leftBoxPrev.style, {
+        width: '30px',
+        height: '7px',
+        backgroundColor: 'black',       // Fill color
+        transform: 'rotate(-45deg)', // Position as left side of arrow
+        borderRadius: '5px',            // Optional rounding
+        display: 'inherit',
+    });
+
+    const rightBoxPrev = document.createElement('div');
+    Object.assign(rightBoxPrev.style, {
+        width: '30px',
+        height: '7px',
+        backgroundColor: 'black',       // Fill color
+        transform: 'rotate(45deg) translate(7px, 7px)',  // Position as right side of arrow
+        borderRadius: '5px',            // Optional rounding
+        display: 'inherit',
+    });
+
+    // Append arrow parts to the button
+    prevButton.appendChild(leftBoxPrev);
+    prevButton.appendChild(rightBoxPrev);
+
+    // Style the navigation button
     Object.assign(nextButton.style, {
-        right: '10px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        zIndex: '10',
-        backgroundColor: 'transparent',
-        color: 'black',
-        border: 'none',
-        borderRadius: '50%',
         width: '40px',
-        height: '40px',
-        padding: '5px',
-        fontSize: '50px',
-        display: 'none',
+        height: '55px',
+        backgroundColor: 'transparent', // Transparent base
+        transform: 'rotate(180deg)',
+        border: 'none',
+        display: 'none',                // Center arrow elements
+    });
+     // Add the arrow shape using two divs
+     const leftBoxNext = document.createElement('div');
+     Object.assign(leftBoxNext.style, {
+         width: '30px',
+         height: '7px',
+         backgroundColor: 'black',       // Fill color
+         transform: 'rotate(-45deg)', // Position as left side of arrow
+         borderRadius: '5px',            // Optional rounding
+         display: 'inherit',
+     });
+ 
+     const rightBoxNext = document.createElement('div');
+     Object.assign(rightBoxNext.style, {
+         width: '30px',
+         height: '7px',
+         backgroundColor: 'black',       // Fill color
+         transform: 'rotate(45deg) translate(7px, 7px)',  // Position as right side of arrow
+         borderRadius: '5px',            // Optional rounding
+         display: 'inherit',
     });
     
+     // Append arrow parts to the button
+     nextButton.appendChild(leftBoxNext);
+     nextButton.appendChild(rightBoxNext);
     
     navigationcontainer.appendChild(prevButton);
     navigationcontainer.appendChild(sliderContainer);
