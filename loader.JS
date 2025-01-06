@@ -428,18 +428,12 @@ function updateTheInfoScreen(missionId, data) {
 }
 
 function createInfoScreenFilterButton(missionId, data, excludedIds) {
-    //const resetButton = document.createElement('div');
-    //resetButton.id = 'resetButton';
-    //resetButton.textContent = 'Nulstil'; // TODO hardcoded danish
-    //const referenceButton = document.getElementById('geographyFilterButton')
-    //referenceButton.insertAdjacentElement('afterend', resetButton);
-    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton']; // TODO removed resetButton
+    const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton'];
     const originalArray = generateDataSet(1940, 2029, 10);
     // Remove the item with description "1970-1979"
     const dataSet = originalArray.filter(item => item.description !== "1970-1979");
     const contributionColors = selectedFilters.getContributionColors();
 
-    
     buttonIds.forEach(buttonId => {
         const parentButton = document.getElementById(buttonId);
 
@@ -450,43 +444,23 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 
         // Reset and apply styles to the parent button
         parentButton.style.all = 'unset';
-        
-        if (buttonId === 'resetButton'){
-            applyStyles(parentButton, {
-                color: 'white',
-                fontSize: '24px',
-                textAlign: 'center',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'Saira Stencil One, Sans-serif',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-                width: '200px',
-                height: '75px',
-                backgroundColor: '#d9534f',
-                borderRadius: '50px',
-            })
-        } else {
-            applyStyles(parentButton, {
-                color: 'white',
-                fontSize: '24px',
-                textAlign: 'center',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'Saira Stencil One, Sans-serif',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-                width: '350px',
-                height: '75px',
-                backgroundColor: '#72756f',
-                borderRadius: '50px',
-            });
-        }
-
+        applyStyles(parentButton, {
+            color: 'white',
+            fontSize: '24px',
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: 'Saira Stencil One, Sans-serif',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            marginBottom: '10px',
+            width: '350px',
+            height: '75px',
+            backgroundColor: '#72756f',
+            borderRadius: '50px',
+        });
+ 
         // Create a wrapper for the button and its filters
         const buttonWrapper = document.createElement('div');
         applyStyles(buttonWrapper, {
@@ -546,24 +520,17 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 
         // Add the filter container to the wrapper
         buttonWrapper.appendChild(filterSelectorContainer);
-        // Add toggle behavior to the parent button
-        if (parentButton.id === "resetButton") {
-            parentButton.addEventListener('click', () => {
-                resetFilterObjects(data); // Call the function to reset all filters
-            });
-        } else {
-            parentButton.addEventListener('click', () => {
-                const type = parentButton.id.replace('FilterButton','').toLowerCase()
-                if (filterStateStorage[type].isFilterActive){
-                    resetFilterObjects(data, type);
-                } else {
-                    const isDisplayed = filterSelectorContainer.style.display === 'flex';
-                    closeAllFilterContainers()
-                    filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
-                }
-                
-            });
-        }
+        parentButton.addEventListener('click', () => {
+            const type = parentButton.id.replace('FilterButton','').toLowerCase()
+            if (filterStateStorage[type].isFilterActive){
+                resetFilterObjects(data, type);
+            } else {
+                const isDisplayed = filterSelectorContainer.style.display === 'flex';
+                closeAllFilterContainers()
+                filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
+            }
+            
+        });
     });
 }
 
