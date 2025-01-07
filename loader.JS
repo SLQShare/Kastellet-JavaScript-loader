@@ -28,8 +28,10 @@ class SelectedFilters {
             1092: { backgroundColor: "#de8130", textColor: "#ffffff" },
             1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
         };
+        this.validFilterOptions = []
 
         this.currentColor = '#72756f';
+        
         SelectedFilters.instance = this;
     }
     getEmblemIds(){
@@ -70,6 +72,12 @@ class SelectedFilters {
             contribution: this.contribution,
             geography: this.geography
         };
+    }
+    getValidFilterOptions(){
+        return this.validFilterOptions;
+    }
+    setValidFilterOptions(options){
+        this.validFilterOptions = options;
     }
 
     updateSelectedFilter(type, value) {
@@ -156,6 +164,64 @@ class SelectedFilters {
     notifyFilterListeners(type, value) {
         this.filterListeners.forEach(listener => listener(type, value));
     }
+    
+    dependentFilter(){
+        if (!this.validFilterOptions.length > 0){
+            const originalArray = generateDataSet(1940, 2029, 10);
+            // Remove the item with description "1970-1979"
+            const timeIntervals = originalArray.filter(item => item.description !== "1970-1979").map(item => item.description);
+            const forces = this.data.forces.map(item => item.title);
+            const excludedIds = ExcludedIdsManager.getExcludedIds()
+            const locationsOptions = this.data.locations
+                .filter(location => !excludedIds.includes(location?.id))
+                .map(location => location?.title);
+
+            const validFilterOptions = [timeIntervals, forces, locationsOptions]
+            this.setValidFilterOptions(validFilterOptions)
+            debugger;
+        }
+        const currentFilters = this.getAllFilters(); // object
+        const filterOptions = this.getValidFilterOptions(); // array 
+        console.log('currentFilters', currentFilters)
+        console.log('filterOptions', filterOptions)
+        let listOfInvalidOptions = []
+        debugger;
+        
+        for (const [key, value] of Object.entries(currentFilters)) {
+            if (!value){
+                console.log('non used filters',key , value);
+                debugger;
+                if (key === 'period'){
+                    console.log(filterOptions[0]);
+                    searchInfilterOptions(filterOptions[0], key, currentFilters, this.data);
+                } else if(key === 'contribution') {
+                    console.log(filterOptions[1])
+                    searchInfilterOptions(filterOptions[1], key, currentFilters, this.data);
+                } else if(key === 'geography') {
+                    console.log(filterOptions[2]);
+                    searchInfilterOptions(filterOptions[2], key, currentFilters, this.data);
+                }
+            }
+          }
+
+        function searchInfilterOptions(arrayOfOptions, filterType, currentfilter, data){
+            let listOfInvalidOptions = [];
+            arrayOfOptions.forEach((option)=> {
+                const tempFilters = { ...currentfilter }; // Clone the object to avoid mutation                
+                tempFilters[filterType] = option;
+                console.log('tempFilters', tempFilters)
+                console.log('currentfilter', currentfilter)
+                const availableMissions = applyFiltersToFindMissions(data, tempFilters);
+                
+
+                // Handle invalid options
+                if (!availableMissions || availableMissions.length === 0) {
+                    listOfInvalidOptions.push({ [filterType]: option });
+                }
+            })
+            console.log('listOfInvalidOptions', listOfInvalidOptions);
+        }
+    }
 }
 
 
@@ -171,7 +237,7 @@ selectedFilters.addFilterListener((type, value) => {
     data.forces.forEach(force => {
         console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);
     });
- 
+    
     if (currentFilters.contribution) {
         const contributionIds = data.forces
             .filter(force => currentFilters.contribution.includes(force.title))
@@ -182,6 +248,7 @@ selectedFilters.addFilterListener((type, value) => {
     } else {
         selectedFilters.setCurrentColor('#72756f');
     }
+    selectedFilters.dependentFilter();
     // Handle Geography Filter
     if (currentFilters.geography === null) {
         console.log('Geography filter is null. Showing continent pins...');
@@ -706,11 +773,12 @@ function generateDataSet(startYear, endYear, intervalSize) {
 function formatSelectedFilterValues(filters, data) {
     const formattedFilters = {};
     // Format period filter: Converts "YYYY-YYYY" string to an array of [startYear, endYear].
+    debugger;
     if (filters.period) {
         const [startYear, endYear] = filters.period.split("-").map(Number);
         formattedFilters.period = [startYear, endYear];
     }
-
+    debugger;
     // Format contribution filter: Matches user-selected titles with their corresponding IDs in `data.forces`.
     if (filters.contribution) {
         const contributionIds = data.forces
@@ -718,7 +786,7 @@ function formatSelectedFilterValues(filters, data) {
             .map(force => force.id); // Extract corresponding IDs.
         formattedFilters.contribution = contributionIds;
     }
-
+    debugger;
     // Format geography filter: Matches user-selected geography titles with region IDs in `data.locations`.
     if (filters.geography) {
         const geographyIds = data.locations
@@ -732,7 +800,7 @@ function formatSelectedFilterValues(filters, data) {
                 formattedFilters.geography = geographyIds.toLowerCase().replace(/\s/g, '');
             }    
     }
-
+    debugger;
     console.log("Formatted Filters:", formattedFilters); // Debugging: Check the resulting formatted filters.
     return formattedFilters;
 }
