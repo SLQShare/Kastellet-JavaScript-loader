@@ -178,52 +178,88 @@ class SelectedFilters {
 
             const validFilterOptions = [timeIntervals, forces, locationsOptions]
             this.setValidFilterOptions(validFilterOptions)
-            debugger;
         }
         const currentFilters = this.getAllFilters(); // object
         const filterOptions = this.getValidFilterOptions(); // array 
-        console.log('currentFilters', currentFilters)
-        console.log('filterOptions', filterOptions)
-        let listOfInvalidOptions = []
-        debugger;
-        
+        const listOfInvalidOptions = [];
+
         for (const [key, value] of Object.entries(currentFilters)) {
-            if (!value){
-                console.log('non used filters',key , value);
-                debugger;
-                if (key === 'period'){
-                    console.log(filterOptions[0]);
-                    searchInfilterOptions(filterOptions[0], key, currentFilters, this.data);
-                } else if(key === 'contribution') {
-                    console.log(filterOptions[1])
-                    searchInfilterOptions(filterOptions[1], key, currentFilters, this.data);
-                } else if(key === 'geography') {
-                    console.log(filterOptions[2]);
-                    searchInfilterOptions(filterOptions[2], key, currentFilters, this.data);
+            if (!value) {
+                console.log('non used filters', key, value);
+                if (key === 'period') {
+                    const invalidOptions = searchInfilterOptions(filterOptions[0], key, currentFilters, this.data);
+                    listOfInvalidOptions.push(...invalidOptions);
+                } else if (key === 'contribution') {
+                    const invalidOptions = searchInfilterOptions(filterOptions[1], key, currentFilters, this.data);
+                    listOfInvalidOptions.push(...invalidOptions); 
+                } else if (key === 'geography') {
+                    const invalidOptions = searchInfilterOptions(filterOptions[2], key, currentFilters, this.data);
+                    listOfInvalidOptions.push(...invalidOptions);
                 }
             }
-          }
+        }
+        console.log('listOfInvalidOptions', listOfInvalidOptions);
+        
+        function searchInfilterOptions(arrayOfOptions, filterType, currentfilter, data) {
+            const invalidOptions = []; // Local list for invalid options
 
-        function searchInfilterOptions(arrayOfOptions, filterType, currentfilter, data){
-            let listOfInvalidOptions = [];
-            arrayOfOptions.forEach((option)=> {
-                const tempFilters = { ...currentfilter }; // Clone the object to avoid mutation                
+            arrayOfOptions.forEach((option) => {
+                const tempFilters = { ...currentfilter }; // Clone the object to avoid mutation
                 tempFilters[filterType] = option;
-                console.log('tempFilters', tempFilters)
-                console.log('currentfilter', currentfilter)
                 const availableMissions = applyFiltersToFindMissions(data, tempFilters);
-                
-
                 // Handle invalid options
                 if (!availableMissions || availableMissions.length === 0) {
-                    listOfInvalidOptions.push({ [filterType]: option });
+                    invalidOptions.push({ [filterType]: option }); // Collect invalid options
                 }
-            })
-            console.log('listOfInvalidOptions', listOfInvalidOptions);
+            });
+
+            return invalidOptions; // Return collected invalid options
         }
+        
+        function makeInvalidOptionNonInteractable(invalidOptions) {
+            const elementsToRest = document.querySelectorAll('[filterId]'); 
+            if (invalidOptions.length < 1) {
+                elementsToRest.forEach((element) => {
+                    element.style.opacity = '1';
+                    element.style.order = '0'; // Reset order to default
+                    element.style.pointerEvents = 'auto'; // Disable interaction
+            })
+            }
+            
+            console.log('invalidOptions', typeof(invalidOptions));
+            console.log('invalidOptions', invalidOptions);
+        
+            // key: one of the three types of filters
+            // value: the filter value
+            invalidOptions.forEach(option => {
+                Object.entries(option).forEach(([key, value]) => {
+                    // Select elements by their `filterId` attribute
+                    const elements = document.querySelectorAll(`[filterId*="filterOption-${key}"]`);
+        
+                    elements.forEach((element) => {
+                        // Check the `filterValue` attribute for a match
+                        if (element.getAttribute('filterValue') === value) {
+                            element.style.opacity = '0'; // Make the element invisible
+                            element.style.pointerEvents = 'none'; // Disable interaction
+                            element.style.order = '999'; // Push it to the end of the flex container
+                        }
+                    });
+                });
+            });
+        }
+        
+        makeInvalidOptionNonInteractable(listOfInvalidOptions);
+        return listOfInvalidOptions;
     }
 }
 
+// Find an element with the attribute data-id="123"
+//const element = document.querySelector('[data-id="123"]');
+//const elements = document.querySelectorAll('[filterId]'); by type
+//const elements = document.querySelectorAll('[filterValue]');  by the value
+
+//filterSelectorButton.setAttribute('filterId', 'filterOption-contribution');
+//filterSelectorButton.setAttribute('filterValue', force?.title || 'Unknown Force');
 
 const selectedFilters = new SelectedFilters();
 selectedFilters.addFilterListener((type, value) => {
@@ -558,6 +594,9 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
             dataSet.forEach((dataItem) => {
                 const filterSelectorButton = createfilterSelectorButton(parentButton);
                 filterSelectorButton.textContent = dataItem.description;
+                filterSelectorButton.id = 'filterOption-period';
+                filterSelectorButton.setAttribute('filterId', 'filterOption-period');
+                filterSelectorButton.setAttribute('filterValue', dataItem.description);
                 filterSelectorContainer.appendChild(filterSelectorButton);
                 filterSelectorButton.addEventListener('click', function(){applyFilter('period', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
             });
@@ -569,6 +608,9 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                 filterSelectorButton.textContent = force?.title || 'Unknown Force';
                 filterSelectorButton.style.backgroundColor = colors.backgroundColor;
                 filterSelectorButton.style.WebkitTextFillColor = colors.textColor;
+                filterSelectorButton.setAttribute('filterId', 'filterOption-contribution');
+                filterSelectorButton.setAttribute('filterValue', force?.title || 'Unknown Force');
+                filterSelectorButton.id = 'filterOption-contribution'
                 filterSelectorContainer.appendChild(filterSelectorButton);
                 filterSelectorButton.addEventListener('click', function(){applyFilter('contribution' , filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
             });
@@ -578,6 +620,8 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
                 if (!excludedIds.includes(location?.id)) {
                     const filterSelectorButton = createfilterSelectorButton(parentButton);
                     filterSelectorButton.textContent = location?.title || 'Unknown Location';
+                    filterSelectorButton.setAttribute('filterValue', location?.title || 'Unknown Force');
+                    filterSelectorButton.setAttribute('filterId', 'filterOption-geography');
                     filterSelectorContainer.appendChild(filterSelectorButton);
                     filterSelectorButton.id = `filterSelectorButtonGeography-${location?.region.toLowerCase().replace(/\s+/g, '')}`;
                     filterSelectorButton.addEventListener('click', function(){applyFilter('geography', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
@@ -591,6 +635,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
             const type = parentButton.id.replace('FilterButton','').toLowerCase()
             if (filterStateStorage[type].isFilterActive){
                 resetFilterObjects(data, type);
+                debugger;
             } else {
                 const isDisplayed = filterSelectorContainer.style.display === 'flex';
                 closeAllFilterContainers()
@@ -605,6 +650,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 function applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
     selectedFilters.updateSelectedFilter(type, value); // Update queryable data
     updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
+    debugger;
 }
 
 // type can be 'continent' or 'country'
@@ -773,12 +819,10 @@ function generateDataSet(startYear, endYear, intervalSize) {
 function formatSelectedFilterValues(filters, data) {
     const formattedFilters = {};
     // Format period filter: Converts "YYYY-YYYY" string to an array of [startYear, endYear].
-    debugger;
     if (filters.period) {
         const [startYear, endYear] = filters.period.split("-").map(Number);
         formattedFilters.period = [startYear, endYear];
     }
-    debugger;
     // Format contribution filter: Matches user-selected titles with their corresponding IDs in `data.forces`.
     if (filters.contribution) {
         const contributionIds = data.forces
@@ -786,7 +830,6 @@ function formatSelectedFilterValues(filters, data) {
             .map(force => force.id); // Extract corresponding IDs.
         formattedFilters.contribution = contributionIds;
     }
-    debugger;
     // Format geography filter: Matches user-selected geography titles with region IDs in `data.locations`.
     if (filters.geography) {
         const geographyIds = data.locations
@@ -800,7 +843,6 @@ function formatSelectedFilterValues(filters, data) {
                 formattedFilters.geography = geographyIds.toLowerCase().replace(/\s/g, '');
             }    
     }
-    debugger;
     console.log("Formatted Filters:", formattedFilters); // Debugging: Check the resulting formatted filters.
     return formattedFilters;
 }
