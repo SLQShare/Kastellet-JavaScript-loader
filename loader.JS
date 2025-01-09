@@ -1,6 +1,7 @@
 import { MissionPage } from './missionPage.js'
-
+import { SearchPage } from './searchPage.js'
 //global variables
+
 const url = new URL(window.location.href);
 const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
 let missionId = 5388; // default value
@@ -432,8 +433,14 @@ function processData(missionId , data) {
     selectedFilters.setData(data);
     updateTheMissionsPage(missionId, data);
     updateTheInfoScreen(missionId, data);
+    updateSearchPage(data);
 }
-    
+
+function updateSearchPage(data){
+    if (isOnMissionsPage('search')){
+        const searchPageInstance = new SearchPage(data);
+    }
+}
 
 // update the missionspage with information
 function updateTheMissionsPage(missionId, data){
