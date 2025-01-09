@@ -253,14 +253,6 @@ class SelectedFilters {
     }
 }
 
-// Find an element with the attribute data-id="123"
-//const element = document.querySelector('[data-id="123"]');
-//const elements = document.querySelectorAll('[filterId]'); by type
-//const elements = document.querySelectorAll('[filterValue]');  by the value
-
-//filterSelectorButton.setAttribute('filterId', 'filterOption-contribution');
-//filterSelectorButton.setAttribute('filterValue', force?.title || 'Unknown Force');
-
 const selectedFilters = new SelectedFilters();
 selectedFilters.addFilterListener((type, value) => {
     console.log(`Filter changed: ${type} = ${value}`);
@@ -288,8 +280,6 @@ selectedFilters.addFilterListener((type, value) => {
     // Handle Geography Filter
     if (currentFilters.geography === null) {
         console.log('Geography filter is null. Showing continent pins...');
-        //hideOrShowMapPins('continent', 'block'); // Show continent pins
-        //hideOrShowMapPins('country', 'none'); // Hide country pins
         zoomToCoordinates('default', mapContainer); // Reset zoom to default
         updatePinColors(forceIdForColor, selectedFilters.contributionColors);
         updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
@@ -580,6 +570,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 
         // Create a new container for the filter options
         const filterSelectorContainer = document.createElement('div');
+        filterSelectorContainer.id = 'filterSelectorContainer';
         applyStyles(filterSelectorContainer, {
             display: 'flex',
             flexDirection: 'column',
@@ -635,10 +626,8 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
             const type = parentButton.id.replace('FilterButton','').toLowerCase()
             if (filterStateStorage[type].isFilterActive){
                 resetFilterObjects(data, type);
-                debugger;
             } else {
                 const isDisplayed = filterSelectorContainer.style.display === 'flex';
-                closeAllFilterContainers()
                 filterSelectorContainer.style.display = isDisplayed ? 'none' : 'flex';
             }
             
@@ -650,7 +639,7 @@ function createInfoScreenFilterButton(missionId, data, excludedIds) {
 function applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
     selectedFilters.updateSelectedFilter(type, value); // Update queryable data
     updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
-    debugger;
+    closeAllFilterContainers();
 }
 
 // type can be 'continent' or 'country'
@@ -669,13 +658,14 @@ function hideOrShowMapPins(type, display) {
 function resetFilterObjects(data, type = null){
     selectedFilters.resetSelectedFilter(type); // Notify listener via reset
     resetStateStorage(type);
-    closeAllFilterContainers();
+    
 }
 
+// used to close the filter selectors on each search so the options are not in the way of the map pins
 function closeAllFilterContainers() {
-    const allContainers = document.querySelectorAll('.filterSelectorContainer');
-    allContainers.forEach(container => {
-        container.style.display = 'none'; // Hide all filter containers
+    const filterButtons = document.querySelectorAll('[id*="filterSelectorContainer"]');
+    filterButtons.forEach(button => {
+        button.style.display = 'none'; // Hide all filter containers
     });
 }
 
