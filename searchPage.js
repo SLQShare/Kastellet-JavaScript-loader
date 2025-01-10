@@ -97,8 +97,27 @@ export class SearchPage {
         searchBarContainer.appendChild(clearButton);
         this.searchActionContainer.appendChild(searchBarContainer);
     }
-
-    // Create the tag box to display clickable tags
+    static applyTagStyles(element, colSpan = 1) {
+        Object.assign(element.style, {
+            padding: '12px',
+            backgroundColor: '#f4f4f4',
+            color: '#020202',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '22px',
+            fontFamily: 'Saira Stencil One, Sans-serif',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap',        // Prevent wrapping
+            height: '50px',             // Fixed row height
+            textAlign: 'center',
+            display: 'flex',             // Use Flexbox for centering
+            alignItems: 'center',
+            justifyContent: 'center',
+            gridColumn: `span ${colSpan}`, // Dynamic column span
+        });
+    }
+        // Apply styles with dynamic column span
+        SearchPage.applyTagStyles(tagElement, colSpan);
     createTagBox() {
         const tagBox = document.createElement('div');
         Object.assign(tagBox.style, {
