@@ -133,43 +133,74 @@ export class SearchPage {
             gridColumn: `span ${colSpan}`, // Dynamic column span
         });
     }
+    
+    createTagElement(tag, clickHandler) {
+        const tagElement = document.createElement('div');
+    
+        // Calculate column span dynamically based on text length
+        const length = tag.length;
+        let colSpan = 1; // Default column span
+    
+        if (length > 6 && length <= 17) {
+            colSpan = 2; // Medium text uses 2 columns
+        } else if (length > 17 && length <= 22) {
+            colSpan = 3; // Long text uses 3 columns
+        } else if (length > 22) {
+            colSpan = 4; // Extra-long text uses 4 columns
+        }
+    
         // Apply styles with dynamic column span
         SearchPage.applyTagStyles(tagElement, colSpan);
+    
+        tagElement.textContent = tag;
+    
+        if (clickHandler) {
+            tagElement.addEventListener('click', () => clickHandler(tag));
+        }
+        return tagElement;
+    }
+    
     createTagBox() {
         const tagBox = document.createElement('div');
-        Object.assign(tagBox.style, {
-            width: '40%',
-            height: '70%',
+        const tagBoxContainer = document.createElement('div');
+        Object.assign(tagBoxContainer.style, {
             display: 'flex',
-            flexDirection: 'row', // Makes items stack from the bottom
-            flexWrap: 'wrap',               // Allows wrapping
-            gap: '10px',
-            marginTop: '20px',
-            overflow: 'auto',
+            flexDirection: 'column',
+            flexWrap: 'wrap',
+            justifyContent: 'start', // Centers items along the main axis
+            alignItems: 'start',    // Centers items along the cross-axis
+            width: '45%',
+            height: '290px'
+        });
+        Object.assign(tagBox.style, {
+            width: '100%',
+            display: 'grid',                 // Switch to grid layout
+            gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', // Flexible columns
+            gridAutoFlow: 'row dense',       // Fill rows in a dense manner
+            gap: '10px',                     // Space between items
+            overflow: 'hidden',
+            alignContent: 'start',             // Align items to the bottom of the container
         });
         
-
-        // Generate tags from the data
-        const tags = this.getUniqueTags();
-        tags.forEach(tag => {
-            const tagElement = document.createElement('div');
-            Object.assign(tagElement.style, {
-                padding: '8px 12px',
-                backgroundColor: '#518346',
-                color: '#ffffff',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                whiteSpace: 'nowrap'
+        const tags = this.SearhResultOfTags;
+    
+        if (!tags) {
+            const links = this.data.collections.map(item => item.title);
+            links.forEach(link => {
+                const tagElement = this.createTagElement(link, this.searchByTag.bind(this));
+                tagBox.appendChild(tagElement);
             });
-            tagElement.textContent = tag;
-            tagElement.addEventListener('click', () => this.searchByTag(tag));
+        } else {
+            tags.forEach(tag => {
+                const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
             tagBox.appendChild(tagElement);
         });
-
-        this.searchPageContainer.appendChild(tagBox);
+        }
+        tagBoxContainer.appendChild(tagBox);
+        this.searchPageContainer.appendChild(tagBoxContainer);
         this.tagBox = tagBox;
     }
+    
 
     // Create the touch-based keyboard with Danish layout
     createTouchKeyboard() {
