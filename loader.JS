@@ -6,7 +6,7 @@ const url = new URL(window.location.href);
 const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
 let missionId = 5388; // default value
 
-class SelectedFilters {
+export class SelectedFilters {
     constructor() {
         if (SelectedFilters.instance) {
             return SelectedFilters.instance;
@@ -436,9 +436,9 @@ function processData(missionId , data) {
     updateSearchPage(data);
 }
 
-function updateSearchPage(data){
+function updateSearchPage(){
     if (isOnMissionsPage('search')){
-        const searchPageInstance = new SearchPage(data);
+        const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters);
     }
 }
 
