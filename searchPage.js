@@ -273,36 +273,63 @@ export class SearchPage {
         this.keyboardContainer = keyboardContainer;
     }
 
+    createTagSearchResults(tagBox, tags, query) {
+        // Clear existing children in the tagBox
+        while (tagBox.firstChild) {
+            tagBox.removeChild(tagBox.firstChild);
+        }
+    
+        // Handle different cases
+        if ((!tags || tags.length === 0) && query === '') {
+            const links = this.data.collections.map(item => item.title); //TODO update to contain the webadress
+            links.forEach(link => {
+                const tagElement = this.createTagElement(link, this.searchByTag.bind(this));
+                tagBox.appendChild(tagElement);
+            });
+        } else if ((!tags || tags.length === 0) && query.length > 0) {
+            const errorElement = this.createTagElement('Intet resultat', null); // TODO fix for english
+            errorElement.style.backgroundColor = '#ff5c5c';
+            tagBox.appendChild(errorElement);
+        } else {
+            tags.forEach(tag => {
+                const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
+                tagBox.appendChild(tagElement);
+            });
+        }
+    }
 
     // Update search results based on input
     updateSearchResults(query) {
-        console.log('Searching for:', query);
+        console.log('Searching for:', query, query.length);
+    
+        // Handle empty query
+        if (query.length === 0) {
+            this.createTagSearchResults(this.tagBox, [], query); // Pass an empty array
         return;
-        const results = this.data.missions.filter(mission =>
-            mission.title.toLowerCase().includes(query.toLowerCase())
-        );
-        console.log('Search Results:', results);
-        this.renderSearchResults(results);
-    }
-
-    // Render the search results
-    renderSearchResults(results) {
-        const resultsContainer = document.getElementById('resultsContainer');
-        resultsContainer.innerHTML = ''; // Clear previous results
-
-        results.forEach(result => {
-            const resultElement = document.createElement('div');
-            Object.assign(resultElement.style, {
-                padding: '10px',
-                marginBottom: '10px',
-                backgroundColor: '#e6e6e6',
-                borderRadius: '5px',
+        }
+    
+        // Convert the query to lowercase for case-insensitive comparison
+        const lowercaseQuery = query.toLowerCase();
+    
+        // Collect matching tags
+        const tags = new Set();
+        this.data.missions.forEach(mission => {
+            mission.tags.forEach(tag => {
+                // Match tags starting with the query
+                if (tag.toLowerCase().startsWith(lowercaseQuery)) {
+                    tags.add(tag);
+                }
             });
-            resultElement.textContent = result.title;
-            resultsContainer.appendChild(resultElement);
         });
-    }
+    
+        // Convert Set to Array, sort alphabetically, and remove duplicates
+        const sortedTags = [...tags]
+            .slice(0,18)
+            .sort((a, b) => a.localeCompare(b));
 
+        // Update tag search results
+        this.createTagSearchResults(this.tagBox, sortedTags, query);
+    }
     // Search for missions by tag
     searchByTag(tag) {
         console.log('Searching by tag:', tag);
