@@ -28,7 +28,7 @@ export class SearchPage {
             height: '60%',
             width: '100%',
             flexWrap: 'wrap',
-            justifyContent: 'space-evenly',
+            justifyContent: 'center',
             alignItems: 'self-end',
         });
         page.appendChild(container);
