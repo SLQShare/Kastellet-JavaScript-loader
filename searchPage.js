@@ -54,7 +54,7 @@ export class SearchPage {
         Object.assign(searchBarContainer.style, {
             width: '80%',
             height: '60px',
-            marginBottom: '10px',
+            marginBottom: '40px',
         });
         const searchBar = document.createElement('input');
         Object.assign(searchBar.style, {
@@ -62,12 +62,29 @@ export class SearchPage {
             height: '100%',
             padding: '10px',
             fontSize: '22px',
+            fontFamily: 'Saira Stencil One, Sans-serif',
+            fontWeight: 'bold',
             boxSizing: 'border-box',
+            //textTransform: 'lowercase', 
         });
         searchBar.type = 'text';
-        searchBar.placeholder = 'Search for missions...';
+        searchBar.placeholder = 'Søg efter missioner...'; //TODO fix for english
         searchBar.addEventListener('input', () => {
-            clearButton.style.display = 'block'
+            // Show the clear button only if there is text in the search bar
+            if (searchBar.value === '') {
+                clearButton.style.display = 'none'; // Hide the clear button when input is empty
+            } else {
+                clearButton.style.display = 'block'; // Show the clear button when input has text
+            }
+            searchBar.value = searchBar.value.charAt(0).toUpperCase() + searchBar.value.slice(1);// has no effect
+            let arr = Array.from(searchBar.value);
+            arr = arr.map((element, index) => {
+                if (index < 1){
+                    return element.toUpperCase();
+                }
+                return element.toLowerCase();
+            });
+            searchBar.value = arr.join('')
         });
         this.searchBar = searchBar;
 
