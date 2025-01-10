@@ -215,9 +215,10 @@ export class SearchPage {
 
         // Danish keyboard layout (including DELETE and SPACE buttons)
         const rows = [
+            ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DELETE'], // Row 1
             ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'Å'], // Row 1
             ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Æ', 'Ø'], // Row 2
-            ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'SPACE', 'DELETE'] // Row 3
+            ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'SPACE', '.', '-'] // Row 3
         ];
 
         rows.forEach((rowKeys, rowIndex) => {
@@ -231,11 +232,13 @@ export class SearchPage {
                     border: '3px solid #212521',
                     borderRadius: '10px',
                     fontSize: '22px',
+                    fontFamily: 'Saira Stencil One, Sans-serif',
+                    fontWeight: 'bold',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gridColumn: key === 'DELETE' ? 'span 2' : key === 'SPACE' ? 'span 2' : 'span 1', // Span multiple columns
+                    gridColumn: key === 'SPACE' ? 'span 2' : 'span 1', // Span multiple columns
                 });
 
                 keyButton.textContent = (key === 'SPACE' || key === 'DELETE') ? '' : key;
