@@ -1,12 +1,18 @@
+import { MissionSelectorMenu } from './missionCardMenu.js'
+
 export class SearchPage {
-    constructor(data) {
-        this.data = data;
+    constructor(data, selectedFilters) {
         this.searchPageContainer = null;
         this.searchActionContainer = null;
         this.searchBar = null;
         this.tagBox = null;
         this.keyboard = null;
-
+        this.SearhResultOfTags = null;
+        this.data = data;
+        this.missionMenu = null;
+        this.missionId = null;
+        this.selectedFilters = selectedFilters;
+        this.searchPage = null;
         this.init();
     }
 
@@ -32,6 +38,7 @@ export class SearchPage {
             alignItems: 'self-end',
         });
         page.appendChild(container);
+        this.searchPage = page;
         this.searchPageContainer = container;
     }
     createSearchActionContainer() {
@@ -193,8 +200,8 @@ export class SearchPage {
         } else {
             tags.forEach(tag => {
                 const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
-            tagBox.appendChild(tagElement);
-        });
+                tagBox.appendChild(tagElement);
+            });
         }
         tagBoxContainer.appendChild(tagBox);
         this.searchPageContainer.appendChild(tagBoxContainer);
@@ -297,7 +304,7 @@ export class SearchPage {
             });
         }
     }
-
+    
     // Update search results based on input
     updateSearchResults(query) {
         console.log('Searching for:', query, query.length);
@@ -305,7 +312,7 @@ export class SearchPage {
         // Handle empty query
         if (query.length === 0) {
             this.createTagSearchResults(this.tagBox, [], query); // Pass an empty array
-        return;
+            return;
         }
     
         // Convert the query to lowercase for case-insensitive comparison
@@ -330,22 +337,22 @@ export class SearchPage {
         // Update tag search results
         this.createTagSearchResults(this.tagBox, sortedTags, query);
     }
-    // Search for missions by tag
+   // Search for missions by tag
     searchByTag(tag) {
         console.log('Searching by tag:', tag);
-        const results = this.data.missions.filter(mission =>
-            mission.tags.includes(tag)
-        );
-        console.log('Search Results for tag:', results);
-        this.renderSearchResults(results);
-    }
 
-    // Extract unique tags from the data
-    getUniqueTags() {
-        const tags = new Set();
-        this.data.missions.forEach(mission => {
-            mission.tags.forEach(tag => tags.add(tag));
-        });
-        return Array.from(tags);
+        // Filter missions that include the tag
+        const results = this.data.missions
+            .filter(mission => mission.tags.includes(tag)) // Find missions with the tag
+            .map(mission => mission.id);                  // Extract their IDs
+
+        console.log('Relevant mission IDs from tag:', results);
+        this.missionId = results;
+        this.missionMenu = new MissionSelectorMenu( //TODO rewrite the class so I can update information instead of Repeated Instantiation of MissionSelectorMenu
+            this.missionId,
+            tag,
+            this.searchPage,
+            this.selectedFilters
+        );
     }
 }
