@@ -341,7 +341,8 @@ export class SearchPage {
             tags.forEach(tag => {
                 const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
                 tagBox.appendChild(tagElement);
-                this.tagBoxHeader.textContent = `Relevante tags for ${query}`; // TODO fix for english
+                const stringTag = query.toLocaleLowerCase();
+                this.tagBoxHeader.textContent = `Relevante tags for ${stringTag}`; // TODO fix for englishq
             });
         }
     }
