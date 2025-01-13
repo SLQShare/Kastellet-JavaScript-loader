@@ -7,6 +7,9 @@ const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/
 let missionId = 5388; // default value
 
 export class SelectedFilters {
+
+    
+    
     constructor() {
         if (SelectedFilters.instance) {
             return SelectedFilters.instance;
@@ -438,7 +441,7 @@ function processData(missionId , data) {
 
 function updateSearchPage(){
     if (isOnMissionsPage('search')){
-        const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters);
+        const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters, 'Søg i missioner her!');
     }
 }
 

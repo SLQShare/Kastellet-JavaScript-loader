@@ -1,11 +1,12 @@
 import { MissionSelectorMenu } from './missionCardMenu.js'
 
 export class SearchPage {
-    constructor(data, selectedFilters) {
+    constructor(data, selectedFilters, title) {
         this.searchPageContainer = null;
         this.searchActionContainer = null;
         this.searchBar = null;
         this.tagBox = null;
+        this.tagBoxContainer = null;
         this.keyboard = null;
         this.SearhResultOfTags = null;
         this.data = data;
@@ -13,19 +14,24 @@ export class SearchPage {
         this.missionId = null;
         this.selectedFilters = selectedFilters;
         this.searchPage = null;
+        this.title = title;
+        this.searchHeader = null;
+        this.tagBoxHeader = null;
         this.init();
     }
 
     // Initialize the search page components
     init() {
         this.styleContainer();
-        this.createSearchActionContainer();
+        this.createActionContainers();
+        this.createTitles()
         this.createSearchBar();
         this.createTagBox();
         this.createTouchKeyboard();
     }
     styleContainer() {
         const page = document.getElementById('searchScreen'); // Main container for search page
+        
         const container = document.createElement('div');
         Object.assign(container.style, {
             display: 'flex',
@@ -34,35 +40,70 @@ export class SearchPage {
             height: '60%',
             width: '100%',
             flexWrap: 'wrap',
-            justifyContent: 'center',
-            alignItems: 'self-end',
+            justifyContent: 'space-evenly',
+            alignItems: 'flex-end',
         });
         page.appendChild(container);
+
         this.searchPage = page;
         this.searchPageContainer = container;
     }
-    createSearchActionContainer() {
+    createActionContainers() {
         const container = document.createElement('div');
         Object.assign(container.style, {
+            width: '45%',
+            height: '383.25px',
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             flexWrap: 'wrap',
-            justifyContent: 'center', // Centers items along the main axis
-            alignItems: 'center',    // Centers items along the cross-axis
-            width: '50%',
+            justifyContent: 'start', // Centers items along the main axis
+            alignItems: 'start',    // Centers items along the cross-axis
         });
         
         this.searchActionContainer = container;
         this.searchPageContainer.appendChild(this.searchActionContainer);
+
+        const tagBoxContainer = document.createElement('div');
+        Object.assign(tagBoxContainer.style, {
+            width: '45%',
+            height: '383.25px',
+        });
+        this.searchPageContainer.appendChild(tagBoxContainer);
+        this.tagBoxContainer = tagBoxContainer
     }
+    
+    createTitles() {
+        const searchBarTitle = document.createElement('H3');
+        searchBarTitle.textContent = 'Søg i mission tags' // TODO fix for english
+        titleStyles(searchBarTitle)
+        this.searchActionContainer.appendChild(searchBarTitle);
+
+
+        const tagsTitle = document.createElement('H3');
+        tagsTitle.textContent = 'Baggrundsinformation' // TODO fix for english
+        titleStyles(tagsTitle)
+        this.tagBoxContainer.appendChild(tagsTitle);
+        function titleStyles(element){
+            Object.assign(element.style, {
+                fontSize: '30px',
+                fontFamily: 'Saira Stencil One, Sans-serif',
+                fontWeight: 'bold',
+                color: '#ffffff',
+            });
+        }
+        this.searchHeader = searchBarTitle;
+        this.tagBoxHeader = tagsTitle;
+    }
+
     // Create the search bar
     createSearchBar() {
         const searchBarContainer = document.createElement('div');
         Object.assign(searchBarContainer.style, {
-            width: '80%',
-            height: '60px',
-            marginBottom: '40px',
+            width: '100%',
+            height: '50px',
+            marginBottom: '50px',
         });
+
         const searchBar = document.createElement('input');
         Object.assign(searchBar.style, {
             width: '100%',
@@ -72,10 +113,10 @@ export class SearchPage {
             fontFamily: 'Saira Stencil One, Sans-serif',
             fontWeight: 'bold',
             boxSizing: 'border-box',
-            //textTransform: 'lowercase', 
+            borderRadius: '5px'
         });
         searchBar.type = 'text';
-        searchBar.placeholder = 'Søg efter missioner...'; //TODO fix for english
+        searchBar.placeholder = 'Søg...'; //TODO fix for english
         searchBar.addEventListener('input', () => {
             // Show the clear button only if there is text in the search bar
             if (searchBar.value === '') {
@@ -99,14 +140,14 @@ export class SearchPage {
         const clearButton = document.createElement('button');
         Object.assign(clearButton.style, {
             position: 'relative',
-            right: '-93%',
-            transform: 'translateY(-125%)',
+            right: '-94.7%',
+            transform: 'translateY(-112.5%)',
             width: '40px',
             height: '40px',
-            background: '#ff5c5c',
-            border: 'none',
+            //background: '#ff5c5c',
+            border: 'solid 2px',
             borderRadius: '50%',
-            fontSize: '16px',
+            fontSize: '30px',
             cursor: 'pointer',
             display: 'none', // Initially hidden
         });
@@ -116,107 +157,19 @@ export class SearchPage {
             clearButton.style.display = 'none';
             this.updateSearchResults(''); // Clear search results
         });
-
+        //searchBarContainer.appendChild(searchPageTitle);
         searchBarContainer.appendChild(searchBar);
         searchBarContainer.appendChild(clearButton);
         this.searchActionContainer.appendChild(searchBarContainer);
     }
-    static applyTagStyles(element, colSpan = 1) {
-        Object.assign(element.style, {
-            padding: '12px',
-            backgroundColor: '#f4f4f4',
-            color: '#020202',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '22px',
-            fontFamily: 'Saira Stencil One, Sans-serif',
-            fontWeight: 'bold',
-            whiteSpace: 'nowrap',        // Prevent wrapping
-            height: '50px',             // Fixed row height
-            textAlign: 'center',
-            display: 'flex',             // Use Flexbox for centering
-            alignItems: 'center',
-            justifyContent: 'center',
-            gridColumn: `span ${colSpan}`, // Dynamic column span
-        });
-    }
-    
-    createTagElement(tag, clickHandler) {
-        const tagElement = document.createElement('div');
-    
-        // Calculate column span dynamically based on text length
-        const length = tag.length;
-        let colSpan = 1; // Default column span
-    
-        if (length > 6 && length <= 17) {
-            colSpan = 2; // Medium text uses 2 columns
-        } else if (length > 17 && length <= 22) {
-            colSpan = 3; // Long text uses 3 columns
-        } else if (length > 22) {
-            colSpan = 4; // Extra-long text uses 4 columns
-        }
-    
-        // Apply styles with dynamic column span
-        SearchPage.applyTagStyles(tagElement, colSpan);
-    
-        tagElement.textContent = tag;
-    
-        if (clickHandler) {
-            tagElement.addEventListener('click', () => clickHandler(tag));
-        }
-        return tagElement;
-    }
-    
-    createTagBox() {
-        const tagBox = document.createElement('div');
-        const tagBoxContainer = document.createElement('div');
-        Object.assign(tagBoxContainer.style, {
-            display: 'flex',
-            flexDirection: 'column',
-            flexWrap: 'wrap',
-            justifyContent: 'start', // Centers items along the main axis
-            alignItems: 'start',    // Centers items along the cross-axis
-            width: '45%',
-            height: '290px'
-        });
-        Object.assign(tagBox.style, {
-            width: '100%',
-            display: 'grid',                 // Switch to grid layout
-            gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', // Flexible columns
-            gridAutoFlow: 'row dense',       // Fill rows in a dense manner
-            gap: '10px',                     // Space between items
-            overflow: 'hidden',
-            alignContent: 'start',             // Align items to the bottom of the container
-        });
-        
-        const tags = this.SearhResultOfTags;
-    
-        if (!tags) {
-            const links = this.data.collections.map(item => item.title);
-            links.forEach(link => {
-                const tagElement = this.createTagElement(link, this.searchByTag.bind(this));
-                tagBox.appendChild(tagElement);
-            });
-        } else {
-            tags.forEach(tag => {
-                const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
-                tagBox.appendChild(tagElement);
-            });
-        }
-        tagBoxContainer.appendChild(tagBox);
-        this.searchPageContainer.appendChild(tagBoxContainer);
-        this.tagBox = tagBox;
-    }
-    
-
-    // Create the touch-based keyboard with Danish layout
+        // Create the touch-based keyboard with Danish layout
     createTouchKeyboard() {
         const keyboardContainer = document.createElement('div');
         Object.assign(keyboardContainer.style, {
             display: 'grid',
             gridTemplateColumns: 'repeat(11, 1fr)', // 12 columns for the grid
             gap: '10px',
-            width: '80%',
+            width: '100%',
             //margin: '20px auto',
         });
 
@@ -234,7 +187,7 @@ export class SearchPage {
                 Object.assign(keyButton.style, {
                     width: '100%', // Full width of the grid cell
                     height: '40px',
-                    backgroundColor: key === 'DELETE' ? '#ff5c5c' : key === 'SPACE' ? '#ffffff' : '#ffffff',
+                    backgroundColor: '#ffffff',
                     color: '#212521',
                     border: '3px solid #212521',
                     borderRadius: '10px',
@@ -250,6 +203,7 @@ export class SearchPage {
 
                 keyButton.textContent = (key === 'SPACE' || key === 'DELETE') ? '' : key;
                 if (key === 'DELETE') {
+                    keyButton.innerHTML = '&#9003;';
                     keyButton.addEventListener('click', () => {
                         this.searchBar.value = this.searchBar.value.slice(0, -1); // Remove the last character
                         this.updateSearchResults(this.searchBar.value); // Update search results dynamically
@@ -279,36 +233,121 @@ export class SearchPage {
         this.searchActionContainer.appendChild(keyboardContainer);
         this.keyboardContainer = keyboardContainer;
     }
-
-    createTagSearchResults(tagBox, tags, query) {
-        // Clear existing children in the tagBox
-        while (tagBox.firstChild) {
-            tagBox.removeChild(tagBox.firstChild);
+        static applyTagStyles(element, colSpan = 1) {
+        Object.assign(element.style, {
+            padding: '12px',
+            backgroundColor: '#f4f4f4',
+            color: '#020202',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '22px',
+            fontFamily: 'Saira Stencil One, Sans-serif',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap',        // Prevent wrapping
+            height: '50px',             // Fixed row height
+            textAlign: 'center',
+            display: 'flex',             // Use Flexbox for centering
+            alignItems: 'center',
+            justifyContent: 'center',
+            gridColumn: `span ${colSpan}`, // Dynamic column span
+        });
+    }
+    createTagElement(tag, clickHandler) {
+        const tagElement = document.createElement('div');
+    
+        // Calculate column span dynamically based on text length
+        const length = tag.length;
+        let colSpan = 1; // Default column span
+    
+        if (length > 6 && length <= 17) {
+            colSpan = 2; // Medium text uses 2 columns
+        } else if (length > 17 && length <= 22) {
+            colSpan = 3; // Long text uses 3 columns
+        } else if (length > 22) {
+            colSpan = 4; // Extra-long text uses 4 columns
         }
     
+        // Apply styles with dynamic column span
+        SearchPage.applyTagStyles(tagElement, colSpan);
+    
+        tagElement.textContent = tag;
+    
+        if (clickHandler) {
+            tagElement.addEventListener('click', () => clickHandler(tag));
+        }
+        return tagElement;
+    }
+    
+    createTagBox() {
+        const tagBox = document.createElement('div');
+        // const tagBoxContainer = document.createElement('div');
+        // Object.assign(tagBoxContainer.style, {
+        //     display: 'flex',
+        //     flexDirection: 'column',
+        //     flexWrap: 'wrap',
+        //     justifyContent: 'start', // Centers items along the main axis
+        //     alignItems: 'start',    // Centers items along the cross-axis
+        //     width: '45%',
+        //     height: '290px',
+        // });
+        Object.assign(tagBox.style, {
+            width: '100%',
+            display: 'grid',                 // Switch to grid layout
+            gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', // Flexible columns
+            gridAutoFlow: 'row dense',       // Fill rows in a dense manner
+            gap: '10px',                     // Space between items
+            overflow: 'hidden',
+            alignContent: 'start',             // Align items to the bottom of the container
+            // marginTop: '30px'
+        });
+        
+        const tags = this.SearhResultOfTags;
+        this.tagBoxContainer.appendChild(tagBox);
+        //this.searchPageContainer.appendChild(tagBoxContainer);
+        this.tagBox = tagBox;
+        this.createTagSearchResults(tagBox, tags);
+    }
+    
+    createTagSearchResults(tagBox, tags, query = '') {
+        // Clear existing children in the tagBox
+        if (tagBox.firstChild){
+            while (tagBox.firstChild) {
+                tagBox.removeChild(tagBox.firstChild);
+            }
+        }
+        
+        const generateUrl = (link) => {
+            const url = new URL(window.location.href)
+            return `${url.protocol}//${url.hostname}/${link}`;        
+            };
+
         // Handle different cases
         if ((!tags || tags.length === 0) && query === '') {
-            const links = this.data.collections.map(item => item.title); //TODO update to contain the webadress
+            // requires the danish data file as the HTML pages are in danish
+            const links = this.data.collections.map(item => item.title); //TODO update to contain the webadress 
             links.forEach(link => {
-                const tagElement = this.createTagElement(link, this.searchByTag.bind(this));
+                const fullUrl = generateUrl(link);
+                const tagElement = this.createTagElement(link, () => {
+                    window.location.assign(fullUrl);
+                });
                 tagBox.appendChild(tagElement);
+                this.tagBoxHeader.textContent = 'Baggrundsinformation'; // TODO fix for english
             });
         } else if ((!tags || tags.length === 0) && query.length > 0) {
             const errorElement = this.createTagElement('Intet resultat', null); // TODO fix for english
-            errorElement.style.backgroundColor = '#ff5c5c';
             tagBox.appendChild(errorElement);
+            this.tagBoxHeader.textContent = `Prøv igen`; // TODO fix for english
         } else {
             tags.forEach(tag => {
                 const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
                 tagBox.appendChild(tagElement);
+                this.tagBoxHeader.textContent = `Relevante tags for ${query}`; // TODO fix for english
             });
         }
     }
     
     // Update search results based on input
     updateSearchResults(query) {
-        console.log('Searching for:', query, query.length);
-    
         // Handle empty query
         if (query.length === 0) {
             this.createTagSearchResults(this.tagBox, [], query); // Pass an empty array
@@ -339,14 +378,11 @@ export class SearchPage {
     }
    // Search for missions by tag
     searchByTag(tag) {
-        console.log('Searching by tag:', tag);
-
         // Filter missions that include the tag
         const results = this.data.missions
             .filter(mission => mission.tags.includes(tag)) // Find missions with the tag
             .map(mission => mission.id);                  // Extract their IDs
 
-        console.log('Relevant mission IDs from tag:', results);
         this.missionId = results;
         this.missionMenu = new MissionSelectorMenu( //TODO rewrite the class so I can update information instead of Repeated Instantiation of MissionSelectorMenu
             this.missionId,
