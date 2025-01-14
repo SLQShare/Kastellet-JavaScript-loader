@@ -360,7 +360,6 @@ export class MissionSelectorMenu {
     createMissionCard(missionCard, missionId) {
         const data = this.data;
         const missionInformation = getMissionById(data.missions, missionId);
-        console.log('missionInformation', missionInformation);
 
         function getMissionById(missionsArray, id) {
             if (!Array.isArray(missionsArray)) {
@@ -404,7 +403,6 @@ export class MissionSelectorMenu {
             endYear = missionInformation.year.to;
         }
         const missionDuration = missionInformation.year.from + '-' + endYear; 
-        console.log('missionDuration', missionDuration)
         menuTitle.textContent = missionDuration; // Example time range
         missionTime.appendChild(menuTitle);
     
@@ -597,8 +595,7 @@ export class MissionSelectorMenu {
             
             //const data = selectedFilters.getData();
             const missionInformation = getMissionById(this.data.missions, missionId);
-            console.log('missionInformation', missionInformation);
-    
+
             // Validate and convert the mission ID to ensure it's stored as a number
             const convertedMissionId = typeof missionId === 'string' ? Number(missionId) : missionId;
             if (isNaN(convertedMissionId)) {
@@ -608,11 +605,8 @@ export class MissionSelectorMenu {
         
             // Store the converted mission ID in localStorage
             localStorage.setItem('currentMissionId', convertedMissionId);
-            console.log('Mission ID stored:', convertedMissionId);
         
-            if (localStorage.getItem('currentMissionId')) {
-                console.log('local storage missionId:', localStorage.getItem('currentMissionId'));
-        
+            if (localStorage.getItem('currentMissionId')) {        
                 // Redirect to the new page
                 const url = new URL(window.location.href);
                 const newPagePath = `${url.protocol}//${url.hostname}/missionstest-1/`;

@@ -471,6 +471,7 @@ function updateBackgroundPages(data){
         backgroundNameArray.push(collection.title)
         if (isOnMissionsPage(collection.title)){
             const button = document.getElementById('missionButton'+collection.id)
+            const homePage = document.getElementById('PageElement'+collection.id)
             if (button) {
                 button.addEventListener('click', (event) => {
                     event.preventDefault();
