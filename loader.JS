@@ -1,5 +1,7 @@
 import { MissionPage } from './missionPage.js'
 import { SearchPage } from './searchPage.js'
+import { MissionSelectorMenu } from './missionCardMenu.js'
+
 //global variables
 
 const url = new URL(window.location.href);
@@ -437,6 +439,7 @@ function processData(missionId , data) {
     updateTheMissionsPage(missionId, data);
     updateTheInfoScreen(missionId, data);
     updateSearchPage(data);
+    updateBackgroundPages(selectedFilters.getData())
 }
 
 function updateSearchPage(){
@@ -461,6 +464,28 @@ function updateTheMissionsPage(missionId, data){
         missionPage.parseMediaUrl(data, missionId, emblemIds);
     }
 }
+// function that adds the mission card menu to the background pages. The rest of the pages were made in wordpress, so this function is the only part needed in code.
+function updateBackgroundPages(data){
+    const backgroundNameArray = []
+    data.collections.forEach((collection)=> {
+        backgroundNameArray.push(collection.title)
+        if (isOnMissionsPage(collection.title)){
+            const button = document.getElementById('missionButton'+collection.id)
+            if (button) {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const missionCardMenuForBackgroundPages = new MissionSelectorMenu(
+                        collection.missions,
+                        collection.title,
+                        homePage,
+                        selectedFilters
+                    )
+                })
+            }
+        }
+    })
+}
+
 
 // Checks if the current page matches the specified site name
 function isOnMissionsPage(siteName) {
