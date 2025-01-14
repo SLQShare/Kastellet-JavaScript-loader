@@ -7,16 +7,9 @@ import { InfoScreenPage } from './infoScreen.js'
 
 const url = new URL(window.location.href);
 const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
-let missionId = 5388; // default value
 
 export class SelectedFilters {
-
-    
-    
     constructor() {
-        if (SelectedFilters.instance) {
-            return SelectedFilters.instance;
-        }
         this.data = null;
         this.period = null;
         this.contribution = null;
@@ -25,6 +18,8 @@ export class SelectedFilters {
         this.emblemIds = [1689, 1658, 1693, 1688, 1686, 1687, 1690, 1691]; 
         this.contributionListeners = [];
         this.filterListeners = []; // Add a list for general filter listeners
+        this.mapContainer = null;
+        this.excludedIds = [1240, 4690, 4691];
 
         this.contributionColors = {
             1087: { backgroundColor: "#518346", textColor: "#ffffff" },
@@ -36,11 +31,24 @@ export class SelectedFilters {
             1093: { backgroundColor: "#f4d70d", textColor: "#ffffff" },
         };
         this.validFilterOptions = []
-
         this.currentColor = '#72756f';
+        // Add the instance-specific event listener
+        //this.addFilterListener(this.handleFilterChange.bind(this));
         
         SelectedFilters.instance = this;
     }
+    getExcludedIds(){
+        return this.excludedIds;
+    }
+    
+    setMapContainer(mapContainer) {
+        this.mapContainer = mapContainer;
+    }
+
+    getMapContainer() {
+        return this.mapContainer;
+    }
+    
     getEmblemIds(){
         return this.emblemIds;
     }
@@ -178,7 +186,7 @@ export class SelectedFilters {
             // Remove the item with description "1970-1979"
             const timeIntervals = originalArray.filter(item => item.description !== "1970-1979").map(item => item.description);
             const forces = this.data.forces.map(item => item.title);
-            const excludedIds = ExcludedIdsManager.getExcludedIds()
+            const excludedIds = this.getExcludedIds()
             const locationsOptions = this.data.locations
                 .filter(location => !excludedIds.includes(location?.id))
                 .map(location => location?.title);
@@ -258,80 +266,108 @@ export class SelectedFilters {
         makeInvalidOptionNonInteractable(listOfInvalidOptions);
         return listOfInvalidOptions;
     }
+    
+    // Main handler for filter changes (instance-specific logic)
+    handleFilterChange(type, value) {
+        console.log(`Filter changed: ${type} = ${value}`);
+        const currentFilters = this.getAllFilters();
+        const selectedMission = applyFiltersToFindMissions(this.data, currentFilters);
+        let forceIdForColor = null;
+
+        // Contribution Filter Logic
+        this.data.forces.forEach(force => {
+            console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);
+        });
+
+        if (currentFilters.contribution) {
+            const contributionIds = this.data.forces
+                .filter(force => currentFilters.contribution.includes(force.title))
+                .map(force => force.id);
+            console.log('Mapped Contribution IDs:', contributionIds);
+            forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null;
+            this.setCurrentColor(this.contributionColors[forceIdForColor]?.backgroundColor || '#72756f');
+        } else {
+            this.setCurrentColor('#72756f');
+        }
+        this.dependentFilter();
+
+        // Geography Filter Logic
+        if (currentFilters.geography === null) {
+            console.log('Geography filter is null. Showing continent pins...');
+            zoomToCoordinates('default', this.mapContainer);
+            updatePinColors(forceIdForColor, this.contributionColors);
+            updateMapPins(this.data, this.getExcludedIds(), this.mapContainer, selectedMission, this.contributionColors, 'continent');
+            hideOrShowMapPins('continent', 'block');
+            return;
+        }
+
+        if (currentFilters.geography) {
+            const geographyFilter = currentFilters.geography.trim().toLowerCase();
+            const matchingLocation = this.data.locations.find(location =>
+                location.region.toLowerCase() === geographyFilter ||
+                location.title.toLowerCase() === geographyFilter
+            );
+
+            if (matchingLocation) {
+                const location = matchingLocation.region.toLowerCase().replace(/\s/g, '');
+                console.log('Geography filter active. Updating country pins...');
+                hideOrShowMapPins('continent', 'none');
+                zoomToCoordinates(location, this.mapContainer);
+                updateMapPins(this.data, this.getExcludedIds(), this.mapContainer, selectedMission, this.contributionColors, 'country');
+                updatePinColors(forceIdForColor, this.contributionColors);
+                hideOrShowMapPins('continent', 'none');
+                return;
+            } else {
+                console.warn('No matching location found for:', geographyFilter);
+            }
+        }
+        // type can be 'continent' or 'country'
+        function hideOrShowMapPins(type, display) {
+            // Ensure `display` is a valid string
+            if (typeof display !== 'string') {
+                console.error('Invalid display value. Must be a string.');
+                return;
+            }
+            const pins = document.querySelectorAll(`[data-type="${type}"]`);
+            pins.forEach((pin) => {
+                pin.style.display = display; // Assign the validated display value
+            });
+        }
+        function zoomToCoordinates(regionName, backgroundMap) {
+            // the map coordinates for zooming in and placing continent map pins
+            const mapCoordinatesForZoom = {
+                africa: { scale: 2, x: -5, y: -10 },
+                asia: { scale: 2, x: -60, y: 0 },
+                europe: { scale: 3.8, x: -5, y: 65 },
+                america: { scale: 1.4, x: 40, y: 0 },
+                middleeast: { scale: 7, x: -60, y: 27 },
+                australia: { scale: 1.6, x: -15, y: 5 },
+                default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
+            };
+            const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
+            backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
+        };
+        // Helper: Update pin colors based on contribution filter
+        function updatePinColors(forceIdForColor, contributionColors) {
+            const elements = document.querySelectorAll('[id^="pin-"]');
+            elements.forEach(element => {
+                const svgElement = element.querySelector('svg');
+                if (svgElement) {
+                    const color = forceIdForColor && contributionColors[forceIdForColor]
+                        ? contributionColors[forceIdForColor].backgroundColor
+                        : '#72756f'; // Default color
+                    svgElement.setAttribute('fill', color);
+                }
+            }); 
+        }
+    }
 }
 
 const selectedFilters = new SelectedFilters();
 selectedFilters.addFilterListener((type, value) => {
-    console.log(`Filter changed: ${type} = ${value}`);
-    const data = selectedFilters.getData();
-    const mapContainer = document.getElementById('infoScreenMap');
-    const currentFilters = selectedFilters.getAllFilters();
-    const selectedMission = applyFiltersToFindMissions(data, currentFilters);
-    let forceIdForColor = null;
-
-    data.forces.forEach(force => {
-        console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);
-    });
-    
-    if (currentFilters.contribution) {
-        const contributionIds = data.forces
-            .filter(force => currentFilters.contribution.includes(force.title))
-            .map(force => force.id);
-        console.log('Mapped Contribution IDs:', contributionIds);
-        forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null;
-        selectedFilters.setCurrentColor(selectedFilters.contributionColors[forceIdForColor].backgroundColor);
-    } else {
-        selectedFilters.setCurrentColor('#72756f');
-    }
-    selectedFilters.dependentFilter();
-    // Handle Geography Filter
-    if (currentFilters.geography === null) {
-        console.log('Geography filter is null. Showing continent pins...');
-        zoomToCoordinates('default', mapContainer); // Reset zoom to default
-        updatePinColors(forceIdForColor, selectedFilters.contributionColors);
-        updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
-        hideOrShowMapPins('continent', 'block'); // Show continent pins
-        return; // Exit since geography is null
-        }
-        
-    if (currentFilters.geography){
-        // Handle Country Updates (Geography Filter is Active)
-        const geographyFilter = currentFilters.geography.trim().toLowerCase();
-        const matchingLocation = data.locations.find(location =>
-            location.region.toLowerCase() === geographyFilter ||
-            location.title.toLowerCase() === geographyFilter
-        );
-
-        if (matchingLocation) {
-            const location = matchingLocation.region.toLowerCase().replace(/\s/g, '');
-            console.log('Geography filter active. Updating country pins...');
-            hideOrShowMapPins('continent', 'none'); // Hide continent pins
-            //hideOrShowMapPins('country', 'block'); // Show country pins
-            zoomToCoordinates(location, mapContainer); // Zoom to selected geography
-            updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'country');
-            updatePinColors(forceIdForColor, selectedFilters.contributionColors);
-            hideOrShowMapPins('continent', 'none'); // Hide continent pins
-            return; // Exit after updating country pins
-        } else {
-            console.warn('No matching location found for:', geographyFilter);
-        }
-    }
+    selectedFilters.handleFilterChange(type, value);
 });
 
-// Helper: Update pin colors based on contribution filter
-function updatePinColors(forceIdForColor, contributionColors) {
-    const elements = document.querySelectorAll('[id^="pin-"]');
-    elements.forEach(element => {
-        const svgElement = element.querySelector('svg');
-        if (svgElement) {
-            const color = forceIdForColor && contributionColors[forceIdForColor]
-                ? contributionColors[forceIdForColor].backgroundColor
-                : '#72756f'; // Default color
-            svgElement.setAttribute('fill', color);
-        }
-    });
-    
-}
 
 
 // stores the active state and filter buttons
@@ -468,9 +504,7 @@ function updateTheMissionsPage(missionId, data){
 }
 // function that adds the mission card menu to the background pages. The rest of the pages were made in wordpress, so this function is the only part needed in code.
 function updateBackgroundPages(data){
-    const backgroundNameArray = []
     data.collections.forEach((collection)=> {
-        backgroundNameArray.push(collection.title)
         if (isOnMissionsPage(collection.title)){
             const button = document.getElementById('missionButton'+collection.id)
             const homePage = document.getElementById('PageElement'+collection.id)
@@ -543,13 +577,15 @@ function updateTheInfoScreen(missionId, data) {
     if (!isOnMissionsPage('')) {
         return; // Exit if not on the landing page
     }
+    
     // Create the filter buttons for the info screen
-    createInfoScreenFilterButton(missionId, data, ExcludedIdsManager.getExcludedIds());
+    createInfoScreenFilterButton(missionId, data, selectedFilters.getExcludedIds());
     const selectedMission  = applyFiltersToFindMissions(data, selectedFilters.getAllFilters());
 
     // Update map pins based on the new filters
     const mapContainer = document.getElementById('infoScreenMap');
     if (mapContainer) {
+        selectedFilters.setMapContainer(mapContainer);
         mapContainer.style.backgroundImage = 'url("https://kastellet.gbplayground.dk/wp-content/uploads/2024/12/verdenskort_8K.png")'; //TODO fixed this monster
         console.log('Background image', mapContainer.style.backgroundImage);
         Object.assign(mapContainer.style, {
@@ -561,7 +597,7 @@ function updateTheInfoScreen(missionId, data) {
     } else {
         console.error('Element with id "infoScreenMap" not found.');
     }
-    updateMapPins(data, ExcludedIdsManager.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
+    updateMapPins(data, selectedFilters.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
 }
 
 function createInfoScreenFilterButton(missionId, data, excludedIds) {
@@ -686,18 +722,18 @@ function applyFilter(type, value, filterButtonElement, parentButtonElement, data
     closeAllFilterContainers();
 }
 
-// type can be 'continent' or 'country'
-function hideOrShowMapPins(type, display) {
-    // Ensure `display` is a valid string
-    if (typeof display !== 'string') {
-        console.error('Invalid display value. Must be a string.');
-        return;
-    }
-    const pins = document.querySelectorAll(`[data-type="${type}"]`);
-    pins.forEach((pin) => {
-        pin.style.display = display; // Assign the validated display value
-    });
-}
+// // type can be 'continent' or 'country'
+// function hideOrShowMapPins(type, display) {
+//     // Ensure `display` is a valid string
+//     if (typeof display !== 'string') {
+//         console.error('Invalid display value. Must be a string.');
+//         return;
+//     }
+//     const pins = document.querySelectorAll(`[data-type="${type}"]`);
+//     pins.forEach((pin) => {
+//         pin.style.display = display; // Assign the validated display value
+//     });
+// }
 
 function resetFilterObjects(data, type = null){
     selectedFilters.resetSelectedFilter(type); // Notify listener via reset
@@ -966,20 +1002,20 @@ function applyFilterByType(jsonData, missionIds, filterType, filterValue) {
 
 
 
-function zoomToCoordinates(regionName, backgroundMap) {
-    // the map coordinates for zooming in and placing continent map pins
-    const mapCoordinatesForZoom = {
-        africa: { scale: 2, x: -5, y: -10 },
-        asia: { scale: 2, x: -60, y: 0 },
-        europe: { scale: 3.8, x: -5, y: 65 },
-        america: { scale: 1.4, x: 40, y: 0 },
-        middleeast: { scale: 7, x: -60, y: 27 },
-        australia: { scale: 1.6, x: -15, y: 5 },
-        default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
-    };
-    const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
-    backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
-};
+// function zoomToCoordinates(regionName, backgroundMap) {
+//     // the map coordinates for zooming in and placing continent map pins
+//     const mapCoordinatesForZoom = {
+//         africa: { scale: 2, x: -5, y: -10 },
+//         asia: { scale: 2, x: -60, y: 0 },
+//         europe: { scale: 3.8, x: -5, y: 65 },
+//         america: { scale: 1.4, x: 40, y: 0 },
+//         middleeast: { scale: 7, x: -60, y: 27 },
+//         australia: { scale: 1.6, x: -15, y: 5 },
+//         default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
+//     };
+//     const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
+//     backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
+// };
 
 
 /**
