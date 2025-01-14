@@ -441,6 +441,7 @@ function processData(missionId , data) {
     updateTheInfoScreen(missionId, data);
     updateSearchPage(data);
     updateBackgroundPages(selectedFilters.getData())
+    updateBeredskabsKort()
 }
 
 function updateSearchPage(){
@@ -486,6 +487,12 @@ function updateBackgroundPages(data){
             }
         }
     })
+}
+
+function updateBeredskabsKort(){
+    if (isOnMissionsPage('beredskabskort')){
+        const BeredskabsKort = new InfoScreenPage(selectedFilters.getData, selectedFilters);
+    }
 }
 
 
