@@ -1,12 +1,11 @@
 import { MissionSelectorMenu } from './missionCardMenu.js'
 
 export class InfoScreenPage {
-    constructor(data, missionId, selectedFilters){
+    constructor(data, missionId, selectedFilters, staticForceFilterID = null){
         this.data = data
         this.currentMissionId = missionId;
-        this.selectedFilters = selectedFilters;
-         // stores the active state and filter buttons
-        this.filterStateStorage = {
+        this.selectedFilters = selectedFilters; // stores the selected filter object which contains must of the data and interactive logic
+        this.filterStateStorage = { // stores the active state and filter buttons
             period: {
                 isFilterActive: false,
                 activeParentButton: null,
@@ -23,6 +22,7 @@ export class InfoScreenPage {
                 activeFilterButton: null,
             },
         };
+        this.staticForceFilterID = staticForceFilterID; // must be one of the force IDs from the data. Using the IDs will make it easier to support english
         this.initialize();
     }
 
@@ -133,10 +133,15 @@ export class InfoScreenPage {
                     filterSelectorButton.style.backgroundColor = colors.backgroundColor;
                     filterSelectorButton.style.WebkitTextFillColor = colors.textColor;
                     filterSelectorButton.setAttribute('filterId', 'filterOption-contribution');
-                    filterSelectorButton.setAttribute('filterValue', force?.title || 'Unknown Force');
+                    filterSelectorButton.setAttribute('filterValue', force?.id || 'Unknown Force');
                     filterSelectorButton.id = 'filterOption-contribution'
                     filterSelectorContainer.appendChild(filterSelectorButton);
                     filterSelectorButton.addEventListener('click', () => {this.applyFilter('contribution' , filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
+                    // filtervalue="Beredskabet" filterid="filterOption-contribution"
+                    if (this.staticForceFilterID && force.id === this.staticForceFilterID){
+                        this.applyFilter('contribution' , filterSelectorButton.textContent, filterSelectorButton, parentButton, data)
+                        this.selectedFilters.setCurrentColor(colors.backgroundColor);
+                    }
                 });
             } else if (parentButton.id === "geographyFilterButton") {
                 parentButton.textContent = data.locations[6]?.title || 'Geography';
@@ -157,6 +162,9 @@ export class InfoScreenPage {
             buttonWrapper.appendChild(filterSelectorContainer);
             parentButton.addEventListener('click', () => {
                 const type = parentButton.id.replace('FilterButton','').toLowerCase()
+                if (this.staticForceFilterID && type === "contribution"){
+                    return;
+                }
                 if (this.filterStateStorage[type].isFilterActive){
                     this.resetFilterObjects(data, type);
                 } else {

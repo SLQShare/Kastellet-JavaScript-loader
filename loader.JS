@@ -140,12 +140,44 @@ function updateBeredskabsKort(missionId, data){
         // Step 1: Instantiate SelectedFilters without updateMapPins dependency
         const selectedFiltersBeredskabs = new SelectedFilters({});
         selectedFiltersBeredskabs.setData(data);
-        const BeredskabsKort = new InfoScreenPage(selectedFiltersBeredskabs.getData(), missionId, selectedFiltersBeredskabs);
+        const BeredskabsKort = new InfoScreenPage(selectedFiltersBeredskabs.getData(), missionId, selectedFiltersBeredskabs, 1092);
         selectedFiltersBeredskabs.updateMapPins = BeredskabsKort.updateMapPins.bind(BeredskabsKort);
         
         selectedFiltersBeredskabs.addFilterListener((type, value) => {
             selectedFiltersBeredskabs.handleFilterChange(type, value);
         });
+        const url = `${window.location.protocol}//${window.location.hostname}/beredskabsstyrelsen/`;
+
+        // Find the element with the specific filter value
+        const element = document.getElementById('contributionFilterButton');
+        const linkButton = document.createElement('button');
+        if (element) {
+            // Copy all computed styles from `element` to `linkButton`
+            const styles = getComputedStyle(element);
+            for (const property of styles) {
+                linkButton.style[property] = styles.getPropertyValue(property);
+            }
+            //linkButton.textContent = element.textContent;
+            linkButton.textContent = 'Background'.toUpperCase();
+            // Apply styles to position the element in the bottom-left corner
+            Object.assign(linkButton.style, {
+                position: 'fixed',    // Make the element fixed
+                bottom: '5%',       // Adjust the distance from the bottom
+                left: '5%',         // Adjust the distance from the left
+                zIndex: '9999',       // Ensure it's on top of other element
+                width: 'auto',
+                padding: '0px 25px'
+            });
+
+            // Assuming linkButton is a <button> element
+            linkButton.addEventListener('click', () => {
+                window.location.href = url;
+            });
+
+            document.body.appendChild(linkButton);
+        } else {
+            console.error('Element with filtervalue="1092" not found');
+        }
     }
 }
 
