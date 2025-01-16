@@ -39,6 +39,7 @@ export class MissionSelectorMenu {
             height: '60vh',
             overflow: 'hidden',
             zIndex: '10001', // Ensure it stays above the overlay
+            boxShadow: '1px 0px 5px 5px rgb(33, 37, 33, 0.5)',
         });
 
         // Create title
