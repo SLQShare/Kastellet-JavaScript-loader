@@ -120,7 +120,7 @@ export class MissionPage {
                 // Update text content
                 if (entry.text && textElementsByClass[index]) {
                     textElementsByClass[index].innerHTML = entry.text;
-        }
+                }
     
                 // Update headers
                 if (entry.heading && filteredArrayOfElementsH2[index]) {
@@ -144,11 +144,12 @@ export class MissionPage {
         }
         for (let i = numSections; i < filteredArrayOfElementsButton.length; i++) {
             filteredArrayOfElementsButton[i].style.display = 'none'; // Hide extra buttons
-                }
+        }
     
         console.log(`Table updated for mission ID: ${missionId}`);
     }
     
+
     missionLocation(data, missionId) {
         let location = null; // Variable to store the location if found
         const locationButton = document.getElementById('MissionLocation');
@@ -230,8 +231,8 @@ export class MissionPage {
             });
     
             // Pass the sorted images and emblems to their respective functions
-            this.updateSwiperSlider(sortedImageContent, baseImagePath); // Assuming updateSwiperSlider is defined elsewhere
             this.updateEmblemSection(missionEmblems, baseImagePath); // Assuming updateEmblemSection is defined elsewhere
+            this.createImageslider(sortedImageContent, baseImagePath); // Assuming updateSwiperSlider is defined elsewhere
         } catch (error) {
             console.error('Error in parseMediaUrl:', error);
         }
@@ -289,84 +290,158 @@ export class MissionPage {
         });
     }
 
-    updateSwiperSlider(imageArray, baseImagePath) {
-        const swiperContainer = document.querySelector('.swiper'); // Find the Swiper container
-        const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper'); // Find the Swiper wrapper
+    createImageslider(imageArray, baseImagePath) {
+        const imageSwiper = document.getElementById('imageSwiper');
+        const parentElement = imageSwiper.parentElement;
+        imageSwiper.remove();
     
-        if (!swiperContainer || !swiperWrapper) {
-            console.error('Swiper container or wrapper not found.');
-            return;
-        }
-    
-        const missionImageArray = imageArray;
-    
-        // Clear existing slides
-        swiperWrapper.innerHTML = '';
-    
-        // Add new slides
-        missionImageArray.forEach((imageData) => {
-            const slide = document.createElement('div');
-            slide.className = 'swiper-slide';
-            slide.innerHTML = `
-                <div class="elementor-element elementor-element-7f30c2c0 e-flex e-con-boxed e-con e-child">
-                    <div class="e-con-inner">
-                        <div class="elementor-element elementor-element-a0ab922 elementor-widget elementor-widget-image">
-                            <div class="elementor-widget-container">
-                                <img src="${baseImagePath}${imageData.url}" alt="${imageData.caption}" loading="lazy" decoding="async">
-                            </div>
-                        </div>
-                        <div class="elementor-element elementor-element-9421eab elementor-widget elementor-widget-heading">
-                            <div class="elementor-widget-container">
-                                <h3 class="elementor-heading-title elementor-size-default">${imageData.caption}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-            swiperWrapper.appendChild(slide);
+        // Create the slider container
+        const sliderContainer = document.createElement('div');
+        Object.assign(sliderContainer.style, {
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            width: '100%',
+            height: '100%',
+            scrollBehavior: 'smooth',
+            boxSizing: 'border-box',
         });
     
-        // Destroy existing Swiper instance
-        if (swiperContainer.swiper) {
-            swiperContainer.swiper.destroy(true, true);
-        }
+        // Add images to the slider
+        imageArray.forEach(({ url, caption }) => {
+            const imageElement = document.createElement('div');
+            Object.assign(imageElement.style, {
+                flex: '0 0 auto',
+                scrollSnapAlign: 'start',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            });
     
-        // Extract settings dynamically
-        const settings = JSON.parse(swiperContainer.closest('[data-settings]').getAttribute('data-settings') || '{}');
-        const autoplaySpeed = parseInt(settings.autoplay_speed || 4000, 10);
-        const autoplayEnabled = settings.autoplay === 'yes';
+            const img = document.createElement('img');
+            img.src = `${baseImagePath}${url}`;
+            img.alt = caption;
+            Object.assign(img.style, {
+                width: '100%',
+                height: 'auto',
+            });
     
-        // Reinitialize Swiper
-        const swiperInstance = new Swiper(swiperContainer, {
-            slidesPerView: 1,
-            spaceBetween: 10,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            loop: true,
-            autoplay: autoplayEnabled ? { delay: autoplaySpeed } : false,
+            const imgCaption = document.createElement('h3');
+            imgCaption.textContent = caption;
+            Object.assign(imgCaption.style, {
+                marginTop: '10px',
+                fontSize: '18px',
+                textAlign: 'center',
+                color: '#333',
+            });
+    
+            imageElement.appendChild(img);
+            imageElement.appendChild(imgCaption);
+            sliderContainer.appendChild(imageElement);
         });
     
-        // Handle autoplay resumption for navigation and pagination
-        const handleAutoplayResume = () => {
-            if (swiperInstance.autoplay) {
-                swiperInstance.autoplay.start();
-            }
+        // Navigation buttons
+        const createNavButton = (isPrev) => {
+            const button = document.createElement('button');
+            Object.assign(button.style, {
+                width: '40px',
+                height: '55px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+                transform: isPrev ? 'none' : 'rotate(180deg)',
+            });
+    
+            const arrow1 = document.createElement('div');
+            const arrow2 = document.createElement('div');
+            Object.assign(arrow1.style, {
+                width: '30px',
+                height: '7px',
+                backgroundColor: 'black',
+                borderRadius: '5px',
+                transform: 'rotate(-45deg)',
+            });
+            Object.assign(arrow2.style, {
+                width: '30px',
+                height: '7px',
+                backgroundColor: 'black',
+                borderRadius: '5px',
+                transform: 'rotate(45deg) translate(7px, 7px)',
+            });
+    
+            button.appendChild(arrow1);
+            button.appendChild(arrow2);
+            return button;
         };
     
-        // Add event listeners for autoplay resumption
-        const navigationButtons = swiperContainer.querySelectorAll('.swiper-button-next, .swiper-button-prev');
-        navigationButtons.forEach((button) =>
-            button.addEventListener('click', handleAutoplayResume)
-        );
+        const prevButton = createNavButton(true);
+        const nextButton = createNavButton(false);
     
-        const paginationButtons = swiperContainer.querySelectorAll('.swiper-pagination-bullet');
-        paginationButtons.forEach((button) =>
-            button.addEventListener('click', handleAutoplayResume)
-        );
+        // Navigation container
+        const navigationContainer = document.createElement('div');
+        Object.assign(navigationContainer.style, {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+        });
+        navigationContainer.appendChild(prevButton);
+        navigationContainer.appendChild(sliderContainer);
+        navigationContainer.appendChild(nextButton);
+    
+        // Progress text
+        const progressText = document.createElement('span');
+        Object.assign(progressText.style, {
+            fontSize: '16px',
+            fontFamily: 'Arial, sans-serif',
+            fontWeight: 'bold',
+            color: '#333',
+            marginTop: '10px',
+        });
+    
+        parentElement.appendChild(navigationContainer);
+        parentElement.appendChild(progressText);
+    
+        // Helper function to update UI
+        const updateUI = () => {
+            const firstImage = sliderContainer.firstElementChild;
+            if (!firstImage) return;
+    
+            const imageWidth = firstImage.getBoundingClientRect().width;
+            const scrollLeft = sliderContainer.scrollLeft;
+            const maxScroll = sliderContainer.scrollWidth - sliderContainer.offsetWidth;
+    
+            // Determine the currently displayed image index
+            const currentIndex = Math.round(scrollLeft / imageWidth);
+    
+            // Update progress text
+            progressText.textContent = `Showing ${currentIndex + 1} of ${imageArray.length}`;
+    
+            // Show or hide navigation buttons
+            prevButton.style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
+            nextButton.style.visibility = currentIndex < imageArray.length - 1 ? 'visible' : 'hidden';
+        };
+    
+        // Scroll behavior for buttons
+        prevButton.addEventListener('click', () => {
+            const firstImage = sliderContainer.firstElementChild;
+            if (!firstImage) return;
+            const imageWidth = firstImage.getBoundingClientRect().width;
+            sliderContainer.scrollBy({ left: -imageWidth, behavior: 'smooth' });
+        });
+    
+        nextButton.addEventListener('click', () => {
+            const firstImage = sliderContainer.firstElementChild;
+            if (!firstImage) return;
+            const imageWidth = firstImage.getBoundingClientRect().width;
+            sliderContainer.scrollBy({ left: imageWidth, behavior: 'smooth' });
+        });
+    
+        // Listen for scroll events to update UI
+        sliderContainer.addEventListener('scroll', updateUI);
+    
+        // Initialize slider UI
+        updateUI();
     }
 };
