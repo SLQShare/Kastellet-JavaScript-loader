@@ -351,53 +351,66 @@ export class SelectedFilters {
                 }
             }
         }
-        console.log('listOfInvalidOptions', listOfInvalidOptions);
         
         
+        function makeInvalidOptionNonInteractable(invalidOptions, data) {
+            // Select all relevant elements at the start
+            const elementsToCheck = document.querySelectorAll('[filterId]');
         
-        function makeInvalidOptionNonInteractable(invalidOptions) {
-            const elementsToRest = document.querySelectorAll('[filterId]'); 
-            if (invalidOptions.length < 1) {
-                elementsToRest.forEach((element) => {
-                    element.style.opacity = '1';
-                    element.style.order = '0'; // Reset order to default
-                    element.style.pointerEvents = 'auto'; // Disable interaction
-            })
-            }
-            
-            console.log('invalidOptions', typeof(invalidOptions));
-            console.log('invalidOptions', invalidOptions);
-        
-            // key: one of the three types of filters
-            // value: the filter value
+            // Convert invalidOptions into a lookup for quick checks
+            const invalidLookup = new Map();
             invalidOptions.forEach(option => {
                 Object.entries(option).forEach(([key, value]) => {
-                    // Select elements by their `filterId` attribute
-                    const elements = document.querySelectorAll(`[filterId*="filterOption-${key}"]`);
-        
-                    elements.forEach((element) => {
-                        // Check the `filterValue` attribute for a match
-                        if (element.getAttribute('filterValue') === value) {
-                            element.style.opacity = '0'; // Make the element invisible
-                            element.style.pointerEvents = 'none'; // Disable interaction
-                            element.style.order = '999'; // Push it to the end of the flex container
-                        }
-                    });
+                    if (!invalidLookup.has(key)) {
+                        invalidLookup.set(key, new Set());
+                    }
+                    invalidLookup.get(key).add(value);
                 });
+            });
+        
+            // Iterate through all elements to reset or hide them
+            elementsToCheck.forEach((element) => {
+                const filterId = element.getAttribute('filterId');
+                let filterValue = element.getAttribute('filterValue');
+                const key = filterId.split('-')[1]; // Extract the key from filterId (e.g., "period")
+        
+                // Convert contribution ID to title if the key is "contribution"
+                // TODO streamline the contribution code to use the ID instead of title.
+                if (key === "contribution" && data && data.forces) {
+                    const matchingForce = data.forces.find(force => force.id === Number(filterValue));
+                    if (matchingForce) {
+                        filterValue = matchingForce.title; // Replace the ID with the title
+                    }
+                }
+        
+                // Check if the element is in the invalid options
+                const isInvalid = invalidLookup.has(key) && invalidLookup.get(key).has(filterValue);
+        
+                if (isInvalid) {
+                    // Hide invalid elements
+                    element.style.opacity = '0'; // Make invisible
+                    element.style.pointerEvents = 'none'; // Disable interaction
+                    element.style.order = '999'; // Push to the end
+                } else {
+                    // Reset valid elements
+                    element.style.opacity = '1'; // Make visible
+                    element.style.pointerEvents = 'auto'; // Enable interaction
+                    element.style.order = '0'; // Reset order
+                }
             });
         }
         
-        makeInvalidOptionNonInteractable(listOfInvalidOptions);
+        makeInvalidOptionNonInteractable(listOfInvalidOptions, this.data);
         return listOfInvalidOptions;
     }
     
     // Main handler for filter changes (instance-specific logic)
     handleFilterChange(type, value) {
+        
         console.log(`Filter changed: ${type} = ${value}`);
         const currentFilters = this.getAllFilters();
         const selectedMission = this.applyFiltersToFindMissions(this.data, currentFilters);
         let forceIdForColor = null;
-
         // Contribution Filter Logic
         this.data.forces.forEach(force => {
             console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);

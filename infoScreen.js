@@ -205,21 +205,21 @@ export class InfoScreenPage {
     applyFilter(type, value, filterButtonElement, parentButtonElement, data) {
         this.selectedFilters.updateSelectedFilter(type, value); // Update queryable data
         this.updateInterfaceFromStateStorage(type, parentButtonElement, filterButtonElement);
-        closeAllFilterContainers();
-        
-        // used to close the filter selectors on each search so the options are not in the way of the map pins
-        function closeAllFilterContainers() {
-            const filterButtons = document.querySelectorAll('[id*="filterSelectorContainer"]');
-            filterButtons.forEach(button => {
-                button.style.display = 'none'; // Hide all filter containers
-            });
-        }
+        this.closeAllFilterContainers();
+    }
+
+    // used to close the filter selectors on each search so the options are not in the way of the map pins
+    closeAllFilterContainers() {
+        const filterButtons = document.querySelectorAll('[id*="filterSelectorContainer"]');
+        filterButtons.forEach(button => {
+            button.style.display = 'none'; // Hide all filter containers
+        });
     }
 
     resetFilterObjects(data, type = null){
         this.selectedFilters.resetSelectedFilter(type); // Notify listener via reset
         this.resetStateStorage(type);
-        
+        this.closeAllFilterContainers();
     }
 
     resetStateStorage(type = null) {
