@@ -5,7 +5,15 @@ export class SelectedFilters {
         this.contribution = null;
         this.geography = null;
         this.currentMissionId = 5388;
-        this.emblemIds = [1689, 1658, 1693, 1688, 1686, 1687, 1690, 1691]; 
+        this.emblemIds = [
+            1688, // fn_logo
+            1691, // nato_log
+            1687, // eu_logo
+            1689, // forsvaret_logo
+            1693, // politi_logo
+            1686, // beredskabsstyrelsen 
+            1690, // hjemmevaernet_logo
+        ]; 
         this.contributionListeners = [];
         this.filterListeners = []; // Add a list for general filter listeners
         this.mapContainer = null;
@@ -351,7 +359,7 @@ export class SelectedFilters {
                 }
             }
         }
-        
+
         
         function makeInvalidOptionNonInteractable(invalidOptions, data) {
             // Select all relevant elements at the start
