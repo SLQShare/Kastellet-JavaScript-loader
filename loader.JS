@@ -14,7 +14,7 @@ main(jsonDkPath);
 
 function main(apiUrl) {
     // Get mission ID from selected filters or local storage
-    //const defaultMissionId = selectedFilters.getMissionId();
+    const defaultMissionId = selectedFilters.getMissionId();
     let missionId = localStorage.getItem('currentMissionId') || 5388;
 
     // Validate missionId before storing in local storage
