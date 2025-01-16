@@ -28,6 +28,7 @@ export class InfoScreenPage {
 
     initialize(){
         this.updateTheInfoScreen(this.currentMissionId, this.data, this.selectedFilters)
+        this.selectedFilters.dependentFilter();
     }
     // Update the info screen with missions and map pins
     updateTheInfoScreen(missionId, data, selectedFilters) {
