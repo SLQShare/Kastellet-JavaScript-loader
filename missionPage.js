@@ -80,7 +80,6 @@ export class MissionPage {
             console.error(error)
         }
     }
-
     addTextFromDataToTable(data, missionId) {
         const table = this.findElementById('MissionTabs');
         const missionInformation = this.getMissionById(data.missions, missionId);
@@ -93,54 +92,63 @@ export class MissionPage {
     
         // Get text elements
         const textElementsByClass = Array.from(document.getElementsByClassName('TabText'));
-        // Get header elements
-        const filteredArrayOfElements = this.searchAndFindTextElements(table).filter(
-            element => element instanceof HTMLElement && !(element.tagName.toLowerCase() === 'button' || element.tagName.toLowerCase() === 'p')
+        // Get text header elements
+        const filteredArrayOfElementsH2 = this.searchAndFindTextElements(table).filter(
+            element => element instanceof HTMLElement && element.tagName.toLowerCase() === 'h2'
         );
-        // Determine the number of sections to process (minimum of available data or elements)
+        // Get table buttons
+        const filteredArrayOfElementsButton = this.searchAndFindTextElements(table).filter(
+            element => element instanceof HTMLElement && element.tagName.toLowerCase() === 'button'
+        );
+    
+        // Filter out "Kilder" and "Link" sections
+        const missionDataToBeDisplayed = missionInformation.content.text.filter(
+            type => type.id !== "Kilder" && type.id !== "Link"
+        ); // TODO fix for english
+    
+        // Determine the number of sections to process
         const numSections = Math.min(
-            missionInformation.content.text.length,
+            missionDataToBeDisplayed.length,
             textElementsByClass.length,
-            Math.floor(filteredArrayOfElements.length / 2) // Two headers per section
+            filteredArrayOfElementsH2.length,
+            filteredArrayOfElementsButton.length
         );
     
-        // Loop through text entries for text assignments
-        for (let i = 0; i < numSections; i++) {
-            const textEntry = missionInformation.content.text[i];
-    
-            // Assign text content
-            if (textEntry && textEntry.text && textElementsByClass[i]) {
-                textElementsByClass[i].innerHTML = textEntry.text; // Assign text
-            } else {
-                console.warn(`No text or element found for index ${i}`);
-            }
+        // Update table content
+        missionDataToBeDisplayed.forEach((entry, index) => {
+            if (index < numSections) {
+                // Update text content
+                if (entry.text && textElementsByClass[index]) {
+                    textElementsByClass[index].innerHTML = entry.text;
         }
     
-        // Loop through header assignments and hide unused buttons
-        for (let i = 0; i < filteredArrayOfElements.length; i++) {
-            const headerEntry = missionInformation.content.text[i]?.heading;
-            const buttonElement = filteredArrayOfElements[i].closest('button'); // Find the closest parent button
-    
-            if (i < numSections) {
-                // Assign header content
-                if (headerEntry) {
-                    filteredArrayOfElements[i].textContent = headerEntry; // Assign heading
-                    if (buttonElement) {
-                        buttonElement.style.display = ''; // Show the button
-                    }
-                } else {
-                    if (buttonElement) {
-                        buttonElement.style.display = 'none'; // Hide the button
-                    }
+                // Update headers
+                if (entry.heading && filteredArrayOfElementsH2[index]) {
+                    filteredArrayOfElementsH2[index].textContent = entry.heading;
                 }
-            } else {
-                // Hide the button for unused headers
-                if (buttonElement) {
-                    buttonElement.style.display = 'none';
+    
+                // Update buttons
+                if (entry.heading && filteredArrayOfElementsButton[index]) {
+                    filteredArrayOfElementsButton[index].textContent = entry.heading;
+                    //filteredArrayOfElementsButton[index].style.display = ''; // Ensure visible
                 }
             }
+        });
+    
+        // Remove or hide extra elements
+        for (let i = numSections; i < textElementsByClass.length; i++) {
+            textElementsByClass[i].style.display = 'none'; // Hide extra text
         }
+        for (let i = numSections; i < filteredArrayOfElementsH2.length; i++) {
+            filteredArrayOfElementsH2[i].style.display = 'none'; // Hide extra headers
+        }
+        for (let i = numSections; i < filteredArrayOfElementsButton.length; i++) {
+            filteredArrayOfElementsButton[i].style.display = 'none'; // Hide extra buttons
+                }
+    
+        console.log(`Table updated for mission ID: ${missionId}`);
     }
+    
     missionLocation(data, missionId) {
         let location = null; // Variable to store the location if found
         const locationButton = document.getElementById('MissionLocation');
