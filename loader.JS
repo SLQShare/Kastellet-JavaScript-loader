@@ -150,6 +150,7 @@ function updateBeredskabsKort(missionId, data){
 
         // Find the element with the specific filter value
         const element = document.getElementById('contributionFilterButton');
+        const parentElement = document.getElementById('InfoScreenContainer');
         const linkButton = document.createElement('button');
         if (element) {
             // Copy all computed styles from `element` to `linkButton`
@@ -164,7 +165,7 @@ function updateBeredskabsKort(missionId, data){
                 position: 'fixed',    // Make the element fixed
                 bottom: '5%',       // Adjust the distance from the bottom
                 left: '5%',         // Adjust the distance from the left
-                zIndex: '9999',       // Ensure it's on top of other element
+                zIndex: '1',       // Ensure it's on top of other element
                 width: 'auto',
                 padding: '0px 25px'
             });
@@ -173,8 +174,7 @@ function updateBeredskabsKort(missionId, data){
             linkButton.addEventListener('click', () => {
                 window.location.href = url;
             });
-
-            document.body.appendChild(linkButton);
+            parentElement.appendChild(linkButton);
         } else {
             console.error('Element with filtervalue="1092" not found');
         }
