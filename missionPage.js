@@ -535,15 +535,7 @@ export class MissionPage {
             alignItems: 'center',
         });
 
-        
-        // Clone first and last images for infinite looping
-        const imagesWithClones = [
-            imageArray[imageArray.length - 1], // Clone of the last image
-            ...imageArray,
-            imageArray[0], // Clone of the first image
-        ];
-        console.log('imageArray',imageArray)
-        console.log('imagesWithClones',imagesWithClones)
+    
         // Create the slider container
         const sliderContainer = document.createElement('div');
         Object.assign(sliderContainer.style, {
@@ -559,8 +551,9 @@ export class MissionPage {
         });
     
         // Add images to the slider
-        imagesWithClones.forEach(({ url, caption }) => {
+        imageArray.forEach(({ url, caption }) => {
             const imageElement = document.createElement('div');
+            imageElement.classList.add('slider-item');
             Object.assign(imageElement.style, {
                 flex: '0 0 auto',
                 scrollSnapAlign: 'start',
@@ -569,6 +562,7 @@ export class MissionPage {
                 alignItems: 'center',
                 width: '100%',
                 height: '100%', 
+                pointerEvents: 'auto',
             });
     
             const img = document.createElement('img');
@@ -580,6 +574,9 @@ export class MissionPage {
                 height: '55vh',
                 objectFit: 'scale-down'
             });
+            // Add lazy loading attribute
+            img.setAttribute('loading', 'lazy');
+
     
             const imgCaption = document.createElement('h3');
             imgCaption.textContent = caption;
@@ -657,8 +654,6 @@ export class MissionPage {
             width: '100%',
         });
 
-        let currentDotIndex = 0;
-
         imageArray.forEach((image, index) => {
             const circleButton = document.createElement('button');
             Object.assign(circleButton.style, {
@@ -672,16 +667,18 @@ export class MissionPage {
                 margin: '4px'
             });
             
-            // nav dots
+            // Navigation dots click logic
             circleButton.addEventListener('click', () => {
                 const firstImage = sliderContainer.firstElementChild;
                 if (!firstImage) return;
             
                 const imageWidth = firstImage.getBoundingClientRect().width;
             
-                // Adjust scroll position for the first clone
-                const adjustedIndex = index + 1; // Account for the left clone
-                sliderContainer.scrollTo({ left: adjustedIndex * imageWidth, behavior: 'smooth' });
+                // Map the dot index to the corresponding real image in the mainSet
+                const targetIndex = index + originalSliderItems.length; // Offset to align with mainSet
+            
+                // Scroll to the corresponding image in the mainSet
+                sliderContainer.scrollTo({ left: targetIndex * imageWidth, behavior: 'smooth' });
             
                 // Update active dot
                 updateActiveDot(index);
@@ -691,122 +688,108 @@ export class MissionPage {
         })
         parentElement.appendChild(navigationContainer);
         parentElement.appendChild(circleNavigationContainer);
-        
+
         // Helper function to update active dot
         const updateActiveDot = (newIndex) => {
             const allDots = circleNavigationContainer.children;
-            imageArrayIndex = newIndex;
-            console.log('newIndex', newIndex);
+        
             // Reset all dots to default color
             Array.from(allDots).forEach((dot, i) => {
                 dot.style.backgroundColor = i === newIndex ? '#000000' : '#cbcbcb'; // Highlight active dot
             });
+        
+            currentDotIndex = newIndex; // Update the current dot index
         };
         
-        let imageArrayIndex = 0; // Start at the first real image (index 1)
-        let bool = true;
-        // Scroll to a specific image based on index
-        function controlLooping(index, type = 'instant') {
-            const firstImage = sliderContainer.firstElementChild;
-            if (!firstImage) return;
-            console.log('controlLooping')
-            const imageWidth = firstImage.getBoundingClientRect().width;
-            const scrollLength = imageWidth * (index + 1); // Adjust for the left clone
-            sliderContainer.scrollTo({ left: scrollLength, behavior: type });
-        }
         
-        
-        // Helper function to update UI
-        const updateUI = () => {
-            const firstImage = sliderContainer.firstElementChild;
-            if (!firstImage) return;
+        //sliderContainer 
+        // Select all original slider items (these will be cloned to create sets)
+        const originalSliderItems = Array.from(document.querySelectorAll('.slider-item'));
 
-            const imageWidth = firstImage.getBoundingClientRect().width;
-            const maxScroll = sliderContainer.scrollWidth - sliderContainer.offsetWidth;
+        let currentDotIndex = 1;
+        console.log(imageArray)
 
-            // Get current scroll position and determine index
-            const realScrollLeft = sliderContainer.scrollLeft;
-            const currentIndex = Math.round((realScrollLeft - imageWidth) / imageWidth);
-            console.log('currentIndex', currentIndex);
-            console.log('realScrollLeft', realScrollLeft);
-            console.log('bool', bool);
-            
-            // Handle seamless looping
-            if (currentIndex < 0) {
-                // At left clone, jump to the last real image
-                console.log('At left clone, jump to the last real image');
-                imageArrayIndex = imageArray.length - 1;
-                controlLooping(imageArrayIndex, 'instant');
-                if (bool){
-                    //controlLooping(imageArrayIndex, 'smooth');
-                    bool = false;
-                }
-            } else if (currentIndex > 5) {
-                console.log('At right clone, jump to the first real image');
-                // At right clone, jump to the first real image
-                imageArrayIndex = 0;
-                controlLooping(imageArrayIndex, 'instant');
-                if (bool){
-                    //controlLooping(imageArrayIndex, 'smooth');
-                    bool = false;
-                }
-            } else {
-                // Update the index for the currently displayed real image
-                imageArrayIndex = currentIndex;
-            }
-            // Update navigation dots
-            updateActiveDot(imageArrayIndex);
+        // Helper function: Create a set of cloned slider items
+        const createImageSet = (items) => {
+            const fragment = document.createDocumentFragment(); // Use a fragment for efficient DOM updates
+            items.forEach((item) => {
+                const clone = item.cloneNode(true); // Deep clone to preserve inner elements and styles
+                fragment.appendChild(clone);
+            });
+            return fragment;
         };
 
-        // Arrow button behavior
-        prevButton.addEventListener('click', () => {
-            if (imageArrayIndex === 0) {
-                imageArrayIndex = imageArray.length - 1;  // Loop to the last image
-                controlLooping(imageArrayIndex, 'smooth');
-            } else {
-                imageArrayIndex -=1; // Move to the previous image
-                controlLooping(imageArrayIndex, 'smooth');
-                //updateActiveDot(imageArrayIndex);
+        // Function: Reset the slider container with three sets (left, main, right)
+        const resetSliderContainer = () => {
+            // Clear all current children in the slider container
+            while (sliderContainer.firstChild) {
+                sliderContainer.removeChild(sliderContainer.firstChild);
             }
-            updateUI();
-        });
 
-        nextButton.addEventListener('click', () => {
-            if (imageArrayIndex < imageArray.length - 1) {
-                imageArrayIndex += 1; // Move to the next image
-                controlLooping(imageArrayIndex, 'smooth');
-            } else {
-                imageArrayIndex = 0; // Loop to the first image
-                controlLooping(imageArrayIndex, 'smooth');
-                //updateActiveDot(imageArrayIndex);
-            }
-            updateUI();
-        });
+            // Create three sets of slider items
+            const leftSet = createImageSet(originalSliderItems);
+            const mainSet = createImageSet(originalSliderItems);
+            const rightSet = createImageSet(originalSliderItems);
 
-        // Initialize the slider to the first real image
-        const initializeSlider = () => {
-            controlLooping(0, 'instant'); // Start at the first real image (index 1)
-            updateUI(); // Sync the UI
+            // Append the sets to the container in the order: left -> main -> right
+            sliderContainer.appendChild(leftSet);
+            sliderContainer.appendChild(mainSet);
+            sliderContainer.appendChild(rightSet);
+
+            // Calculate image width and adjust the initial scroll position to the main set
+            const imageWidth = sliderContainer.firstElementChild.offsetWidth;
+            sliderContainer.scrollTo({
+                left: originalSliderItems.length * imageWidth, // Start at the beginning of the main set
+                behavior: 'instant',
+            });
         };
 
-
-        let lastScrollLeft = 0; // Store the last known scroll position
-        const threshold = 0; // Define the minimum scroll distance to trigger the event
-
+        // Scroll listener with active dot logic
         sliderContainer.addEventListener('scroll', () => {
-            const currentScrollLeft = sliderContainer.scrollLeft;
-            console.log('threshold', Math.abs(currentScrollLeft - lastScrollLeft))
-            
-            if (Math.abs(currentScrollLeft - lastScrollLeft) >= threshold) {
-                lastScrollLeft = currentScrollLeft; // Update the last known position
-                console.log('trigger')
-                updateUI(); // Trigger your scroll event logic
+            console.log('sliderContainer.addEventListener')
+            const scrollLeft = sliderContainer.scrollLeft; // Current scroll position
+            const totalWidth = sliderContainer.scrollWidth; // Total width of all sets combined
+            const viewportWidth = sliderContainer.clientWidth; // Visible width of the container
+            const thresholdLeft = viewportWidth; // Threshold for scrolling to the left set
+            const thresholdRight = totalWidth - 2 * viewportWidth; // Threshold for scrolling to the right set
+
+            const imageWidth = sliderContainer.firstElementChild.offsetWidth; // Width of a single image
+
+            if (scrollLeft <= thresholdLeft) {
+                sliderContainer.scrollTo({
+                    left: scrollLeft + originalSliderItems.length * imageWidth,
+                    behavior: 'instant',
+                });
+            } else if (scrollLeft >= thresholdRight) {
+                sliderContainer.scrollTo({
+                    left: scrollLeft - originalSliderItems.length * imageWidth,
+                    behavior: 'instant',
+                });
             }
+
+            const currentIndex = Math.round(scrollLeft / imageWidth);
+            const realIndex = (currentIndex % originalSliderItems.length + originalSliderItems.length) % originalSliderItems.length;
+            updateActiveDot(realIndex);
         });
+        
+        // Function: Move the slider programmatically (for button navigation)
+        const moveSlider = (direction) => {
+            const imageWidth = sliderContainer.firstElementChild.offsetWidth; // Width of a single image
 
+            // Scroll the container by one image width in the given direction
+            sliderContainer.scrollBy({
+                left: direction * imageWidth,
+                behavior: 'smooth', // Smooth animation for better user experience
+            });
+        };
 
-        // Initialize the slider
-        initializeSlider();
+        // Attach event listeners for the navigation buttons
+        prevButton.addEventListener('click', () => moveSlider(-1)); // Move left by one image
+        nextButton.addEventListener('click', () => moveSlider(1));  // Move right by one image
 
+        // Initialize the slider by resetting the container and setting the initial scroll position
+        resetSliderContainer();
     }
+
 };
+
