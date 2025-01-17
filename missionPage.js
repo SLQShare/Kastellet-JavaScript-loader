@@ -130,6 +130,12 @@ export class MissionPage {
                 // Update buttons
                 if (entry.heading && filteredArrayOfElementsButton[index]) {
                     filteredArrayOfElementsButton[index].textContent = entry.heading;
+                    Object.assign(filteredArrayOfElementsButton[index].style, {
+                        fontFamily: 'Poppins, Sans-serif',
+                        textTransform: 'uppercase',
+                        fontWeight: '300',
+                        letterSpacing: '1px',
+                    });
                     //filteredArrayOfElementsButton[index].style.display = ''; // Ensure visible
                 }
             }
@@ -290,11 +296,26 @@ export class MissionPage {
         });
     }
 
-    createImageslider(imageArray, baseImagePath) {
+    createImagesliderOld(imageArray, baseImagePath) {
         const imageSwiper = document.getElementById('imageSwiper');
         const parentElement = imageSwiper.parentElement;
         imageSwiper.remove();
-    
+        Object.assign(parentElement.style, {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+        });
+
+        
+        // Clone first and last images for infinite looping
+        const imagesWithClones = [
+            imageArray[imageArray.length - 1], // Clone of the last image
+            ...imageArray,
+            imageArray[0], // Clone of the first image
+        ];
+        console.log('imageArray',imageArray)
+        console.log('imagesWithClones',imagesWithClones)
         // Create the slider container
         const sliderContainer = document.createElement('div');
         Object.assign(sliderContainer.style, {
@@ -302,13 +323,15 @@ export class MissionPage {
             overflowX: 'auto',
             scrollSnapType: 'x mandatory',
             width: '100%',
-            height: '100%',
+            height: '60vh',
             scrollBehavior: 'smooth',
             boxSizing: 'border-box',
+            scrollbarWidth: 'none',
+            gap: '1px'
         });
     
         // Add images to the slider
-        imageArray.forEach(({ url, caption }) => {
+        imagesWithClones.forEach(({ url, caption }) => {
             const imageElement = document.createElement('div');
             Object.assign(imageElement.style, {
                 flex: '0 0 auto',
@@ -316,14 +339,18 @@ export class MissionPage {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                width: '100%',
+                height: '100%', 
             });
     
             const img = document.createElement('img');
             img.src = `${baseImagePath}${url}`;
             img.alt = caption;
             Object.assign(img.style, {
-                width: '100%',
-                height: 'auto',
+                maxWidth: '100%',
+                width: 'auto',
+                height: '55vh',
+                objectFit: 'scale-down'
             });
     
             const imgCaption = document.createElement('h3');
@@ -332,7 +359,11 @@ export class MissionPage {
                 marginTop: '10px',
                 fontSize: '18px',
                 textAlign: 'center',
-                color: '#333',
+                color: '#BEBEBE',
+                fontFamily: 'Poppins, Sans-serif',
+                fontSize: '20px',
+                fontWeight: '400',
+                fontStyle: 'italic',
             });
     
             imageElement.appendChild(img);
@@ -389,34 +420,69 @@ export class MissionPage {
         navigationContainer.appendChild(prevButton);
         navigationContainer.appendChild(sliderContainer);
         navigationContainer.appendChild(nextButton);
-    
-        // Progress text
-        const progressText = document.createElement('span');
-        Object.assign(progressText.style, {
-            fontSize: '16px',
-            fontFamily: 'Arial, sans-serif',
-            fontWeight: 'bold',
-            color: '#333',
-            marginTop: '10px',
+        
+        const circleNavigationContainer = document.createElement('div');
+        Object.assign(circleNavigationContainer.style, {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
         });
-    
+
+        let currentDotIndex = 0;
+
+        imageArray.forEach((image, index) => {
+            const circleButton = document.createElement('button');
+            Object.assign(circleButton.style, {
+                width: '22px',
+                height: '22px',
+                borderRadius: '50%',
+                backgroundColor: index === 0 ? '#000000' : '#cbcbcb',
+                border: 'none',
+                color: 'white',
+                display: 'inlineBlock',
+                margin: '4px'
+            });
+            
+            // nav dots
+            circleButton.addEventListener('click', () => {
+                const firstImage = sliderContainer.firstElementChild;
+                if (!firstImage) return;
+        
+                const imageWidth = firstImage.getBoundingClientRect().width;
+                sliderContainer.scrollTo({ left: index * imageWidth, behavior: 'smooth' });
+        
+                // Update active dot
+                updateActiveDot(index);
+            });
+            circleNavigationContainer.appendChild(circleButton);
+        })
         parentElement.appendChild(navigationContainer);
-        parentElement.appendChild(progressText);
-    
+        parentElement.appendChild(circleNavigationContainer);
+        
+        // Helper function to update active dot
+        const updateActiveDot = (newIndex) => {
+            const allDots = circleNavigationContainer.children;
+
+            // Reset all dots to default color
+            Array.from(allDots).forEach((dot, i) => {
+                dot.style.backgroundColor = i === newIndex ? '#000000' : '#cbcbcb'; // Highlight active dot
+            });
+
+            currentDotIndex = newIndex;
+        };
+
         // Helper function to update UI
         const updateUI = () => {
             const firstImage = sliderContainer.firstElementChild;
             if (!firstImage) return;
-    
+            
             const imageWidth = firstImage.getBoundingClientRect().width;
             const scrollLeft = sliderContainer.scrollLeft;
             const maxScroll = sliderContainer.scrollWidth - sliderContainer.offsetWidth;
     
             // Determine the currently displayed image index
             const currentIndex = Math.round(scrollLeft / imageWidth);
-    
-            // Update progress text
-            progressText.textContent = `Showing ${currentIndex + 1} of ${imageArray.length}`;
     
             // Show or hide navigation buttons
             prevButton.style.visibility = currentIndex > 0 ? 'visible' : 'hidden';
@@ -437,11 +503,310 @@ export class MissionPage {
             const imageWidth = firstImage.getBoundingClientRect().width;
             sliderContainer.scrollBy({ left: imageWidth, behavior: 'smooth' });
         });
+
+        // Add scroll listener to sync dots with manual sliding
+        sliderContainer.addEventListener('scroll', () => {
+            const firstImage = sliderContainer.firstElementChild;
+            if (!firstImage) return;
+
+            const imageWidth = firstImage.getBoundingClientRect().width;
+            const newIndex = Math.round(sliderContainer.scrollLeft / imageWidth);
+
+            if (newIndex !== currentDotIndex) {
+                updateActiveDot(newIndex);
+            }
+        });
     
         // Listen for scroll events to update UI
         sliderContainer.addEventListener('scroll', updateUI);
     
         // Initialize slider UI
         updateUI();
+    }
+
+    createImageslider(imageArray, baseImagePath) {
+        const imageSwiper = document.getElementById('imageSwiper');
+        const parentElement = imageSwiper.parentElement;
+        imageSwiper.remove();
+        Object.assign(parentElement.style, {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+        });
+
+        
+        // Clone first and last images for infinite looping
+        const imagesWithClones = [
+            imageArray[imageArray.length - 1], // Clone of the last image
+            ...imageArray,
+            imageArray[0], // Clone of the first image
+        ];
+        console.log('imageArray',imageArray)
+        console.log('imagesWithClones',imagesWithClones)
+        // Create the slider container
+        const sliderContainer = document.createElement('div');
+        Object.assign(sliderContainer.style, {
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            width: '100%',
+            height: '60vh',
+            scrollBehavior: 'smooth',
+            boxSizing: 'border-box',
+            scrollbarWidth: 'none',
+            gap: '1px'
+        });
+    
+        // Add images to the slider
+        imagesWithClones.forEach(({ url, caption }) => {
+            const imageElement = document.createElement('div');
+            Object.assign(imageElement.style, {
+                flex: '0 0 auto',
+                scrollSnapAlign: 'start',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%', 
+            });
+    
+            const img = document.createElement('img');
+            img.src = `${baseImagePath}${url}`;
+            img.alt = caption;
+            Object.assign(img.style, {
+                maxWidth: '100%',
+                width: 'auto',
+                height: '55vh',
+                objectFit: 'scale-down'
+            });
+    
+            const imgCaption = document.createElement('h3');
+            imgCaption.textContent = caption;
+            Object.assign(imgCaption.style, {
+                marginTop: '10px',
+                fontSize: '18px',
+                textAlign: 'center',
+                color: '#BEBEBE',
+                fontFamily: 'Poppins, Sans-serif',
+                fontSize: '20px',
+                fontWeight: '400',
+                fontStyle: 'italic',
+            });
+    
+            imageElement.appendChild(img);
+            imageElement.appendChild(imgCaption);
+            sliderContainer.appendChild(imageElement);
+        });
+    
+        // Navigation buttons
+        const createNavButton = (isPrev) => {
+            const button = document.createElement('button');
+            Object.assign(button.style, {
+                width: '40px',
+                height: '55px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+                transform: isPrev ? 'none' : 'rotate(180deg)',
+            });
+    
+            const arrow1 = document.createElement('div');
+            const arrow2 = document.createElement('div');
+            Object.assign(arrow1.style, {
+                width: '30px',
+                height: '7px',
+                backgroundColor: 'black',
+                borderRadius: '5px',
+                transform: 'rotate(-45deg)',
+            });
+            Object.assign(arrow2.style, {
+                width: '30px',
+                height: '7px',
+                backgroundColor: 'black',
+                borderRadius: '5px',
+                transform: 'rotate(45deg) translate(7px, 7px)',
+            });
+    
+            button.appendChild(arrow1);
+            button.appendChild(arrow2);
+            return button;
+        };
+    
+        const prevButton = createNavButton(true);
+        const nextButton = createNavButton(false);
+    
+        // Navigation container
+        const navigationContainer = document.createElement('div');
+        Object.assign(navigationContainer.style, {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+        });
+        navigationContainer.appendChild(prevButton);
+        navigationContainer.appendChild(sliderContainer);
+        navigationContainer.appendChild(nextButton);
+        
+        const circleNavigationContainer = document.createElement('div');
+        Object.assign(circleNavigationContainer.style, {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+        });
+
+        let currentDotIndex = 0;
+
+        imageArray.forEach((image, index) => {
+            const circleButton = document.createElement('button');
+            Object.assign(circleButton.style, {
+                width: '22px',
+                height: '22px',
+                borderRadius: '50%',
+                backgroundColor: index === 0 ? '#000000' : '#cbcbcb',
+                border: 'none',
+                color: 'white',
+                display: 'inlineBlock',
+                margin: '4px'
+            });
+            
+            // nav dots
+            circleButton.addEventListener('click', () => {
+                const firstImage = sliderContainer.firstElementChild;
+                if (!firstImage) return;
+            
+                const imageWidth = firstImage.getBoundingClientRect().width;
+            
+                // Adjust scroll position for the first clone
+                const adjustedIndex = index + 1; // Account for the left clone
+                sliderContainer.scrollTo({ left: adjustedIndex * imageWidth, behavior: 'smooth' });
+            
+                // Update active dot
+                updateActiveDot(index);
+            });
+            
+            circleNavigationContainer.appendChild(circleButton);
+        })
+        parentElement.appendChild(navigationContainer);
+        parentElement.appendChild(circleNavigationContainer);
+        
+        // Helper function to update active dot
+        const updateActiveDot = (newIndex) => {
+            const allDots = circleNavigationContainer.children;
+            imageArrayIndex = newIndex;
+            console.log('newIndex', newIndex);
+            // Reset all dots to default color
+            Array.from(allDots).forEach((dot, i) => {
+                dot.style.backgroundColor = i === newIndex ? '#000000' : '#cbcbcb'; // Highlight active dot
+            });
+        };
+        
+        let imageArrayIndex = 0; // Start at the first real image (index 1)
+        let bool = true;
+        // Scroll to a specific image based on index
+        function controlLooping(index, type = 'instant') {
+            const firstImage = sliderContainer.firstElementChild;
+            if (!firstImage) return;
+            console.log('controlLooping')
+            const imageWidth = firstImage.getBoundingClientRect().width;
+            const scrollLength = imageWidth * (index + 1); // Adjust for the left clone
+            sliderContainer.scrollTo({ left: scrollLength, behavior: type });
+        }
+        
+        
+        // Helper function to update UI
+        const updateUI = () => {
+            const firstImage = sliderContainer.firstElementChild;
+            if (!firstImage) return;
+
+            const imageWidth = firstImage.getBoundingClientRect().width;
+            const maxScroll = sliderContainer.scrollWidth - sliderContainer.offsetWidth;
+
+            // Get current scroll position and determine index
+            const realScrollLeft = sliderContainer.scrollLeft;
+            const currentIndex = Math.round((realScrollLeft - imageWidth) / imageWidth);
+            console.log('currentIndex', currentIndex);
+            console.log('realScrollLeft', realScrollLeft);
+            console.log('bool', bool);
+            
+            // Handle seamless looping
+            if (currentIndex < 0) {
+                // At left clone, jump to the last real image
+                console.log('At left clone, jump to the last real image');
+                imageArrayIndex = imageArray.length - 1;
+                controlLooping(imageArrayIndex, 'instant');
+                if (bool){
+                    //controlLooping(imageArrayIndex, 'smooth');
+                    bool = false;
+                }
+            } else if (currentIndex > 5) {
+                console.log('At right clone, jump to the first real image');
+                // At right clone, jump to the first real image
+                imageArrayIndex = 0;
+                controlLooping(imageArrayIndex, 'instant');
+                if (bool){
+                    //controlLooping(imageArrayIndex, 'smooth');
+                    bool = false;
+                }
+            } else {
+                // Update the index for the currently displayed real image
+                imageArrayIndex = currentIndex;
+            }
+            // Update navigation dots
+            updateActiveDot(imageArrayIndex);
+        };
+
+        // Arrow button behavior
+        prevButton.addEventListener('click', () => {
+            if (imageArrayIndex === 0) {
+                imageArrayIndex = imageArray.length - 1;  // Loop to the last image
+                controlLooping(imageArrayIndex, 'smooth');
+            } else {
+                imageArrayIndex -=1; // Move to the previous image
+                controlLooping(imageArrayIndex, 'smooth');
+                //updateActiveDot(imageArrayIndex);
+            }
+            updateUI();
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (imageArrayIndex < imageArray.length - 1) {
+                imageArrayIndex += 1; // Move to the next image
+                controlLooping(imageArrayIndex, 'smooth');
+            } else {
+                imageArrayIndex = 0; // Loop to the first image
+                controlLooping(imageArrayIndex, 'smooth');
+                //updateActiveDot(imageArrayIndex);
+            }
+            updateUI();
+        });
+
+        // Initialize the slider to the first real image
+        const initializeSlider = () => {
+            controlLooping(0, 'instant'); // Start at the first real image (index 1)
+            updateUI(); // Sync the UI
+        };
+
+
+        let lastScrollLeft = 0; // Store the last known scroll position
+        const threshold = 0; // Define the minimum scroll distance to trigger the event
+
+        sliderContainer.addEventListener('scroll', () => {
+            const currentScrollLeft = sliderContainer.scrollLeft;
+            console.log('threshold', Math.abs(currentScrollLeft - lastScrollLeft))
+            
+            if (Math.abs(currentScrollLeft - lastScrollLeft) >= threshold) {
+                lastScrollLeft = currentScrollLeft; // Update the last known position
+                console.log('trigger')
+                updateUI(); // Trigger your scroll event logic
+            }
+        });
+
+
+        // Initialize the slider
+        initializeSlider();
+
     }
 };
