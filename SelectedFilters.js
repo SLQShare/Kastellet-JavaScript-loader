@@ -157,7 +157,6 @@ export class SelectedFilters {
             }
         });
 
-        console.log("Filtered Mission IDs:", filteredMissionIds); // Debugging: Check the final filtered mission IDs.
         return filteredMissionIds;
 
         /**
@@ -195,7 +194,6 @@ export class SelectedFilters {
                         formattedFilters.geography = geographyIds.toLowerCase().replace(/\s/g, '');
                     }    
             }
-            console.log("Formatted Filters:", formattedFilters); // Debugging: Check the resulting formatted filters.
             return formattedFilters;
         }
 
@@ -346,7 +344,6 @@ export class SelectedFilters {
 
         for (const [key, value] of Object.entries(currentFilters)) {
             if (!value) {
-                console.log('non used filters', key, value);
                 if (key === 'period') {
                     const invalidOptions = searchInfilterOptions(filterOptions[0], key, currentFilters, this.data);
                     listOfInvalidOptions.push(...invalidOptions);
@@ -415,20 +412,16 @@ export class SelectedFilters {
     // Main handler for filter changes (instance-specific logic)
     handleFilterChange(type, value) {
         
-        console.log(`Filter changed: ${type} = ${value}`);
         const currentFilters = this.getAllFilters();
         const selectedMission = this.applyFiltersToFindMissions(this.data, currentFilters);
         let forceIdForColor = null;
         // Contribution Filter Logic
-        this.data.forces.forEach(force => {
-            console.log(`Force Title: ${force.title}, Match: ${currentFilters.contribution === force.title}`);
-        });
+ 
 
         if (currentFilters.contribution) {
             const contributionIds = this.data.forces
                 .filter(force => currentFilters.contribution.includes(force.title))
                 .map(force => force.id);
-            console.log('Mapped Contribution IDs:', contributionIds);
             forceIdForColor = contributionIds.length > 0 ? contributionIds[0] : null;
             this.setCurrentColor(this.contributionColors[forceIdForColor]?.backgroundColor || '#72756f');
         } else {
@@ -438,7 +431,6 @@ export class SelectedFilters {
 
         // Geography Filter Logic
         if (currentFilters.geography === null) {
-            console.log('Geography filter is null. Showing continent pins...');
             zoomToCoordinates('default', this.mapContainer);
             updatePinColors(forceIdForColor, this.contributionColors);
             this.updateMapPins(this.data, this.getExcludedIds(), this.mapContainer, selectedMission, this.contributionColors, 'continent');
@@ -455,7 +447,6 @@ export class SelectedFilters {
 
             if (matchingLocation) {
                 const location = matchingLocation.region.toLowerCase().replace(/\s/g, '');
-                console.log('Geography filter active. Updating country pins...');
                 hideOrShowMapPins('continent', 'none');
                 zoomToCoordinates(location, this.mapContainer);
                 this.updateMapPins(this.data, this.getExcludedIds(), this.mapContainer, selectedMission, this.contributionColors, 'country');
