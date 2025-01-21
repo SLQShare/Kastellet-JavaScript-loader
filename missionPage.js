@@ -783,9 +783,15 @@ export class MissionPage {
             });
         };
 
+        // remove arrow buttons if there is only one picture
+        if (imageArray.length < 2){
+            prevButton.style.display = 'none';
+            nextButton.style.display = 'none';
+        } else {
         // Attach event listeners for the navigation buttons
         prevButton.addEventListener('click', () => moveSlider(-1)); // Move left by one image
         nextButton.addEventListener('click', () => moveSlider(1));  // Move right by one image
+        }
 
         // Initialize the slider by resetting the container and setting the initial scroll position
         resetSliderContainer();
