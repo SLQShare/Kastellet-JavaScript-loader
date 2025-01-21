@@ -35,7 +35,7 @@ export class SearchPage {
         const container = document.createElement('div');
         Object.assign(container.style, {
             display: 'flex',
-            position: 'fixed',
+            position: 'relative',
             flexDirection: 'row',
             height: '60%',
             width: '100%',
