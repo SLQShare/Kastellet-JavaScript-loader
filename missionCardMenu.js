@@ -610,8 +610,8 @@ export class MissionSelectorMenu {
             if (localStorage.getItem('currentMissionId')) {        
                 // Redirect to the new page
                 const url = new URL(window.location.href);
-                const newPagePath = `${url.protocol}//${url.hostname}/missionstest-1/`;
-                window.location.href = newPagePath; // Replace with the actual target URL
+                const newURL = `${url.origin}${url.pathname}/missionstest-1/`;
+                window.location.href = newURL; // Replace with the actual target URL
             } else {
                 console.error('Mission ID did not get stored in localStorage');
             }
