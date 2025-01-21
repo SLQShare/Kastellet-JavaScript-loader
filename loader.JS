@@ -6,7 +6,10 @@ import { SelectedFilters } from './SelectedFilters.js'
 
 //global variables
 const url = new URL(window.location.href);
-const jsonDkPath = `${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
+const jsonDkPath = url.origin+'/wp-content/uploads/2024/12/dk3.json'
+//`${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
+
+
 // Step 1: Instantiate SelectedFilters without updateMapPins dependency
 const selectedFilters = new SelectedFilters({});
 
@@ -81,7 +84,7 @@ function processData(missionId , data) {
     updateBeredskabsKort(missionId, data)
 }
 function updateTheInfoScreen(data, missionId){
-    if (isOnMissionsPage('')){
+    if (isOnMissionsPage('') || isOnMissionsPage('/en/')) {
         selectedFilters.setData(data);
         const InfoSide = new InfoScreenPage(selectedFilters.getData(), missionId, selectedFilters);
         selectedFilters.updateMapPins = InfoSide.updateMapPins.bind(InfoSide);
@@ -93,26 +96,19 @@ function updateTheInfoScreen(data, missionId){
 }
 
 function updateSearchPage(){
-    if (isOnMissionsPage('search')){
+    if (isOnMissionsPage('search') || isOnMissionsPage('en/search')){
         const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters, 'Søg i missioner her!');
     }
 }
 
 // update the missionspage with information
 function updateTheMissionsPage(missionId, data){
-    if (isOnMissionsPage('missions')) {
+    if (isOnMissionsPage('missionstest-1') || isOnMissionsPage('/en/missionstest-1')) {
         // Create an instance of MissionPage
-        const missionPage = new MissionPage(data, missionId);
-
-        missionPage.headerInformation(data, missionId, 'MissionTitle', 'name');
-        missionPage.headerInformation(data, missionId, 'MissionSubtitle', 'subtitle');
-        missionPage.comparesTheForceTagsToMissionForces(data, missionId, "ForceContainer");
-        missionPage.assignMissionDuration(data, missionId, "MissionDuration")
-        missionPage.addTextFromDataToTable(data, missionId);
-        missionPage.missionLocation(data, missionId);
-        const emblemIds = selectedFilters.getEmblemIds();
-        missionPage.parseMediaUrl(data, missionId, emblemIds);
+        const missionPage = new MissionPage(data, missionId, selectedFilters);
+        debugger;
     }
+    debugger;
 }
 // function that adds the mission card menu to the background pages. The rest of the pages were made in wordpress, so this function is the only part needed in code.
 function updateBackgroundPages(data){
@@ -195,17 +191,96 @@ function isOnMissionsPage(siteName) {
 
     // Handle root (landing page) case
     if (normalizedSiteName === '') {
-        return normalizedPath === '/';
+        return normalizedPath === '/' || normalizedPath === '/en/';
     }
 
-    return normalizedPath.includes(`/${normalizedSiteName}`);
+    return normalizedPath === `/${normalizedSiteName}/` || normalizedPath === `/en/${normalizedSiteName}/`;
 }
-// error handler for the mission page swiper.
-// TODO remove after swiper rework
-window.onerror = function (message, source, lineno, colno, error) {
-    if (error && error.message.includes("ReferenceError: Swiper is not defined")) {
-        console.warn("Caught Swiper autoplay stop error:", error);
-        return true; // Prevent the error from propagating
+
+// creator the language toggle button
+function createLangToggle(parentElement, lang) {
+    const langConfigs = {
+        en: {
+            lang: 'en',
+            imgSrc: `${window.location.origin}/wp-content/uploads/2024/11/flag-2.svg`,
+            altText: 'Switch to English',
+            dataSrc: `${window.location.origin}/wp-content/uploads/2024/11/flag-2.svg`,
+        },
+        dk: {
+            lang: 'dk',
+            imgSrc: `${window.location.origin}/wp-content/uploads/2024/11/flag-1.svg`,
+            altText: 'Switch to Danish',
+            dataSrc: `${window.location.origin}/wp-content/uploads/2024/11/flag-1.svg`,
+        },
+    };
+
+    const config = langConfigs[lang];
+    if (!config) {
+        console.error(`Invalid language tag: ${lang}`);
+        return null;
     }
-    return false; // Let other errors propagate
-};
+
+    // Create button
+    const langButton = document.createElement('div');
+    langButton.setAttribute('lang-control', config.lang);
+    langButton.style.cursor = 'pointer';
+    langButton.style.display = 'flex';
+    langButton.style.alignItems = 'end';
+
+    // Create image inside the button
+    const img = document.createElement('img');
+    img.src = config.imgSrc;
+    // Use defineProperty to make `src` immutable
+    Object.defineProperty(img, 'src', {
+        value: config.imgSrc,
+        //writable: false, // Prevents reassignment of `src`
+        //configurable: false,
+    });
+
+    img.setAttribute('data-src', config.dataSrc); // Sync lazy load source from config
+    img.alt = config.altText; // Set alt text
+    img.width = 60; // Set image dimensions
+    img.height = 60;
+
+    langButton.appendChild(img); // Add image to the button
+    parentElement.appendChild(langButton); // Add button to the container
+
+    // Return the button element
+    return langButton;
+}
+
+// behavior for the language toggle button
+function controlFlags() {
+    const langLocationParent = document.querySelector('[lang-control]');
+    if (!langLocationParent) {
+        console.error('Language control parent element not found.');
+        return;
+    }
+
+    const url = new URL(window.location.href);
+    const currentLang = url.pathname.includes('/en') ? 'en' : 'dk';
+    const toggleLang = currentLang === 'en' ? 'dk' : 'en'; // Determine the language to toggle to
+
+    console.log('Detected Current Language:', currentLang);
+
+    // Create the language toggle button
+    const langButton = createLangToggle(langLocationParent, toggleLang);
+
+    // Add click event listener
+    langButton.addEventListener('click', () => {
+        console.log(`Switching to ${toggleLang.toUpperCase()}`);
+        const currentPath = url.pathname.replace(/^\/en\//, ''); // Remove `/en/` prefix if present
+        const newUrl =
+            toggleLang === 'en'
+                ? `${url.origin}/en${currentPath}`
+                : `${url.origin}/${currentPath}`;
+        console.log(`Redirecting to: ${newUrl}`);
+         // Replace the current history entry to prevent back navigation to the old language
+        history.replaceState(null, '', window.location.href);
+        
+        window.location.href = newUrl; // Redirect to the new language
+    });
+    
+}
+
+controlFlags();
