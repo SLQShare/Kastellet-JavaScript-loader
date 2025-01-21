@@ -1,8 +1,21 @@
 export class MissionPage {
-    constructor(data, missionId) {
+    constructor(data, missionId, filtersSelected) {
         this.data = data;
         this.missionId = missionId;
-        this.filtersSelected = null;
+        this.filtersSelected = filtersSelected;
+        this.emblemIds = filtersSelected ? filtersSelected.getEmblemIds() : []; // Initialize emblemIds
+        this.initialize();
+    }
+
+    initialize() {
+        this.headerInformation(this.data, this.missionId, 'MissionTitle', 'name');
+        this.headerInformation(this.data, this.missionId, 'MissionSubtitle', 'subtitle');
+        this.comparesTheForceTagsToMissionForces(this.data, this.missionId, "ForceContainer");
+        this.assignMissionDuration(this.data, this.missionId, "MissionDuration")
+        this.addTextFromDataToTable(this.data, this.missionId);
+        this.missionLocation(this.data, this.missionId);
+        this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
+        debugger;
     }
     headerInformation(data, missionId, cssId, informationType){
         const missionInformation = this.getMissionById(data.missions, missionId);
@@ -746,7 +759,6 @@ export class MissionPage {
 
         // Scroll listener with active dot logic
         sliderContainer.addEventListener('scroll', () => {
-            console.log('sliderContainer.addEventListener')
             const scrollLeft = sliderContainer.scrollLeft; // Current scroll position
             const totalWidth = sliderContainer.scrollWidth; // Total width of all sets combined
             const viewportWidth = sliderContainer.clientWidth; // Visible width of the container
@@ -782,17 +794,17 @@ export class MissionPage {
                 behavior: 'smooth', // Smooth animation for better user experience
             });
         };
-
+        
         // remove arrow buttons if there is only one picture
         if (imageArray.length < 2){
             prevButton.style.display = 'none';
             nextButton.style.display = 'none';
         } else {
-        // Attach event listeners for the navigation buttons
-        prevButton.addEventListener('click', () => moveSlider(-1)); // Move left by one image
-        nextButton.addEventListener('click', () => moveSlider(1));  // Move right by one image
+            // Attach event listeners for the navigation buttons
+            prevButton.addEventListener('click', () => moveSlider(-1)); // Move left by one image
+            nextButton.addEventListener('click', () => moveSlider(1));  // Move right by one image
         }
-
+    
         // Initialize the slider by resetting the container and setting the initial scroll position
         resetSliderContainer();
     }
