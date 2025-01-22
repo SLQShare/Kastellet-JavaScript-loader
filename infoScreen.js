@@ -365,6 +365,7 @@ export class InfoScreenPage {
             kenya: { x: 52, y: 55 }, // Africa
             southafrica: { x: 49, y: 72 }, // Africa
             morocco: { x: 41, y: 40 }, // Africa
+            westernsahara: {x: 39, y: 45}, // Africa
             lebanon: { x: 52.5, y: 39.1 }, // Middle East
             cyprus: { x: 51.6, y: 38.5 }, // Middle East
             iraq: { x: 55, y: 40.2 }, // Middle East
@@ -390,11 +391,11 @@ export class InfoScreenPage {
             japan: { x: 80.5, y: 36 }, // Asia
             philippines: { x: 76, y: 49 }, // Asia
             //balkan: { x: 49, y: 33.5 }, // Europe -rename to serbia
-            albania: { x: 448, y: 35.5 }, // Europe
-            kosovo: { x: 49, y: 33.5 }, // Europe
+            albania: { x: 48.2, y: 35.7 }, // Europe
+            kosovo: { x: 48.9, y: 33.4 }, // Europe
             croatia: { x: 46.5, y: 32.5 }, // Europe
             iceland: { x: 38, y: 19.5 }, // Europe
-            estonia: { x: 49.5, y: 24 }, // Europe
+            estonia: { x: 49.8, y: 24 }, // Europe
             macedonia: { x: 49.5, y: 35.5 }, // Europe
             bosnia: { x: 47.5, y: 33.5 }, // Europe
             holland: { x: 44, y: 29 }, // Europe done
@@ -404,7 +405,7 @@ export class InfoScreenPage {
             romania: { x: 50, y: 32.5 }, // Europe done
             czechrepublic: { x: 46.5, y: 30 }, // Europe done
             ukraine: { x: 51.5, y: 30 }, // Europe done
-            latvia: { x: 49, y: 27 }, // Europe done
+            latvia: { x: 49, y: 25.7 }, // Europe done
             unitedkingdom: { x: 42.4, y: 27.5 }, // Europe done
             default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
         };

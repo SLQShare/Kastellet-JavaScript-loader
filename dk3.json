@@ -3799,12 +3799,12 @@
     {
       "mapid": 4244,
       "id": 4472,
-      "title": "Sudan",
+      "title": "Vestsahara",
       "x": 35,
       "y": 120,
       "direction": "left",
       "region": "Africa",
-      "county": "Sudan"
+      "county": "WesternSahara"
     },
     {
       "mapid": 4244,
@@ -4598,12 +4598,12 @@
     {
       "mapid": 4473,
       "id": 4474,
-      "title": "Sudan",
+      "title": "Vestsahara",
       "x": 508,
       "y": 355,
       "direction": "left",
       "region": "Africa",
-      "county": "Sudan"
+      "county": "WesternSahara"
     },
     {
       "mapid": 4476,
@@ -5143,7 +5143,7 @@
       "y": 379,
       "direction": "left",
       "region": "Europe",
-      "county": "Cypern"
+      "county": "Cyprus"
     },
     {
       "mapid": 5523,
@@ -5163,7 +5163,7 @@
       "y": 406,
       "direction": "right",
       "region": "Europe",
-      "county": "Cyprus"
+      "county": "unitedkingdom"
     }
   ],
   "articles": [
