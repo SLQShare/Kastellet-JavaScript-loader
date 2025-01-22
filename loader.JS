@@ -14,6 +14,7 @@ const jsonDkPath = url.origin+'/wp-content/uploads/2024/12/dk3.json'
 const selectedFilters = new SelectedFilters({});
 
 main(jsonDkPath);
+controlFlags();
 
 function main(apiUrl) {
     // Get mission ID from selected filters or local storage
