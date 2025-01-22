@@ -88,7 +88,9 @@ export class MissionPage {
         const missionInformation = this.getMissionById(data.missions, missionId);
         const missionDuration = this.searchAndFindTextElements(this.findElementById(cssId));
         try {
-            missionDuration[0].innerHTML = String(missionInformation.year.from) +'-'+String(missionInformation.year.to);
+            missionDuration[0].innerHTML = 
+                String(missionInformation.year.from) + '-' + 
+                (String(missionInformation.year.to) === '0' ? '' : String(missionInformation.year.to));
         } catch (error) {
             console.error(error)
         }

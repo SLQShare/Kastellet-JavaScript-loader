@@ -397,13 +397,10 @@ export class MissionSelectorMenu {
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
         });
-        let endYear = null
-        if (missionInformation.year.to === 0) {
-            endYear = 2000;
-        } else {
-            endYear = missionInformation.year.to;
-        }
-        const missionDuration = missionInformation.year.from + '-' + endYear; 
+   
+        const missionDuration = 
+            missionInformation.year.from + '-' + 
+            (String(missionInformation.year.to) === '0' ? '': String(missionInformation.year.to)); 
         menuTitle.textContent = missionDuration; // Example time range
         missionTime.appendChild(menuTitle);
     
