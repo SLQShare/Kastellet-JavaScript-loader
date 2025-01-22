@@ -3,6 +3,7 @@ import { SearchPage } from './searchPage.js'
 import { MissionSelectorMenu } from './missionCardMenu.js'
 import { InfoScreenPage } from './infoScreen.js'
 import { SelectedFilters } from './SelectedFilters.js'
+import { BackNavigation } from './BackNavigation.js'
 
 //global variables
 const url = new URL(window.location.href);
@@ -15,6 +16,8 @@ const selectedFilters = new SelectedFilters({});
 
 main(jsonDkPath);
 controlFlags();
+// Create an instance of BackNavigation
+const backNavigation = new BackNavigation();
 
 function main(apiUrl) {
     // Get mission ID from selected filters or local storage
