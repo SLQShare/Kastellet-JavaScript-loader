@@ -7,13 +7,12 @@ import { BackNavigation } from './BackNavigation.js'
 
 //global variables
 const url = new URL(window.location.href);
-const jsonDkPath = url.origin+'/wp-content/uploads/2024/12/dk3.json'
+const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json'
 //`${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
 
 
 // Step 1: Instantiate SelectedFilters without updateMapPins dependency
 const selectedFilters = new SelectedFilters({});
-
 main(jsonDkPath);
 controlFlags();
 // Create an instance of BackNavigation
