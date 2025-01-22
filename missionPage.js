@@ -807,6 +807,7 @@ export class MissionPage {
             nextButton.addEventListener('click', () => moveSlider(1));  // Move right by one image
         }
     
+        if (imageArray.length === 0) return;
         // Initialize the slider by resetting the container and setting the initial scroll position
         resetSliderContainer();
     }
