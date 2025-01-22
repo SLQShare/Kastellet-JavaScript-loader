@@ -15,7 +15,6 @@ export class MissionPage {
         this.addTextFromDataToTable(this.data, this.missionId);
         this.missionLocation(this.data, this.missionId);
         this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
-        debugger;
     }
     headerInformation(data, missionId, cssId, informationType){
         const missionInformation = this.getMissionById(data.missions, missionId);

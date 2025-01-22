@@ -110,9 +110,7 @@ function updateTheMissionsPage(missionId, data){
     if (isOnMissionsPage('missionstest-1') || isOnMissionsPage('/en/missionstest-1')) {
         // Create an instance of MissionPage
         const missionPage = new MissionPage(data, missionId, selectedFilters);
-        debugger;
     }
-    debugger;
 }
 // function that adds the mission card menu to the background pages. The rest of the pages were made in wordpress, so this function is the only part needed in code.
 function updateBackgroundPages(data){
@@ -287,4 +285,4 @@ function controlFlags() {
     
 }
 
-controlFlags();
+
