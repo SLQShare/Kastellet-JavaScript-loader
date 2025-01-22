@@ -136,7 +136,7 @@ function updateBackgroundPages(data){
 }
 
 function updateBeredskabsKort(missionId, data){
-    if (isOnMissionsPage('beredskabskort')){
+    if (isOnMissionsPage('beredskabskort') || isOnMissionsPage('en/beredskabskort')){
         // Step 1: Instantiate SelectedFilters without updateMapPins dependency
         const selectedFiltersBeredskabs = new SelectedFilters({});
         selectedFiltersBeredskabs.setData(data);
