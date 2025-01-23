@@ -15,6 +15,7 @@ export class MissionPage {
         this.addTextFromDataToTable(this.data, this.missionId);
         this.missionLocation(this.data, this.missionId);
         this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
+        this.removeLoaderContainer();
     }
     headerInformation(data, missionId, cssId, informationType){
         const missionInformation = this.getMissionById(data.missions, missionId);
@@ -32,6 +33,21 @@ export class MissionPage {
         return this.filtersSelected;
     }
     
+    // remove loading screen
+    removeLoaderContainer() {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.style.transition = 'opacity 1s ease';
+            loader.style.opacity = '0';
+    
+            // Remove the element after the transition
+            setTimeout(() => {
+                loader.remove();
+            }, 1000); // Match the duration of the transition
+        }
+    }
+    
+
     getMissionById(missionsArray, id) {
         if (!Array.isArray(missionsArray)) {
             throw new Error("Invalid missions data: Expected an array.");
@@ -118,7 +134,7 @@ export class MissionPage {
         // Filter out "Kilder" and "Link" sections
         const missionDataToBeDisplayed = missionInformation.content.text.filter(
             type => type.id !== "Kilder" && type.id !== "Link"
-        ); // TODO fix for english
+        ); 
     
         // Determine the number of sections to process
         const numSections = Math.min(
@@ -172,6 +188,7 @@ export class MissionPage {
 
     missionLocation(data, missionId) {
         let location = null; // Variable to store the location if found
+        let urlTag = null;
         const locationButton = document.getElementById('MissionLocation');
         const textElement = locationButton.querySelector('.elementor-button-text');
         
@@ -184,6 +201,7 @@ export class MissionPage {
             if (foundMission) {
                 // If found, assign the location from the collection
                 location = collection.title; // Using collection.title as location
+                urlTag = collection.UrlTag
             }
         });
     
@@ -194,7 +212,7 @@ export class MissionPage {
             // Create a new <a> element
             const linkElement = document.createElement('a');
             linkElement.className = 'elementor-button elementor-button-link elementor-size-sm';
-            linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(location)}/`;
+            linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(urlTag)}/`;
             linkElement.rel = 'noopener noreferrer'; // Optional: For security
     
             // Add the text inside the <a> element

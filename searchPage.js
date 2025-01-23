@@ -17,11 +17,13 @@ export class SearchPage {
         this.title = title;
         this.searchHeader = null;
         this.tagBoxHeader = null;
+        this.isEn = false; // used to check the language state
         this.init();
     }
 
     // Initialize the search page components
     init() {
+        this.langControl()
         this.styleContainer();
         this.createActionContainers();
         this.createTitles()
@@ -29,6 +31,19 @@ export class SearchPage {
         this.createTagBox();
         this.createTouchKeyboard();
     }
+    // checks the language setting
+    langControl(){
+        const url = window.location.href; // Get the full URL of the current page
+        if (url.includes('/en')) {
+            // en
+            this.isEn = true;
+            console.log('The URL contains /en');
+        } else {
+            // da
+            this.isEn = false;
+        }
+    }
+
     styleContainer() {
         const page = document.getElementById('searchScreen'); // Main container for search page
         
@@ -74,13 +89,14 @@ export class SearchPage {
     
     createTitles() {
         const searchBarTitle = document.createElement('H3');
-        searchBarTitle.textContent = 'Søg i mission tags' // TODO fix for english
+        searchBarTitle.textContent = `${this.isEn? "Search In Mission Tags" : "Søg I Mission Tags"}`;
         titleStyles(searchBarTitle)
         this.searchActionContainer.appendChild(searchBarTitle);
 
 
         const tagsTitle = document.createElement('H3');
         tagsTitle.textContent = 'Baggrundsinformation' // TODO fix for english
+        tagsTitle.textContent = `${this.isEn? "Background Information" : "Baggrundsinformation"}`;
         titleStyles(tagsTitle)
         this.tagBoxContainer.appendChild(tagsTitle);
         function titleStyles(element){
@@ -116,7 +132,7 @@ export class SearchPage {
             borderRadius: '5px'
         });
         searchBar.type = 'text';
-        searchBar.placeholder = 'Søg...'; //TODO fix for english
+        searchBar.placeholder = `${this.isEn? "Search..." : "Søg..."}`;
         searchBar.addEventListener('input', () => {
             // Show the clear button only if there is text in the search bar
             if (searchBar.value === '') {
@@ -318,31 +334,32 @@ export class SearchPage {
         
         const generateUrl = (link) => {
             const url = new URL(window.location.href)
-            return `${url.protocol}//${url.hostname}/${link}`;        
+            //`${url.protocol}//${url.hostname}/${link}`
+            return `${url.protocol}//${url.hostname}${this.isEn? "/en/" : "/"}${link}`;        
             };
 
         // Handle different cases
         if ((!tags || tags.length === 0) && query === '') {
             // requires the danish data file as the HTML pages are in danish
-            const links = this.data.collections.map(item => item.title); //TODO update to contain the webadress 
+            const links = this.data.collections.map(item => item); //TODO update to contain the webadress
             links.forEach(link => {
-                const fullUrl = generateUrl(link);
-                const tagElement = this.createTagElement(link, () => {
+                const fullUrl = generateUrl(link.UrlTag);
+                const tagElement = this.createTagElement(link.title, () => {
                     window.location.assign(fullUrl);
                 });
                 tagBox.appendChild(tagElement);
-                this.tagBoxHeader.textContent = 'Baggrundsinformation'; // TODO fix for english
+                this.tagBoxHeader.textContent = `${this.isEn? "Background Information" : "Baggrundsinformation"}`;
             });
         } else if ((!tags || tags.length === 0) && query.length > 0) {
-            const errorElement = this.createTagElement('Intet resultat', null); // TODO fix for english
+            const errorElement = this.createTagElement(`${this.isEn? "No Result" : "Intet Resultat"}`, null); 
             tagBox.appendChild(errorElement);
-            this.tagBoxHeader.textContent = `Prøv igen`; // TODO fix for english
+            this.tagBoxHeader.textContent = `${this.isEn? "Please Try Again" : "Prøv Igen"}`;
         } else {
             tags.forEach(tag => {
                 const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
                 tagBox.appendChild(tagElement);
                 const stringTag = query.toLocaleLowerCase();
-                this.tagBoxHeader.textContent = `Relevante tags for ${stringTag}`; // TODO fix for englishq
+                this.tagBoxHeader.textContent = `${this.isEn? "Relevant Tags For" : "Relevante Tags Til"} ${stringTag}`; // TODO fix for englishq
             });
         }
     }

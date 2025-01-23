@@ -23,12 +23,26 @@ export class InfoScreenPage {
             },
         };
         this.staticForceFilterID = staticForceFilterID; // must be one of the force IDs from the data. Using the IDs will make it easier to support english
+        this.isEn = false; // used to check the language state
         this.initialize();
     }
 
     initialize(){
+        this.langControl();
         this.updateTheInfoScreen(this.currentMissionId, this.data, this.selectedFilters)
         this.selectedFilters.dependentFilter();
+    }
+
+    langControl(){
+        const url = window.location.href; // Get the full URL of the current page
+        if (url.includes('/en')) {
+            // en
+            this.isEn = true;
+            console.log('The URL contains /en');
+        } else {
+            // da
+            this.isEn = false;
+        }
     }
     // Update the info screen with missions and map pins
     updateTheInfoScreen(missionId, data, selectedFilters) {
@@ -115,7 +129,11 @@ export class InfoScreenPage {
     
             // Populate the container with filter buttons based on type
             if (parentButton.id === "PeriodFilterButton") {
-                parentButton.textContent = 'Periode';
+                if (this.isEn === true){
+                    parentButton.textContent = 'Period';
+                } else {
+                    parentButton.textContent = 'Periode';
+                }
                 dataSet.forEach((dataItem) => {
                     const filterSelectorButton = this.createfilterSelectorButton(parentButton);
                     filterSelectorButton.textContent = dataItem.description;
@@ -126,7 +144,11 @@ export class InfoScreenPage {
                     filterSelectorButton.addEventListener('click', () => {this.applyFilter('period', filterSelectorButton.textContent, filterSelectorButton, parentButton, data);});
                 });
             } else if (parentButton.id === "contributionFilterButton") {
-                parentButton.textContent = 'Styrke'; //TODO remove hardcode
+                if (this.isEn === true){
+                    parentButton.textContent = 'Forces';
+                } else {
+                    parentButton.textContent = 'Styrke';
+                }
                 data.forces.forEach((force) => {
                     const colors = contributionColors[force.id] || { backgroundColor: "#cccccc", textColor: "#000000" };
                     const filterSelectorButton = this.createfilterSelectorButton(parentButton);
@@ -497,7 +519,7 @@ export class InfoScreenPage {
             height: 'auto', // Adjust height based on content
             marginTop: '5px',
         });
-        amountOfMissions.textContent = `${missions || 0} missioner`; //TODO hard coded
+        amountOfMissions.textContent = `${missions || 0} ${this.isEn? "missions" : "missioner"}`;
         amountOfMissions.classList.add('mission-count')
         mapPinMissionContainer.appendChild(amountOfMissions);
 

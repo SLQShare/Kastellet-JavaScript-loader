@@ -5,10 +5,13 @@ export class MissionSelectorMenu {
         this.selectedFilters = selectedFilters;
         this.parentElement = parentElement;
         this.data = this.selectedFilters.getData();
+        this.isEn = false; // used to check the language state
         this.initialize();
     }
 
     initialize() {
+        this.langControl();
+        console.log('mission IDs', this.missionsIdArray)
         this.createMissionSelectormenu(this.missionsIdArray, this.title);
     }
 
@@ -22,6 +25,19 @@ export class MissionSelectorMenu {
 
     setMissionId(missionId) {
         this.selectedFilters.setMissionId(missionId);
+    }
+
+    // checks the language setting
+    langControl(){
+        const url = window.location.href; // Get the full URL of the current page
+        if (url.includes('/en')) {
+            // en
+            this.isEn = true;
+            console.log('The URL contains /en');
+        } else {
+            // da
+            this.isEn = false;
+        }
     }
 
     createMissionSelectormenu(missionsIdArray, title) {
@@ -53,7 +69,7 @@ export class MissionSelectorMenu {
             marginBottom: '1vh',
             fontFamily: 'Saira Stencil One, Sans-serif',
         });
-        menuTitle.textContent = `Missioner i ${title}`;
+        menuTitle.textContent = `${this.isEn? "Missions in" : "Missioner i"} ${title}`;
         missionMenuContainer.appendChild(menuTitle);
 
         // Create a full-screen overlay that blocks interactions
@@ -205,11 +221,14 @@ export class MissionSelectorMenu {
                 missionsIdArray.length // Ensure it doesn't exceed total cards
             );
             if (missionsIdArray.length === 1) {
-                progressText.textContent = `VISER ${missionsIdArray.length} MISSION `;
+                //progressText.textContent = `VISER ${missionsIdArray.length} MISSION `;
+                progressText.textContent = `${this.isEn ? `SHOWS ${missionsIdArray.length} MISSION`: `VISER ${missionsIdArray.length} MISSION `}`
             } else if (missionsIdArray.length < 5) {
-                progressText.textContent = `VISER ${missionsIdArray.length} MISSIONER`;
+                progressText.textContent = `${this.isEn ? `SHOWS ${missionsIdArray.length} MISSIONS`: `VISER ${missionsIdArray.length} MISSIONER `}`
             } else {
-                progressText.textContent = `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length}`;
+                progressText.textContent = `${this.isEn ? 
+                    `SHOWS ${visibleCards + 3} OUT OF ${missionsIdArray.length} MISSIONS`: 
+                    `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length} MISSIONER`}`
                 prevButton.style.display = 'block';
                 nextButton.style.display = 'block';
             }
@@ -607,14 +626,14 @@ export class MissionSelectorMenu {
             if (localStorage.getItem('currentMissionId')) {        
                 // Redirect to the new page
                 const url = new URL(window.location.href);
-                const newURL = `${url.origin}/missionstest-1/`;
+                const newURL = `${url.protocol}//${url.hostname}${this.isEn? "/en/missionstest-1/" : "/missionstest-1/"}`;
                 window.location.href = newURL; // Replace with the actual target URL
             } else {
                 console.error('Mission ID did not get stored in localStorage');
             }
         });
         
-        missionButton.textContent = 'GÅ TIL'; //TODO change from hard coded when adding english support
+        missionButton.textContent = `${this.isEn? "GO TO" : "Gå TIL"}`;
         contentContainer.appendChild(missionButton);
     
         missionCard.appendChild(missionTime);

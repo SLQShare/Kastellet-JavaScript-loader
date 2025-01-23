@@ -7,13 +7,27 @@ import { BackNavigation } from './BackNavigation.js'
 
 //global variables
 const url = new URL(window.location.href);
-const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json'
-//`${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/dk3.json`;
+const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json';
+const jsonEnPath = url.origin+'/wp-content/uploads/2025/01/en.json';
 
 
+
+// checks the language setting
+function langControl(url, en, dk){
+    if (url.pathname.includes('/en')) {
+        // en
+        return en
+    } else {
+        // da
+        return dk
+    }
+}
+
+const data = langControl(url, jsonEnPath, jsonDkPath) 
 // Step 1: Instantiate SelectedFilters without updateMapPins dependency
 const selectedFilters = new SelectedFilters({});
-main(jsonDkPath);
+main(data);
+
 controlFlags();
 // Create an instance of BackNavigation
 const backNavigation = new BackNavigation();
