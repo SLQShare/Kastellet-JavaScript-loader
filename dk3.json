@@ -2985,7 +2985,8 @@
         2166,
         2174
       ],
-      "theme": ""
+      "theme": "",
+      "UrlTag": "FN"
     },
     {
       "id": 5269,
@@ -3027,7 +3028,8 @@
         6658,
         6720
       ],
-      "theme": ""
+      "theme": "",
+      "UrlTag": "EU"
     },
     {
       "id": 5270,
@@ -3073,7 +3075,8 @@
         6726,
         1588
       ],
-      "theme": ""
+      "theme": "",
+      "UrlTag": "NATO"
     },
     {
       "id": 5271,
@@ -3087,7 +3090,8 @@
         1994,
         2009
       ],
-      "theme": ""
+      "theme": "",
+      "UrlTag": "OSCE"
     },
     {
       "id": 5275,
@@ -3108,7 +3112,8 @@
         3325,
         3445
       ],
-      "theme": "afghanistan"
+      "theme": "afghanistan",
+      "UrlTag": "Afghanistan"
     },
     {
       "id": 5276,
@@ -3149,7 +3154,8 @@
         3470,
         3518
       ],
-      "theme": "balkan"
+      "theme": "balkan",
+      "UrlTag": "Balkan"
     },
     {
       "id": 5277,
@@ -3175,7 +3181,8 @@
         2288,
         2622
       ],
-      "theme": "iraq"
+      "theme": "iraq",
+      "UrlTag": "Irak"
     },
     {
       "id": 5278,
@@ -3184,7 +3191,8 @@
       "missions": [
         5388
       ],
-      "theme": "cypres"
+      "theme": "cypres",
+      "UrlTag": "Cypern"
     },
     {
       "id": 5395,
@@ -3241,7 +3249,8 @@
         6693,
         6713
       ],
-      "theme": "reponse"
+      "theme": "reponse",
+      "UrlTag": "Beredskabsstyrelsen"
     }
   ],
   "internationalScreen": {
