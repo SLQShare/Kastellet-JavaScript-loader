@@ -99,6 +99,7 @@ function processData(missionId , data) {
     updateSearchPage(data);
     updateBackgroundPages(data)
     updateBeredskabsKort(missionId, data)
+    areaPins(data);
 }
 function updateTheInfoScreen(data, missionId){
     if (isOnMissionsPage('') || isOnMissionsPage('/en/')) {
@@ -298,4 +299,84 @@ function controlFlags() {
     
 }
 
+// check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
+// page to trigger: en/balkan-forside/, en/cypern-forside/, en/irak-forside/, /en/afghanistan-forside/
+function areaPins(data) {
+    // Supported pages
+    const supportedPages = [
+        '/en/balkan-forside/',
+        '/en/cypern-forside/',
+        '/en/irak-forside/',
+        '/en/afghanistan-forside/',
+        '/cypern-forside/',
+        '/balkan-forside/',
+        '/irak-forside/',
+        '/afghanistan-forside/'
+    ];
 
+    // Get the current page path
+    const currentPath = window.location.pathname;
+
+    // Check if the page is supported
+    if (!supportedPages.includes(currentPath)) {
+        return;
+    }
+
+    // Find parent element
+    const parentElement = document.querySelector('[parent="yes"]'); // Adjust the selector as needed
+
+    if (!parentElement) {
+        console.error('Parent element not found.');
+        return;
+    }
+
+    // Add event listeners to area pins
+    const areaPins = document.querySelectorAll('[area]'); // Adjust selector to match area pins
+    areaPins.forEach(pin => {
+        const tag = pin.getAttribute('area'); // Retrieve 'area' attribute
+        const tags = tag.split(',').map(t => t.trim()); // Split by comma and trim whitespace        
+        let tagName = null;
+        let idArray = [];
+        tags.forEach((tag) => {
+            tag = toCapitalizedLowercase(tag)
+            const results = data.missions
+            .filter(mission => mission.tags.includes(tag)) // Find missions with the tag
+            .map(mission => mission.id);  
+            idArray = idArray.concat(results)
+        })
+        // remove duplicates 
+        idArray = Array.from(new Set(idArray));
+
+        // remove pins with no missions
+        // if (idArray.length === 0){
+        //     pin.remove();
+        // }
+           
+        // Use a for...of loop for better control and to break early
+        for (const child of pin.childNodes) {
+            if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('tag')) {
+                tagName = child.innerText;
+                break; // Exit loop after finding the tag
+            }
+        }
+        
+        pin.addEventListener('click', () => {
+            searchByTag(tagName, parentElement, data, idArray); // Add event listener for clicks
+        });
+    });
+    function toCapitalizedLowercase(str) {
+        if (!str) return ''; // Handle empty or null input
+        str = str.toLowerCase(); // Convert the entire string to lowercase
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Search missions by tag
+    function searchByTag(tagName, parentElement, data, missionId) {
+        let missionMenu = new MissionSelectorMenu(
+            missionId,
+            tagName,
+            parentElement,
+            selectedFilters
+        );
+    }
+}
