@@ -193,11 +193,17 @@ function updateBeredskabsKort(missionId, data){
         selectedFiltersBeredskabs.setData(data);
         const BeredskabsKort = new InfoScreenPage(selectedFiltersBeredskabs.getData(), missionId, selectedFiltersBeredskabs, 1092);
         selectedFiltersBeredskabs.updateMapPins = BeredskabsKort.updateMapPins.bind(BeredskabsKort);
-        
+
         selectedFiltersBeredskabs.addFilterListener((type, value) => {
             selectedFiltersBeredskabs.handleFilterChange(type, value);
         });
-        const url = `${window.location.protocol}//${window.location.hostname}/beredskabsstyrelsen/`;
+
+        // Get the current URL
+        const currentUrl = new URL(window.location.href);
+
+        // Append the new path to the current URL
+        const url = `${currentUrl}/beredskabsstyrelsen/`;
+
 
         // Find the element with the specific filter value
         const element = document.getElementById('contributionFilterButton');
