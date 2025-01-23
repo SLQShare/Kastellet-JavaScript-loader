@@ -84,7 +84,7 @@ async function fetchAndProcessData(missionId, url) {
         const jsonData = await jQuery.getJSON(url);
         const typeCheckedMissionId = checkIdTypes(jsonData.missions, missionId)
         // Call a function to process the data
-        console.log("dataDk:", jsonData);
+        console.log("loaded data:", jsonData);
         selectedFilters.setData(jsonData);
         processData(typeCheckedMissionId, jsonData);
     } catch (error) {
@@ -126,12 +126,51 @@ function updateTheMissionsPage(missionId, data){
         const missionPage = new MissionPage(data, missionId, selectedFilters);
     }
 }
+
 // function that adds the mission card menu to the background pages. The rest of the pages were made in wordpress, so this function is the only part needed in code.
-function updateBackgroundPages(data){
-    data.collections.forEach((collection)=> {
-        if (isOnMissionsPage(collection.title)){
-            const button = document.getElementById('missionButton'+collection.id)
-            const homePage = document.getElementById('PageElement'+collection.id)
+function updateBackgroundPages(data) {
+    const collections = data.collections;
+    // Danish : English mapping
+    const locationNameMapping = {
+        "balkan": "Balkan",
+        "cypern": "Cyprus",
+        "irak": "Iraq",
+        "afghanistan": "Afghanistan",
+        "fn": "UN", 
+        "eu": "EU", 
+        "nato": "NATO", 
+        "osce": "OSCE", 
+        "beredskabsstyrelsen": "DEMA" 
+    };
+
+    // Iterate through collections
+    collections.forEach(collection => {
+        const title = collection.title.toLowerCase(); // Normalize title for matching
+
+        // Check if the title is a Danish name
+        const danishTitle = locationNameMapping[title] 
+            ? title.charAt(0).toUpperCase() + title.slice(1) // Capitalize Danish name
+            : null;
+
+        // Check if the title is an English name
+        const matchedDanishTitle = !danishTitle
+            ? Object.keys(locationNameMapping).find(
+                key => locationNameMapping[key].toLowerCase() === title
+            )
+            : null;
+
+        // Final Danish name
+        const finalDanishName = danishTitle || (matchedDanishTitle 
+            ? matchedDanishTitle.charAt(0).toUpperCase() + matchedDanishTitle.slice(1) 
+            : null);
+
+        const englishPath = `/en/${finalDanishName}`;
+        if (isOnMissionsPage(finalDanishName) || isOnMissionsPage(englishPath)) {
+            console.log(`Matched Collection: ${collection.title}`);
+
+            const button = document.getElementById(`missionButton${collection.id}`);
+            const homePage = document.getElementById(`PageElement${collection.id}`);
+
             if (button) {
                 button.addEventListener('click', (event) => {
                     event.preventDefault();
@@ -140,11 +179,11 @@ function updateBackgroundPages(data){
                         collection.title,
                         homePage,
                         selectedFilters
-                    )
-                })
+                    );
+                });
             }
         }
-    })
+    });
 }
 
 function updateBeredskabsKort(missionId, data){
