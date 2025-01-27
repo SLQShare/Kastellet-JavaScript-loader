@@ -14,7 +14,6 @@ const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json';
 const jsonEnPath = url.origin+'/wp-content/uploads/2025/01/en.json';
 
 
-
 // checks the language setting
 function langControl(url, en, dk){
     if (url.pathname.includes('/en')) {
@@ -225,7 +224,8 @@ function updateBeredskabsKort(missionId, data){
                 linkButton.style[property] = styles.getPropertyValue(property);
             }
             //linkButton.textContent = element.textContent;
-            linkButton.textContent = 'Background'.toUpperCase();
+            linkButton.textContent = (BeredskabsKort.isEn ? 'Background'.toUpperCase() : 'Baggrund'.toUpperCase());
+
             // Apply styles to position the element in the bottom-left corner
             Object.assign(linkButton.style, {
                 position: 'fixed',    // Make the element fixed
@@ -376,7 +376,6 @@ function areaPins(data) {
     if (!supportedPages.includes(currentPath)) {
         return;
     }
-
     // Find parent element
     const parentElement = document.querySelector('[parent="yes"]'); // Adjust the selector as needed
 
