@@ -519,7 +519,7 @@ export class InfoScreenPage {
             height: 'auto', // Adjust height based on content
             marginTop: '5px',
         });
-        amountOfMissions.textContent = `${missions || 0} ${this.isEn? "missions" : "missioner"}`;
+        amountOfMissions.textContent = `${missions || 0} ${this.isEn ? (missions === 1 ? "mission" : "missions") : (missions === 1 ? "mission" : "missioner")}`;
         amountOfMissions.classList.add('mission-count')
         mapPinMissionContainer.appendChild(amountOfMissions);
 
