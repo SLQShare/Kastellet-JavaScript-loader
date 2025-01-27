@@ -324,7 +324,7 @@ function createLangToggle(parentElement, lang) {
 function controlFlags() {
     const langLocationParent = document.querySelector('[lang-control]');
     if (!langLocationParent) {
-        console.error('Language control parent element not found.');
+        console.warn('Language control parent element not found.');
         return;
     }
 
