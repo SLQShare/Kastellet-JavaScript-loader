@@ -475,6 +475,7 @@ export class MissionSelectorMenu {
         //const containerWidth = forceFlagContainer.getBoundingClientRect();
         const width = (300/7)+'px'
         // Iterate over the forces to create flags dynamically
+
         forces.forEach(forceId => {
             const forceColor = contributionColors[forceId]; // Access backgroundColor and textColor
             
@@ -495,7 +496,7 @@ export class MissionSelectorMenu {
                 console.warn(`No color configuration found for force ID: ${forceId}`);
             }
         });
-    
+
         imageContainer.appendChild(forceFlagContainer);
     
         // Create content container
@@ -581,19 +582,30 @@ export class MissionSelectorMenu {
             }
     
             const imageId = parseInt(image.url.split('/').slice(-2, -1)[0], 10); // Extract ID from the URL
-            
+            let emblemIndex = -1;
             if (emblemIds.includes(imageId)) {
-                missionEmblems.push(image); // Add emblems to missionEmblems array
                 const emblem = document.createElement('img');
                 Object.assign(emblem.style, {
                     width: 'auto',
                     height: '30px',
                 });
                 emblem.src = `${url.protocol}//${url.hostname}/wp-content/uploads/`+image.url;;
-                emblemContainer.appendChild(emblem);
+
+                // I want to store the emblems so the emblemIndex is add embles based on the ordered position
+                emblemIndex = emblemIds.indexOf(imageId); // Get the index of imageId
+                if (emblemIndex >= 0){
+                    missionEmblems[emblemIndex] = emblem;
+                }
             }
         });
+        // Remove empty indices from missionEmblems
+        const sortedEmblemElements = missionEmblems.filter((emblem) => emblem !== null && emblem !== undefined);
+        sortedEmblemElements.forEach((element) => {
+            emblemContainer.appendChild(element);
+        })
+        // add the emblem container to the card element
         contentContainer.appendChild(emblemContainer);
+
     
         const missionButton = document.createElement('button');
         Object.assign(missionButton.style, {

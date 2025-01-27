@@ -15,7 +15,6 @@ export class MissionPage {
         this.addTextFromDataToTable(this.data, this.missionId);
         this.missionLocation(this.data, this.missionId);
         this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
-        this.removeLoaderContainer();
     }
     headerInformation(data, missionId, cssId, informationType){
         const missionInformation = this.getMissionById(data.missions, missionId);
@@ -32,22 +31,7 @@ export class MissionPage {
     getFilterState(){
         return this.filtersSelected;
     }
-    
-    // remove loading screen
-    removeLoaderContainer() {
-        const loader = document.getElementById('loader');
-        if (loader) {
-            loader.style.transition = 'opacity 1s ease';
-            loader.style.opacity = '0';
-    
-            // Remove the element after the transition
-            setTimeout(() => {
-                loader.remove();
-            }, 1000); // Match the duration of the transition
-        }
-    }
-    
-
+        
     getMissionById(missionsArray, id) {
         if (!Array.isArray(missionsArray)) {
             throw new Error("Invalid missions data: Expected an array.");
@@ -260,16 +244,20 @@ export class MissionPage {
                 }
     
                 const imageId = parseInt(image.url.split('/').slice(-2, -1)[0], 10); // Extract ID from the URL
-                
+                let emblemIndex = -1;
                 if (emblemIds.includes(imageId)) {
-                    missionEmblems.push(image); // Add emblems to missionEmblems array
+                    // I want to store the emblems so the emblemIndex is add embles based on the ordered position
+                    emblemIndex = emblemIds.indexOf(imageId); // Get the index of imageId
+                    if (emblemIndex >= 0){
+                        missionEmblems[emblemIndex] = image;
+                    }
                 } else {
                     sortedImageContent.push(image); // Add other images to sortedImages array
                 }
             });
-    
+            const sortedEmblemElements = missionEmblems.filter((image) => image !== null && image !== undefined);
             // Pass the sorted images and emblems to their respective functions
-            this.updateEmblemSection(missionEmblems, baseImagePath); // Assuming updateEmblemSection is defined elsewhere
+            this.updateEmblemSection(sortedEmblemElements, baseImagePath); // Assuming updateEmblemSection is defined elsewhere
             this.createImageslider(sortedImageContent, baseImagePath); // Assuming updateSwiperSlider is defined elsewhere
         } catch (error) {
             console.error('Error in parseMediaUrl:', error);
