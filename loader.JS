@@ -4,8 +4,10 @@ import { MissionSelectorMenu } from './missionCardMenu.js'
 import { InfoScreenPage } from './infoScreen.js'
 import { SelectedFilters } from './SelectedFilters.js'
 import { BackNavigation } from './BackNavigation.js'
+import { LoadingAnimation} from './loadingAnimation.js'
 import { IdleScreen } from './idleScreens.js'
 //global variables
+const loader = new LoadingAnimation();
 const idleScreen = new IdleScreen();
 const url = new URL(window.location.href);
 const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json';
@@ -90,6 +92,7 @@ async function fetchAndProcessData(missionId, url) {
         processData(typeCheckedMissionId, jsonData);
     } catch (error) {
         console.error("Error fetching JSON:", error);
+        loader.removeLoaderContainer();
     }
 }
 
@@ -101,6 +104,7 @@ function processData(missionId , data) {
     updateBackgroundPages(data)
     updateBeredskabsKort(missionId, data)
     areaPins(data);
+    loader.removeLoaderContainer();
 }
 function updateTheInfoScreen(data, missionId){
     if (isOnMissionsPage('') || isOnMissionsPage('/en/')) {
@@ -111,12 +115,14 @@ function updateTheInfoScreen(data, missionId){
         selectedFilters.addFilterListener((type, value) => {
             selectedFilters.handleFilterChange(type, value);
         });
+        loader.removeLoaderContainer();
     }
 }
 
 function updateSearchPage(){
     if (isOnMissionsPage('search') || isOnMissionsPage('en/search')){
         const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters, 'Søg i missioner her!');
+        loader.removeLoaderContainer();
     }
 }
 
@@ -125,6 +131,7 @@ function updateTheMissionsPage(missionId, data){
     if (isOnMissionsPage('missionstest-1') || isOnMissionsPage('/en/missionstest-1')) {
         // Create an instance of MissionPage
         const missionPage = new MissionPage(data, missionId, selectedFilters);
+        loader.removeLoaderContainer();
     }
 }
 
@@ -183,6 +190,7 @@ function updateBackgroundPages(data) {
                     );
                 });
             }
+            loader.removeLoaderContainer();
         }
     });
 }
@@ -236,6 +244,7 @@ function updateBeredskabsKort(missionId, data){
         } else {
             console.error('Element with filtervalue="1092" not found');
         }
+        loader.removeLoaderContainer();
     }
 }
 
@@ -425,4 +434,5 @@ function areaPins(data) {
             selectedFilters
         );
     }
+    loader.removeLoaderContainer();
 }
