@@ -4,8 +4,9 @@ import { MissionSelectorMenu } from './missionCardMenu.js'
 import { InfoScreenPage } from './infoScreen.js'
 import { SelectedFilters } from './SelectedFilters.js'
 import { BackNavigation } from './BackNavigation.js'
-
+import { IdleScreen } from './idleScreens.js'
 //global variables
+const idleScreen = new IdleScreen();
 const url = new URL(window.location.href);
 const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json';
 const jsonEnPath = url.origin+'/wp-content/uploads/2025/01/en.json';
