@@ -1,13 +1,13 @@
 export class IdleScreen {
     constructor() {
         this.time = 0;
-        this.idleTimeLimit = 180000; // Example: 30 seconds of inactivity
+        this.idleTimeLimit = 1000000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
         this.addEvent();
         this.startIdleTimer();
         this.data = null;
-        this.images = null;
+        this.images = null; // must be URLs
     }
 
     setData(data){
@@ -53,34 +53,6 @@ export class IdleScreen {
         this.createIdleElements();
     }
 
-    // createIdleElements() {
-    //     const idleContainer = document.createElement('div');
-    //     Object.assign(idleContainer.style, {
-    //         position: 'fixed',
-    //         top: '0',
-    //         left: '0',
-    //         width: '100%',
-    //         height: '100%',
-    //         backgroundColor: '#363636',
-    //         display: 'flex',
-    //         justifyContent: 'center',
-    //         alignItems: 'center',
-    //         zIndex: '1000',
-    //         opacity: '0', // Start with zero opacity for fade-in effect
-    //         transition: 'opacity 1s ease', // Add a transition for opacity
-    //     });
-    //     // this element will contain image so add auto slide
-    
-        
-    
-    //     // Trigger fade-in animation
-    //     setTimeout(() => {
-    //         idleContainer.style.opacity = '1'; // Fade in to full visibility
-    //     }, 10); // Small timeout to ensure transition is applied
-    //     document.body.appendChild(idleContainer);
-    //     this.idleContainer = idleContainer;
-    // }
-
     createIdleElements() {
         const idleContainer = document.createElement('div');
         Object.assign(idleContainer.style, {
@@ -95,20 +67,29 @@ export class IdleScreen {
             alignItems: 'center',
             zIndex: '1000',
             opacity: '0', // Start with zero opacity for fade-in effect
-            transition: 'opacity 1s ease', // Add a transition for opacity
+            transition: 'opacity 2.5s ease', // Add a transition for opacity
+            overflow: 'hidden',
         });
     
-        // Create the initial image element
-        const imageElement = document.createElement('img');
-        Object.assign(imageElement.style, {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
+        let currentIndex = 0;
+        const imageElements = [];
+    
+        this.images.forEach((img, index) => {
+            const imageElement = document.createElement('img');
+            Object.assign(imageElement.style, {
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                opacity: index === 0 ? '1' : '0', // Show first image only
+                transition: 'opacity 1s ease',
+            });
+            imageElement.src = img;
+            idleContainer.appendChild(imageElement);
+            imageElements.push(imageElement);
         });
     
-        idleContainer.appendChild(imageElement);
         document.body.appendChild(idleContainer);
-    
+        
         // Trigger fade-in animation
         setTimeout(() => {
             idleContainer.style.opacity = '1'; // Fade in to full visibility
@@ -116,19 +97,15 @@ export class IdleScreen {
     
         this.idleContainer = idleContainer;
     
-        // Initialize slideshow if images are provided
-        if (this.images && this.images.length > 0) {
-            let currentIndex = 0;
-    
-            const changeImage = () => {
-                imageElement.src = this.images[currentIndex]; // Update the image source
-                currentIndex = (currentIndex + 1) % this.images.length; // Cycle through images
-            };
-    
-            // Start the slideshow
-            changeImage(); // Show the first image immediately
-            this.slideshowInterval = setInterval(changeImage, 5000); // Adjust interval as needed
+        // Function to fade between images
+        function showNextImage() {
+            imageElements[currentIndex].style.opacity = '0'; // Hide current
+            currentIndex = (currentIndex + 1) % imageElements.length; // Move to next
+            imageElements[currentIndex].style.opacity = '1'; // Show next
         }
+    
+        // Start automatic slideshow
+        setInterval(showNextImage, 4000); // Change image every 4 seconds
     }
     
     // removes the idle element container
