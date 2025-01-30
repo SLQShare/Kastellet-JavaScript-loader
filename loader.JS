@@ -10,8 +10,8 @@ import { IdleScreen } from './idleScreens.js'
 const loader = new LoadingAnimation();
 const idleScreen = new IdleScreen();
 const url = new URL(window.location.href);
-const jsonDkPath = url.origin+'/wp-content/uploads/2025/01/dk3.json';
-const jsonEnPath = url.origin+'/wp-content/uploads/2025/01/en.json';
+const jsonDkPath = url.origin+'/wp-content/uploads/data-files/dk3.json';
+const jsonEnPath = url.origin+'/wp-content/uploads/data-files/en.json';
 
 
 // checks the language setting

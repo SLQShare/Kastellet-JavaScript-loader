@@ -7067,6 +7067,11 @@
                             "caption": "UN"
                         },
                         {
+                            "title": "NATO",
+                            "url": "media/1691/nato_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479435350000000",
+                            "caption": "NATO"
+                        },
+                        {
                             "title": "Forsvaret",
                             "url": "media/1689/forsvaret_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479435930000000",
                             "caption": "Danish Defence"
@@ -15831,7 +15836,8 @@
                 4515,
                 5076,
                 4617,
-                4488
+                4488,
+                4437
             ],
             "year": {
                 "from": 1968,
@@ -17383,6 +17389,11 @@
                             "title": "FN",
                             "url": "media/1688/fn_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436150000000",
                             "caption": "UN"
+                        },
+                        {
+                            "title": "EU",
+                            "url": "media/1687/eu_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436360000000",
+                            "caption": "EU"
                         },
                         {
                             "title": "Forsvaret",
