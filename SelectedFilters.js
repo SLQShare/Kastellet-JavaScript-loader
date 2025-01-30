@@ -9,9 +9,11 @@ export class SelectedFilters {
             1688, // fn_logo
             1691, // nato_log
             1687, // eu_logo
+            1692, // OSCE
             1689, // forsvaret_logo
             1693, // politi_logo
             1686, // beredskabsstyrelsen 
+            1694, // skat
             1690, // hjemmevaernet_logo
         ]; 
         this.contributionListeners = [];
