@@ -382,7 +382,7 @@ export class InfoScreenPage {
             mali: { x: 43, y: 45 }, // Africa
             sudan: { x: 50, y: 47 }, // Africa
             centralafricanrepublic: { x: 48, y: 51 }, // Africa
-            kenya: { x: 52, y: 55 }, // Africa
+            kenya: { x: 52.5, y: 55.4 }, // Africa
             southafrica: { x: 49, y: 72 }, // Africa
             morocco: { x: 41, y: 40 }, // Africa
             westernsahara: {x: 39, y: 45}, // Africa
