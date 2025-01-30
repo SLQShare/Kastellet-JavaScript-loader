@@ -44,6 +44,7 @@ export class InfoScreenPage {
             this.isEn = false;
         }
     }
+
     // Update the info screen with missions and map pins
     updateTheInfoScreen(missionId, data, selectedFilters) {
         // Create the filter buttons for the info screen
@@ -520,7 +521,6 @@ export class InfoScreenPage {
         amountOfMissions.textContent = `${missions || 0} ${this.isEn ? (missions === 1 ? "mission" : "missions") : (missions === 1 ? "mission" : "missioner")}`;
         amountOfMissions.classList.add('mission-count')
         mapPinMissionContainer.appendChild(amountOfMissions);
-
         // Create a container for the map pin's icon
         const mapPinImageContainer = document.createElement('div');
         Object.assign(mapPinImageContainer.style, {
@@ -684,7 +684,8 @@ export class InfoScreenPage {
                     let countryPin = existingPins.find(pin => pin.id ===`pin-${country.toLowerCase()}`)
                     if (countryPin){
                         //update
-                        countryPin.querySelector('.mission-count').textContent = `${missionCount} Missioner`;
+                        const missionCountElement = countryPin.querySelector('.mission-count');
+                        updateMissionText(missionCountElement, missionCount, countryPin, this.isEn)
                         const containerForForces = countryPin.querySelector('.mapPinForceColor');
                         if (containerForForces) {
                             containerForForces.innerHTML = ''; // Clear existing flags
@@ -758,8 +759,9 @@ export class InfoScreenPage {
     
                 let pin = existingPins.find(p => p.id === `pin-${formattedRegion}`);
                 if (pin) {
-                    // Update existing pin
-                    pin.querySelector('.mission-count').textContent = `${missionCount} Missioner`;
+                    const missionCountElement = pin.querySelector('.mission-count');
+                    updateMissionText(missionCountElement, missionCount, pin, this.isEn)
+
                     const containerForForces = pin.querySelector('.mapPinForceColor');
                     if (containerForForces) {
                         containerForForces.innerHTML = ''; // Clear existing flags
@@ -858,6 +860,18 @@ export class InfoScreenPage {
             } else {
                 throw new Error(`Mission with id ${id} not found.`);
             }
+        }
+        // updates the mission text on pins
+        function updateMissionText(missionCountElement, missionCount, pin, isEn){
+            // Ensure the `.mission-count` element exists before updating
+            if (missionCountElement) {
+                missionCountElement.textContent = `${missionCount || 0} ${isEn
+                    ? (missionCount === 1 ? "mission" : "missions")
+                    : (missionCount === 1 ? "mission" : "missioner")}`;
+            } else {
+                console.warn(`Missing .mission-count element in pin for region: ${pin.dataset.region || "unknown"}`);
+            }
+            
         }
     }
 }
