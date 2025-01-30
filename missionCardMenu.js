@@ -11,7 +11,6 @@ export class MissionSelectorMenu {
 
     initialize() {
         this.langControl();
-        console.log('mission IDs', this.missionsIdArray)
         this.createMissionSelectormenu(this.missionsIdArray, this.title);
     }
 
@@ -33,7 +32,6 @@ export class MissionSelectorMenu {
         if (url.includes('/en')) {
             // en
             this.isEn = true;
-            console.log('The URL contains /en');
         } else {
             // da
             this.isEn = false;
@@ -161,9 +159,25 @@ export class MissionSelectorMenu {
             msOverflowStyle: 'none',  /* IE and Edge */
             scrollbarWidth: 'none',     /* Firefox */
         });
-    
+        const data = this.data; // object
+        
+        const missionLookup = new Map(data.missions.map(m => [m.id, m])); // Fast lookup
+
+        const sortedMissionArray = missionsIdArray
+            .map(id => missionLookup.get(id) || null) // Retrieve missions by ID
+            .filter(m => m !== null) // Remove null values
+            .sort(compareStartYear) // Sort in one ste
+            .map(m => m.id);
+
+        function compareStartYear(a, b) {
+            if (!a || !b) return 0; 
+            const aYear = a.year?.from; 
+            const bYear = b.year?.from;
+            return aYear - bYear;
+        }
+
         // Loop through the missions and create mission cards
-        missionsIdArray.forEach((missionId) => {
+        sortedMissionArray.forEach((missionId) => {
             const missionCard = document.createElement('div');
             Object.assign(missionCard.style, {
                 flex: '0 0 auto',
@@ -181,11 +195,6 @@ export class MissionSelectorMenu {
 
             // Add custom content to the mission card
             this.createMissionCard(missionCard, missionId);
-
-            // Add mission-specific content dynamically (optional)
-            const missionContent = document.createElement('div');
-            missionContent.style.marginTop = '10px'; // Adjust margin for spacing
-            missionCard.appendChild(missionContent);
 
             // Append mission card to the slider container
             sliderContainer.appendChild(missionCard);
