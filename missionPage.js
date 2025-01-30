@@ -8,7 +8,7 @@ export class MissionPage {
     }
 
     initialize() {
-        this.headerInformation(this.data, this.missionId, 'MissionTitle', 'name');
+        this.headerInformation(this.data, this.missionId, 'MissionTitle', 'title');
         this.headerInformation(this.data, this.missionId, 'MissionSubtitle', 'subtitle');
         this.comparesTheForceTagsToMissionForces(this.data, this.missionId, "ForceContainer");
         this.assignMissionDuration(this.data, this.missionId, "MissionDuration")
