@@ -587,7 +587,7 @@ export class MissionSelectorMenu {
                 const emblem = document.createElement('img');
                 Object.assign(emblem.style, {
                     width: 'auto',
-                    height: '30px',
+                    height: '27px',
                 });
                 emblem.src = `${url.protocol}//${url.hostname}/wp-content/uploads/`+image.url;;
 
