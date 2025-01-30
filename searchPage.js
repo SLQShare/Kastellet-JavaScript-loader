@@ -308,8 +308,10 @@ export class SearchPage {
         // });
         Object.assign(tagBox.style, {
             width: '100%',
+            maxHeight: '775px',
             display: 'grid',                 // Switch to grid layout
             gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', // Flexible columns
+            gridTemplateRows: 'repeat(13, auto)', // **Limit to 3 rows**
             gridAutoFlow: 'row dense',       // Fill rows in a dense manner
             gap: '10px',                     // Space between items
             overflow: 'hidden',
@@ -388,7 +390,7 @@ export class SearchPage {
     
         // Convert Set to Array, sort alphabetically, and remove duplicates
         const sortedTags = [...tags]
-            .slice(0,18)
+            //.slice(0,18)
             .sort((a, b) => a.localeCompare(b));
 
         // Update tag search results
