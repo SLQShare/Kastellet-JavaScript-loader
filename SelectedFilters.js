@@ -222,6 +222,12 @@ export class SelectedFilters {
                         // Check if the mission's year range overlaps with the selected period range.
                         const { from, to } = mission.year; // Mission's start and end year.
                         const [startYear, endYear] = filterValue; // User-selected period range.
+                        // Ongoing mission (to === 0): Should be shown in all periods after start year
+                        if (!to || to === 0){
+                            return from <= endYear;
+                        // if the mission starts before the filter period and ends after the filter period
+                        } if (from <= endYear && to >= startYear)
+                            return true;
                         return (from >= startYear && from <= endYear) || (to >= startYear && to <= endYear);
 
                     case "contribution":
