@@ -312,8 +312,7 @@ export class SelectedFilters {
     dependentFilter(){
         if (!this.validFilterOptions.length > 0){
             const originalArray = this.generateDataSet(1940, 2029, 10);
-            // Remove the item with description "1970-1979"
-            const timeIntervals = originalArray.filter(item => item.description !== "1970-1979").map(item => item.description);
+            const timeIntervals = originalArray.map(item => item.description);
             const forces = this.data.forces.map(item => item.title);
             const excludedIds = this.getExcludedIds()
             const locationsOptions = this.data.locations

@@ -71,9 +71,7 @@ export class InfoScreenPage {
 
     createInfoScreenFilterButton(missionId, data, excludedIds, dataIntervals) {
         const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton'];
-        const originalArray = dataIntervals;
-        // Remove the item with description "1970-1979"
-        const dataSet = originalArray.filter(item => item.description !== "1970-1979");
+        const dataSet = dataIntervals;
         const contributionColors = this.selectedFilters.getContributionColors();
         buttonIds.forEach(buttonId => {
             const parentButton = document.getElementById(buttonId);
