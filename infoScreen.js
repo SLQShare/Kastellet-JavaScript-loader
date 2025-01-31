@@ -428,6 +428,7 @@ export class InfoScreenPage {
             ukraine: { x: 51.5, y: 30 }, // Europe done
             latvia: { x: 49, y: 25.7 }, // Europe done
             unitedkingdom: { x: 42.4, y: 27.5 }, // Europe done
+            mediterranean: { x: 44.5, y: 35.8 }, // Europe
             default: { x: 50, y: 55 } // Default zoom for reset or unmatched regions
         };
         
