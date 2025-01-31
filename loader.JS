@@ -356,68 +356,78 @@ function controlFlags() {
 
 // check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
 // page to trigger: en/balkan-forside/, en/cypern-forside/, en/irak-forside/, /en/afghanistan-forside/
+// Check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
+// Pages that should trigger the function
 function areaPins(data) {
-    // Supported pages
-    const supportedPages = [
-        '/en/balkan-forside/',
-        '/en/cypern-forside/',
-        '/en/irak-forside/',
-        '/en/afghanistan-forside/',
-        '/cypern-forside/',
-        '/balkan-forside/',
-        '/irak-forside/',
-        '/afghanistan-forside/'
-    ];
+    // Supported pages and their corresponding keys in frontpages
+    const pageMapping = {
+        "/en/balkan-forside/": "Balkan",
+        "/en/cypern-forside/": "Cypern",
+        "/en/irak-forside/": "Iraq",
+        "/en/afghanistan-forside/": "Afghanistan",
+        "/balkan-forside/": "Balkan",
+        "/cypern-forside/": "Cypern",
+        "/irak-forside/": "Iraq",
+        "/afghanistan-forside/": "Afghanistan"
+    };
 
     // Get the current page path
     const currentPath = window.location.pathname;
 
-    // Check if the page is supported
-    if (!supportedPages.includes(currentPath)) {
-        return;
+    // Check if the page is supported and get the corresponding frontpage key
+    const frontpageKey = pageMapping[currentPath];
+    if (!frontpageKey || !data.frontpages[frontpageKey]) {
+        return; // Exit if the page isn't supported or if data is missing
     }
-    // Find parent element
-    const parentElement = document.querySelector('[parent="yes"]'); // Adjust the selector as needed
 
+    // Get frontpage mission data for the current page
+    const frontpageData = data.frontpages[frontpageKey];
+
+    // Find parent element
+    const parentElement = document.querySelector('[parent="yes"]'); // Adjust selector as needed
     if (!parentElement) {
         console.error('Parent element not found.');
         return;
     }
-
     // Add event listeners to area pins
     const areaPins = document.querySelectorAll('[area]'); // Adjust selector to match area pins
+    console.log('areaPins', areaPins);
     areaPins.forEach(pin => {
         const tag = pin.getAttribute('area'); // Retrieve 'area' attribute
-        const tags = tag.split(',').map(t => t.trim()); // Split by comma and trim whitespace        
-        let tagName = null;
+        const tags = tag.split(',').map(t => t.trim()); // Split by comma and trim whitespace
+        
         let idArray = [];
-        tags.forEach((tag) => {
-            tag = toCapitalizedLowercase(tag)
-            const results = data.missions
-            .filter(mission => mission.tags.includes(tag)) // Find missions with the tag
-            .map(mission => mission.id);  
-            idArray = idArray.concat(results)
-        })
-        // remove duplicates 
-        idArray = Array.from(new Set(idArray));
 
-        // remove pins with no missions
-        // if (idArray.length === 0){
-        //     pin.remove();
-        // }
-           
-        // Use a for...of loop for better control and to break early
+        // Find matching areas in the frontpage data
+        tags.forEach(tag => {
+            tag = toCapitalizedLowercase(tag);
+
+            if (frontpageData[tag]) {
+                idArray = idArray.concat(frontpageData[tag]); // Get mission IDs
+            }
+        });
+
+        // Remove duplicates
+        //idArray = [...new Set(idArray)];
+
+        // Remove pins with no matching missions
+        if (idArray.length === 0) {
+            pin.remove();
+            return;
+        }
+
+        let tagName = null;
         for (const child of pin.childNodes) {
             if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('tag')) {
                 tagName = child.innerText;
                 break; // Exit loop after finding the tag
             }
         }
-        
         pin.addEventListener('click', () => {
             searchByTag(tagName, parentElement, data, idArray); // Add event listener for clicks
         });
     });
+
     function toCapitalizedLowercase(str) {
         if (!str) return ''; // Handle empty or null input
         str = str.toLowerCase(); // Convert the entire string to lowercase
@@ -425,13 +435,14 @@ function areaPins(data) {
     }
 
     // Search missions by tag
-    function searchByTag(tagName, parentElement, data, missionId) {
+    function searchByTag(tagName, parentElement, data, missionIds) {
         let missionMenu = new MissionSelectorMenu(
-            missionId,
+            missionIds,
             tagName,
             parentElement,
             selectedFilters
         );
     }
+
     loader.removeLoaderContainer();
 }
