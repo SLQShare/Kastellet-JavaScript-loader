@@ -32,7 +32,7 @@ main(data);
 
 controlFlags();
 // Create an instance of BackNavigation
-const backNavigation = new BackNavigation();
+const backNavigation = new BackNavigation(selectedFilters);
 
 function main(apiUrl) {
     // Get mission ID from selected filters or local storage

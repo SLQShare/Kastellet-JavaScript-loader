@@ -1,7 +1,7 @@
 export class BackNavigation{
     constructor(filtersObject){
         this.NAVIGATION_STACK_KEY = 'navigationStack'; // Key for localStorage
-        this.activeFilters = filtersObject;
+        this.selectedFilters = filtersObject;
         this.backButton = this.getBackButton()
         this.createNavigationStack(this.NAVIGATION_STACK_KEY )
         this.pushToNavigationStack()
@@ -46,45 +46,25 @@ export class BackNavigation{
    // Handle back navigation logic
     handleBackNavigation() {
         const stack = this.getNavigationStack(); // Retrieve the navigation stack
+        const langSetting = this.getLangFromPath(window.location.pathname)
+        console.log('handleBackNavigation stack', stack, stack.length);
         if (stack.length > 1) {
-            let lastPage = null;
+            let lastPage = stack[stack.length - 2]; // Get the last navigation entry
 
-            // Helper function to detect language from a path
-            const getLangFromPath = (path) => path.includes('/en') ? 'en' : 'dk';
-
-            // Determine the language state of the last page
-            const langState = getLangFromPath(stack[stack.length - 1]) === 'en';
-
-            // Normalize the stack URLs based on the detected language state
-            const normalizedStack = stack.map((element) => {
-                if (langState) {
-                    // Add `/en` to Danish URLs
-                    return element.includes('/en') ? element : element.replace('.dk/', '.dk/en/');
-                } else {
-                    // Remove `/en` from English URLs
-                    return element.replace('/en', '');
-                }
-            });
-
-            // Iterate through the normalized stack from the end
-            for (let i = normalizedStack.length - 1; i > 0; i--) {
-                if (normalizedStack[i] !== normalizedStack[i - 1]) {
-                    lastPage = normalizedStack[i - 1]; // Find the first non-matching page
-                    break; // Exit the loop once found
-                }
-            }
-
-            if (lastPage) {
-                console.log('Navigating to:', lastPage);
-                // Remove all pages from the stack up to the lastPage
-                const updatedStack = normalizedStack.slice(0, normalizedStack.indexOf(lastPage) + 1);
-                this.saveNavigationStack(updatedStack); // Save the updated stack
-                window.location.href = lastPage; // Navigate to the last page
+            console.log('lang check',langSetting)
+            if (lastPage.isEn === langSetting && stack[stack.length - 1].fallback === false) {
+                console.log("Last and current page was in", lastPage.isEn);
+                debugger;
+                history.go(-2);
             } else {
-                console.log('No non-matching previous page found.');
-            }
+                console.log('fallback',lastPage)
+                debugger;
+                window.location.href = window.location.origin + lastPage.url;                
+            }         
         } else {
             console.log('No previous page in navigation stack.');
+            debugger;
+            history.go(-2);
         }
     }
     
@@ -102,10 +82,6 @@ export class BackNavigation{
     // Save the navigation stack to localStorage
     saveNavigationStack(stack) {
         try {
-            // Trim the 5 oldest elements if the array is too long
-            if (stack.length > 20) {
-                stack = stack.slice(-15); // Keep only the latest 15 items
-            }
             localStorage.setItem(this.NAVIGATION_STACK_KEY, JSON.stringify(stack));
             console.log('Saved navigation stack:', stack);
         } catch (error) {
@@ -115,10 +91,67 @@ export class BackNavigation{
 
     // Push the current page to the navigation stack
     pushToNavigationStack() {
-        const stack = this.getNavigationStack(); // Get the current stack
-        stack.push(window.location.href); // Add the current page
-        this.saveNavigationStack(stack); // Save it back to localStorage
-        console.log('Updated navigationStack:', stack);
+        let stack = this.getNavigationStack(); // Get the current stack
+    
+        // Ensure at least one entry is stored
+        if (stack.length === 0) {
+            stack = [];
+        }
+    
+        // Get all selected filters
+        const filterStates = this.selectedFilters.getAllFilters();
+    
+        // Construct the new state object
+        const state = {
+            isEn: this.getLangFromPath(window.location.pathname),
+            url: window.location.pathname,
+            fallback: false
+        };
+    
+        const lastEntry = stack.length > 0 ? stack[stack.length - 1] : null;
+
+        if (lastEntry && lastEntry.isEn != state.isEn){
+            stack.forEach(element => {
+                element.isEn = state.isEn;
+                element.fallback = true;
+                if (state.isEn === 'en') {
+                    // Ensure `/en` is added correctly
+                    if (!element.url.startsWith('/en')) {
+                        element.url = '/en' + element.url.replace(/^\/en/, '');
+                    }
+                } else {
+                    // Ensure `/en` is removed correctly
+                    element.url = element.url.replace(/^\/en/, '');
+                }
+            });
+            //state.fallback = true;
+        }
+        // Prevent duplicate entries (Check full state, not just URL)
+        if (lastEntry && JSON.stringify(lastEntry) === JSON.stringify(state)) {
+            return;
+        }
+        
+        // Special case: Reset stack if too many entries and user navigates to `/`, `/search/`, `/en/`, or `/en/search/`
+        if (stack.length > 30 ) {
+            removeFirstHalfInPlace(stack);
+            stack.push(state);
+        } else {
+            stack.push(state);
+        }
+        function removeFirstHalfInPlace(arr) {
+            arr.splice(0, Math.ceil(arr.length / 2)); // Remove first half
+        }
+        
+        // Save the updated navigation stack
+        localStorage.setItem(this.NAVIGATION_STACK_KEY, JSON.stringify(stack));
+        this.saveNavigationStack(stack);
+    
+        // Push new state to history only if language hasn't changed
+        history.pushState(state, "", window.location.pathname);
+    
+        console.log("Updated navigationStack:", stack);
     }
+    
+    getLangFromPath = (path) => path.includes('/en') ? 'en' : 'dk';
 }
 
