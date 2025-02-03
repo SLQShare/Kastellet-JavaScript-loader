@@ -8,7 +8,6 @@ import { LoadingAnimation} from './loadingAnimation.js'
 import { IdleScreen } from './idleScreens.js'
 //global variables
 const loader = new LoadingAnimation();
-const idleScreen = new IdleScreen();
 const url = new URL(window.location.href);
 const jsonDkPath = url.origin+'/wp-content/uploads/data-files/dk3.json';
 const jsonEnPath = url.origin+'/wp-content/uploads/data-files/en.json';
@@ -87,6 +86,7 @@ async function fetchAndProcessData(missionId, url) {
         const typeCheckedMissionId = checkIdTypes(jsonData.missions, missionId)
         // Call a function to process the data
         console.log("loaded data:", jsonData);
+        console.log("idlescreenImages:", jsonData.idlescreenImages);
         selectedFilters.setData(jsonData);
         processData(typeCheckedMissionId, jsonData);
     } catch (error) {
@@ -114,6 +114,7 @@ function updateTheInfoScreen(data, missionId){
         selectedFilters.addFilterListener((type, value) => {
             selectedFilters.handleFilterChange(type, value);
         });
+        const idleScreen = new IdleScreen('Horisontal', data);
         loader.removeLoaderContainer();
     }
 }

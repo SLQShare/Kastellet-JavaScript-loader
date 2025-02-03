@@ -30750,5 +30750,51 @@
       "Nicosia": [5388],
       "Xeros": [5388]
     }
+  },
+  "Screensavers": {
+    "Horizontal": {
+      "images": {
+        "Screensaver_Horizontal_1": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_1.jpg",
+        "Screensaver_Horizontal_2": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_2.jpg",
+        "Screensaver_Horizontal_3": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_3.jpg",
+        "Screensaver_Horizontal_4": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_4.jpg",
+        "Screensaver_Horizontal_5": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_5.jpg",
+        "Screensaver_Horizontal_6": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_6.jpg",
+        "Screensaver_Horizontal_7": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_7.jpg",
+        "Screensaver_Horizontal_8": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_8.jpg",
+        "Screensaver_Horizontal_9": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_9.jpg",
+        "Screensaver_Horizontal_10": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_10.jpg",
+        "Screensaver_Horizontal_11": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_11.jpg",
+        "Screensaver_Horizontal_12": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_12.jpg",
+        "Screensaver_Horizontal_13": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_13.jpg",
+        "Screensaver_Horizontal_14": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_14.jpg",
+        "Screensaver_Horizontal_15": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_15.jpg",
+        "Screensaver_Horizontal_16": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_16.jpg",
+        "Screensaver_Horizontal_17": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_17.jpg",
+        "Screensaver_Horizontal_18": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_18.jpg",
+        "Screensaver_Horizontal_19": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_19.jpg",
+        "Screensaver_Horizontal_20": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_20.jpg",
+        "Screensaver_Horizontal_21": "/wp-content/uploads/media/Horizontal/Screensaver_Horizontal_21.jpg"
+      }
+    },
+    "Vertical": {
+      "images": {
+        "Screensaver_Vertical_1": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_1.jpg",
+        "Screensaver_Vertical_2": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_2.jpg",
+        "Screensaver_Vertical_3": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_3.jpg",
+        "Screensaver_Vertical_4": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_4.jpg",
+        "Screensaver_Vertical_5": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_5.jpg",
+        "Screensaver_Vertical_6": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_6.jpg",
+        "Screensaver_Vertical_7": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_7.jpg",
+        "Screensaver_Vertical_8": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_8.jpg",
+        "Screensaver_Vertical_9": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_9.jpg",
+        "Screensaver_Vertical_10": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_10.jpg",
+        "Screensaver_Vertical_11": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_11.jpg",
+        "Screensaver_Vertical_12": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_12.jpg",
+        "Screensaver_Vertical_13": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_13.jpg",
+        "Screensaver_Vertical_14": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_14.jpg",
+        "Screensaver_Vertical_15": "/wp-content/uploads/media/Vertical/Screensaver_Vertical_15.jpg"
+      }
+    }
   }
 }

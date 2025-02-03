@@ -1,18 +1,23 @@
 export class IdleScreen {
-    constructor() {
+    constructor(imageOrientation, data) {
         this.time = 0;
-        this.idleTimeLimit = 1000000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000
+        this.idleTimeLimit = 30000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
-        this.addEvent();
-        this.startIdleTimer();
-        this.data = null;
-        this.images = null; // must be URLs
+        this.data = data;
+        this.images = []; // must be URLs
+        this.imageOrientation = imageOrientation //vertikal or horisontal
+        this.key;
+        this.location = location;
+        this.init(this.imageOrientation, this.data);
     }
 
-    setData(data){
-        this.data = data;
+    init(imageOrientation, data){
+        this.addEvent();
+        this.startIdleTimer();
+        this.assignImages(imageOrientation, data);
     }
+
 
     addEvent() {
         // Bind `this.resetTimer` to maintain context in event listeners
@@ -49,7 +54,6 @@ export class IdleScreen {
 
     idleTrigger() {
         console.log('User is idle');
-        this.assignImages();
         this.createIdleElements();
     }
 
@@ -122,13 +126,22 @@ export class IdleScreen {
         }
     }  
     
-    assignImages(){
+    assignImages(imageOrientation, data){
         const url = new URL(window.location.href);
-        const normalizedPath = url.pathname.toLowerCase();
+        //url.origin
+        const siteImages = [];
+        
+        
+        console.log('data.idlescreenImages', data.idlescreenImages)
+        console.log('siteImages', siteImages);
+        
+        // Default images (fallback)
+        const fallbackImages = [
+            'https://kastellet.gbplayground.dk/wp-content/uploads/media/1685/oestlige-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481081580000000',
+            'https://kastellet.gbplayground.dk/wp-content/uploads/media/1388/absalon-i-adenbugten-2009-076.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483992300000000'
+        ];
 
-        //const siteImages = this.data.idleScreen.idle_images[normalizedPath]?.images || [];
-        const siteImages = ['https://kastellet.gbplayground.dk/wp-content/uploads/media/1685/oestlige-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481081580000000', 'https://kastellet.gbplayground.dk/wp-content/uploads/media/1388/absalon-i-adenbugten-2009-076.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483992300000000'];
-
-        this.images = siteImages;
+        // Assign generated images (or fallback if empty)
+        this.images = siteImages.length > 0 ? siteImages : fallbackImages;
     }
 }
