@@ -11,8 +11,8 @@ export class BackNavigation{
      createNavigationStack(key){
         if(!localStorage.getItem(key)){
             localStorage.setItem(key, JSON.stringify([]))
-            }
         }
+    }
     
     getBackButton() {
         try {
@@ -48,22 +48,33 @@ export class BackNavigation{
         const stack = this.getNavigationStack(); // Retrieve the navigation stack
         const langSetting = this.getLangFromPath(window.location.pathname)
         console.log('handleBackNavigation stack', stack, stack.length);
-        if (stack.length > 1) {
+        if (stack && stack.length > 1) {
             let lastPage = stack[stack.length - 2]; // Get the last navigation entry
-
+            let currentPage = stack[stack.length - 1]; 
             console.log('lang check',langSetting)
-            if (lastPage.isEn === langSetting && stack[stack.length - 1].fallback === false) {
+            console.log('stack',stack)
+            console.log('lastPage',lastPage)
+            console.log('currentPage',currentPage)
+
+            if (lastPage.fallback === false) {
                 console.log("Last and current page was in", lastPage.isEn);
                 debugger;
+                stack.pop();
+                this.saveNavigationStack(stack)
                 history.go(-2);
             } else {
                 console.log('fallback',lastPage)
                 debugger;
+                stack.pop();
+                stack.pop();
+                debugger;
+                this.saveNavigationStack(stack)
                 window.location.href = window.location.origin + lastPage.url;                
             }         
         } else {
             console.log('No previous page in navigation stack.');
             debugger;
+            this.pushToNavigationStack();
             history.go(-2);
         }
     }
@@ -92,7 +103,7 @@ export class BackNavigation{
     // Push the current page to the navigation stack
     pushToNavigationStack() {
         let stack = this.getNavigationStack(); // Get the current stack
-    
+        debugger;
         // Ensure at least one entry is stored
         if (stack.length === 0) {
             stack = [];
@@ -107,29 +118,36 @@ export class BackNavigation{
             url: window.location.pathname,
             fallback: false
         };
-    
+        
+        console.log('stack', stack)
         const lastEntry = stack.length > 0 ? stack[stack.length - 1] : null;
-
+        // check if the lastest entry is the same language as the current page
         if (lastEntry && lastEntry.isEn != state.isEn){
-            stack.forEach(element => {
-                element.isEn = state.isEn;
+            // if not
+            stack.forEach((element, index) => {
                 element.fallback = true;
-                if (state.isEn === 'en') {
+                // if dk, then convert element to en
+                if (lastEntry.isEn === 'dk') {
+                    element.isEn = 'en';
                     // Ensure `/en` is added correctly
                     if (!element.url.startsWith('/en')) {
                         element.url = '/en' + element.url.replace(/^\/en/, '');
                     }
-                } else {
+                    // if en convert to dk
+                } else if (lastEntry.isEn === 'en'){
                     // Ensure `/en` is removed correctly
                     element.url = element.url.replace(/^\/en/, '');
+                    element.isEn = 'dk';
                 }
+                //
             });
-            //state.fallback = true;
+            stack.pop();
         }
+
         // Prevent duplicate entries (Check full state, not just URL)
-        if (lastEntry && JSON.stringify(lastEntry) === JSON.stringify(state)) {
-            return;
-        }
+        // if (lastEntry && JSON.stringify(lastEntry.url) === JSON.stringify(state.url)) {
+        //     stack.pop();
+        // }
         
         // Special case: Reset stack if too many entries and user navigates to `/`, `/search/`, `/en/`, or `/en/search/`
         if (stack.length > 30 ) {
@@ -142,15 +160,16 @@ export class BackNavigation{
             arr.splice(0, Math.ceil(arr.length / 2)); // Remove first half
         }
         
+
         // Save the updated navigation stack
-        localStorage.setItem(this.NAVIGATION_STACK_KEY, JSON.stringify(stack));
         this.saveNavigationStack(stack);
-    
+        debugger;
         // Push new state to history only if language hasn't changed
         history.pushState(state, "", window.location.pathname);
     
         console.log("Updated navigationStack:", stack);
     }
+
     
     getLangFromPath = (path) => path.includes('/en') ? 'en' : 'dk';
 }
