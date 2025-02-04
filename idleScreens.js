@@ -1,23 +1,36 @@
 export class IdleScreen {
-    constructor(imageOrientation, data) {
+    constructor(data) {
         this.time = 0;
-        this.idleTimeLimit = 30000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000
+        this.idleTimeLimit = 180000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
         this.data = data;
         this.images = []; // must be URLs
-        this.imageOrientation = imageOrientation //vertikal or horisontal
         this.key;
-        this.location = location;
-        this.init(this.imageOrientation, this.data);
+        this.location = null;
+        this.init(this.data);
     }
 
-    init(imageOrientation, data){
+    init(data){
+        this.assignLocation();
         this.addEvent();
         this.startIdleTimer();
-        this.assignImages(imageOrientation, data);
+        this.assignImages(data);
     }
 
+    assignLocation() {
+        // Check if 'idleHomepage' is already set in sessionStorage
+        let savedHomepage = sessionStorage.getItem("idleHomepage");
+    
+        if (!savedHomepage) { 
+            const url = new URL(window.location.href);
+            this.location = url.origin + url.pathname; // Store the current page as homepage
+            sessionStorage.setItem("idleHomepage", this.location); // Save in sessionStorage
+        } else {
+            this.location = savedHomepage; // Retrieve the saved homepage
+        }
+    }
+    
 
     addEvent() {
         // Bind `this.resetTimer` to maintain context in event listeners
@@ -36,7 +49,10 @@ export class IdleScreen {
     resetTimer() {
         this.time = 0;
         console.log('Timer reset', this.time);
-        if (this.idleContainer) this.removeIdleContainer();
+        if (this.idleContainer){
+            this.removeIdleContainer();
+            window.location.href = this.location
+        } 
 
         // Restart the idle timer
         if (this.timer) {
@@ -126,15 +142,12 @@ export class IdleScreen {
         }
     }  
     
-    assignImages(imageOrientation, data){
-        const url = new URL(window.location.href);
-        //url.origin
-        const siteImages = [];
-        
-        
-        console.log('data.idlescreenImages', data.idlescreenImages)
-        console.log('siteImages', siteImages);
-        
+    assignImages(data){
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        const siteImages = aspectRatio > 1 
+            ? Object.values(data.Screensavers.Horizontal.images)
+            : Object.values(data.Screensavers.Vertical.images);
+
         // Default images (fallback)
         const fallbackImages = [
             'https://kastellet.gbplayground.dk/wp-content/uploads/media/1685/oestlige-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481081580000000',

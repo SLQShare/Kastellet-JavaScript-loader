@@ -86,7 +86,6 @@ async function fetchAndProcessData(missionId, url) {
         const typeCheckedMissionId = checkIdTypes(jsonData.missions, missionId)
         // Call a function to process the data
         console.log("loaded data:", jsonData);
-        console.log("idlescreenImages:", jsonData.idlescreenImages);
         selectedFilters.setData(jsonData);
         processData(typeCheckedMissionId, jsonData);
     } catch (error) {
@@ -103,6 +102,7 @@ function processData(missionId , data) {
     updateBackgroundPages(data)
     updateBeredskabsKort(missionId, data)
     areaPins(data);
+    const idleScreen = new IdleScreen(data);
     loader.removeLoaderContainer();
 }
 function updateTheInfoScreen(data, missionId){
@@ -110,11 +110,10 @@ function updateTheInfoScreen(data, missionId){
         selectedFilters.setData(data);
         const InfoSide = new InfoScreenPage(selectedFilters.getData(), missionId, selectedFilters);
         selectedFilters.updateMapPins = InfoSide.updateMapPins.bind(InfoSide);
-
+        
         selectedFilters.addFilterListener((type, value) => {
             selectedFilters.handleFilterChange(type, value);
         });
-        const idleScreen = new IdleScreen('Horisontal', data);
         loader.removeLoaderContainer();
     }
 }
