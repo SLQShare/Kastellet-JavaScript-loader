@@ -62,9 +62,6 @@ function checkIdTypes(missionsArray, storedId) {
     const dataIdType = typeof missionsArray[0]?.id; // Check the type of the first ID in the array
     const storedIdType = typeof storedId; // Check the type of the stored ID
 
-    console.log(`Data ID type: ${dataIdType}`);
-    console.log(`Stored ID type: ${storedIdType}`);
-
     if (dataIdType !== storedIdType) {
         console.warn("Type mismatch detected. Converting stored ID to match data ID type.");
         if (dataIdType === "number") {
@@ -173,7 +170,6 @@ function updateBackgroundPages(data) {
 
         const englishPath = `/en/${finalDanishName}`;
         if (isOnMissionsPage(finalDanishName) || isOnMissionsPage(englishPath)) {
-            console.log(`Matched Collection: ${collection.title}`);
 
             const button = document.getElementById(`missionButton${collection.id}`);
             const homePage = document.getElementById(`PageElement${collection.id}`);
@@ -332,20 +328,16 @@ function controlFlags() {
     const currentLang = url.pathname.includes('/en') ? 'en' : 'dk';
     const toggleLang = currentLang === 'en' ? 'dk' : 'en'; // Determine the language to toggle to
 
-    console.log('Detected Current Language:', currentLang);
-
     // Create the language toggle button
     const langButton = createLangToggle(langLocationParent, toggleLang);
 
     // Add click event listener
     langButton.addEventListener('click', () => {
-        console.log(`Switching to ${toggleLang.toUpperCase()}`);
         const currentPath = url.pathname.replace(/^\/en\//, ''); // Remove `/en/` prefix if present
         const newUrl =
             toggleLang === 'en'
                 ? `${url.origin}/en${currentPath}`
                 : `${url.origin}/${currentPath}`;
-        console.log(`Redirecting to: ${newUrl}`);
          // Replace the current history entry to prevent back navigation to the old language
         history.replaceState(null, '', window.location.href);
         
@@ -391,7 +383,6 @@ function areaPins(data) {
     }
     // Add event listeners to area pins
     const areaPins = document.querySelectorAll('[area]'); // Adjust selector to match area pins
-    console.log('areaPins', areaPins);
     areaPins.forEach(pin => {
         const tag = pin.getAttribute('area'); // Retrieve 'area' attribute
         const tags = tag.split(',').map(t => t.trim()); // Split by comma and trim whitespace

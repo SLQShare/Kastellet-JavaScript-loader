@@ -37,7 +37,6 @@ export class SearchPage {
         if (url.includes('/en')) {
             // en
             this.isEn = true;
-            console.log('The URL contains /en');
         } else {
             // da
             this.isEn = false;

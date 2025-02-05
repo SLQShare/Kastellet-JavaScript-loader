@@ -165,8 +165,6 @@ export class MissionPage {
         for (let i = numSections; i < filteredArrayOfElementsButton.length; i++) {
             filteredArrayOfElementsButton[i].style.display = 'none'; // Hide extra buttons
         }
-    
-        console.log(`Table updated for mission ID: ${missionId}`);
     }
     
 
@@ -232,7 +230,6 @@ export class MissionPage {
     
             const missionImageArray = missionInformation.content.gallery.images;
             const emblemIds = IdsForEmblems;
-            console.log('emblemIds', emblemIds)
             const missionEmblems = [];
             const sortedImageContent  = [];
     
@@ -334,8 +331,7 @@ export class MissionPage {
             ...imageArray,
             imageArray[0], // Clone of the first image
         ];
-        console.log('imageArray',imageArray)
-        console.log('imagesWithClones',imagesWithClones)
+
         // Create the slider container
         const sliderContainer = document.createElement('div');
         Object.assign(sliderContainer.style, {
@@ -727,7 +723,6 @@ export class MissionPage {
         const originalSliderItems = Array.from(document.querySelectorAll('.slider-item'));
 
         let currentDotIndex = 1;
-        console.log(imageArray)
 
         // Helper function: Create a set of cloned slider items
         const createImageSet = (items) => {

@@ -38,7 +38,6 @@ export class InfoScreenPage {
         if (url.includes('/en')) {
             // en
             this.isEn = true;
-            console.log('The URL contains /en');
         } else {
             // da
             this.isEn = false;
@@ -652,10 +651,7 @@ export class InfoScreenPage {
             
                 // Filter out mission IDs that are present in other countries
                 const filteredBalkanMissions = balkanMissions.filter(missionId => !otherCountryMissions.has(missionId));
-            
-                // Update the Balkan missions in the map
-                //console.log('Updated Balkan Mission List:', filteredBalkanMissions);
-                //console.log('Updated Country Mission Map:', countryMissionMap);
+  
                 countryMissionMap.set('balkan', filteredBalkanMissions);
             }
             // remove dublicate mission ids. Dublicates can happen when using hotspots to find missions
@@ -731,7 +727,6 @@ export class InfoScreenPage {
                                 parentElement,
                                 this.selectedFilters
                             )
-                            console.log('missionIds', missionIds)
                         });
                     }
                     countryPin.setAttribute('data-mission-ids', missions.join(',')); // Add mission IDs as a comma-separated list
@@ -809,7 +804,6 @@ export class InfoScreenPage {
         
             if (pinType === 'country') {
                 if (currentFilters.geography === null) {
-                    console.log(`Removing country pin due to no geography filter: ${region}`);
                     pin.remove(); // Remove all country pins if no geography filter
                     return;
                 }
@@ -817,7 +811,6 @@ export class InfoScreenPage {
                 // Get valid countries for the current continent
                 const validCountries = this.selectedFilters.getFilteredCountries()[0];
                 if (!validCountries.has(region)) {
-                    console.log(`Removing country pin not in valid countries: ${region}`);
                     pin.remove(); // Remove pin if country is not valid for the geography filter
                     return;
                 }
@@ -826,7 +819,6 @@ export class InfoScreenPage {
                 const isCountryStillValid = pinMissionIds.some(missionId => selectedMission.includes(missionId));
         
                 if (!isCountryStillValid) {
-                    console.log(`Removing country pin not matching filters: ${region}`);
                     pin.remove(); // Remove pin if it doesn't match the filters
                 }
             } else if (pinType === 'continent') {
@@ -843,7 +835,6 @@ export class InfoScreenPage {
                 );
         
                 if (!isRegionStillValid) {
-                    console.log(`Removing continent pin: ${region}`);
                     pin.remove(); // Remove invalid continent pin
                 }
             } else {
