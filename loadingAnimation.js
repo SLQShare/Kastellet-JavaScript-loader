@@ -12,10 +12,9 @@ export class LoadingAnimation {
         // Check if the normalizedPath includes any of the blacklisted sites
         const isBlacklisted = noLoadAniSitesArray.some((site) => normalizedPath.includes(site));
 
-        if (isBlacklisted) {
+        if (isBlacklisted && this.element) {
             this.element = remove; // Prevent the loading animation from being created
             this.element = null; // Prevent the loading animation from being created
-            console.log(`Loading animation is disabled for: ${normalizedPath}`);
         } else {
             // creates the element if it is on a whitelisted site
             const removeElement = document.getElementById('loaderRemoveOnLoad')
