@@ -1,10 +1,11 @@
 export class MissionSelectorMenu {
-    constructor(missionsIdArray, title, parentElement, selectedFilters) {
+    constructor(missionsIdArray, title, parentElement, selectedFilters, urlIslandTag = null) {
         this.missionsIdArray = missionsIdArray;
         this.title = title; 
         this.selectedFilters = selectedFilters;
         this.parentElement = parentElement;
         this.data = this.selectedFilters.getData();
+        this.urlIslandTag = urlIslandTag;
         this.isEn = false; // used to check the language state
         this.initialize();
     }
@@ -647,7 +648,7 @@ export class MissionSelectorMenu {
             if (localStorage.getItem('currentMissionId')) {        
                 // Redirect to the new page
                 const url = new URL(window.location.href);
-                const newURL = `${url.protocol}//${url.hostname}${this.isEn? "/en/missionstest-1/" : "/missionstest-1/"}`;
+                const newURL = `${url.protocol}//${url.hostname}${this.isEn? `/en/missioner-${this.urlIslandTag}/` : `/missioner-${this.urlIslandTag}/`}`;
                 window.location.href = newURL; // Replace with the actual target URL
             } else {
                 console.error('Mission ID did not get stored in localStorage');
