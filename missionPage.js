@@ -1,8 +1,10 @@
 export class MissionPage {
-    constructor(data, missionId, filtersSelected) {
+    constructor(data, missionId, filtersSelected, urlIslandTag, HideLocationButton = false) {
         this.data = data;
         this.missionId = missionId;
         this.filtersSelected = filtersSelected;
+        this.urlIslandTag = urlIslandTag;
+        this.HideLocationButton = HideLocationButton;
         this.emblemIds = filtersSelected ? filtersSelected.getEmblemIds() : []; // Initialize emblemIds
         this.initialize();
     }
@@ -13,7 +15,7 @@ export class MissionPage {
         this.comparesTheForceTagsToMissionForces(this.data, this.missionId, "ForceContainer");
         this.assignMissionDuration(this.data, this.missionId, "MissionDuration")
         this.addTextFromDataToTable(this.data, this.missionId);
-        this.missionLocation(this.data, this.missionId);
+        this.missionLocation(this.data, this.missionId, this.urlIslandTag, this.HideLocationButton);
         this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
     }
     headerInformation(data, missionId, cssId, informationType){
@@ -168,7 +170,7 @@ export class MissionPage {
     }
     
 
-    missionLocation(data, missionId) {
+    missionLocation(data, missionId, urlIslandTag, HideLocationButton) {
         let location = null; // Variable to store the location if found
         let urlTag = null;
         const locationButton = document.getElementById('MissionLocation');
@@ -186,17 +188,16 @@ export class MissionPage {
                 urlTag = collection.UrlTag
             }
         });
-    
-        if (location) {
+
+        if (location && HideLocationButton === false) {
             // Clear existing content inside `locationButton` if any
             locationButton.innerHTML = '';
     
             // Create a new <a> element
             const linkElement = document.createElement('a');
             linkElement.className = 'elementor-button elementor-button-link elementor-size-sm';
-            linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(urlTag)}/`;
-            linkElement.rel = 'noopener noreferrer'; // Optional: For security
-    
+            linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(urlTag+'-'+urlIslandTag)}/`;
+
             // Add the text inside the <a> element
             const spanWrapper = document.createElement('span');
             spanWrapper.className = 'elementor-button-content-wrapper';
