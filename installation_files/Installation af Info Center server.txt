@@ -1,0 +1,36 @@
+Installation of Info Center server
+Liste of files you need:
+1.	This guide
+2.	Installation file of LocalWP
+3.	WP backup file of Infocenter 
+4.	All-in-one-WP-migration-6.7 plugin file 
+5.	Login credentials for new Admin and old Admin accounts
+6.	InfoCenter folder (likely not needed but keep them)
+Steps to follow: 
+1.	Install LocalWP
+2.	Create a new site
+a.	Call it InfoCenter
+b.	Set username: Dev
+c.	Set password: dev123
+d.	Login to WP to check it works
+3.	Configure server *can likely be skipped*
+a.	Replace the file inside the folder with the files from InfoCenter folder
+4.	Plugins > Add New Plugin > upload plugin > select All-in-one-WP-migration-6.7 plugin file 
+a.	Don’t activate the plugin yet! (Need to be deactivated before the next step)
+b.	Go into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
+c.	Activate the plugin
+d.	Turn off the server
+5.	Go into the servers folder infoCenter>app>public>wp-content>ai1vm-backups
+a.	Copy the backup file into the folder
+b.	Start the server
+c.	Go into the All-in-one-WP-migration menu and select backup
+d.	Restore the inforcenter backup file 
+e.	When done go to Settings > permalinks > hit save changes twice 
+f.	Turn of WP navigation bar on user
+
+Resources:
+•	https://www.youtube.com/watch?v=R5jipN-su_Q
+•	https://www.youtube.com/watch?v=sFqE5jGcca0&t=18s 
+•	https://mega.nz/file/A8JFkTQK#5i5RRxJxMg4Iu2Y6KxpY30BjShPmCSZhlaTGC6qj5mk 
+All-in-one-WP-migration-6.7 plugin file steps:
+•	When uploading the backup file, the plugin might fail due to the file size. You can fix this by going into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
