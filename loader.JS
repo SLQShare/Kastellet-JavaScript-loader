@@ -93,19 +93,68 @@ async function fetchAndProcessData(missionId, url) {
 
 // Function to process the data
 function processData(missionId , data) {
-    updateTheMissionsPage(missionId, data);
-    updateTheInfoScreen(data, missionId);
-    updateSearchPage(data);
-    updateBackgroundPages(data)
-    updateBeredskabsKort(missionId, data)
-    areaPins(data);
+    infoScreenIsland(missionId , data);
+    beredskabsIsland(missionId, data);
+    organizationIsland(missionId, data);
+    locationIslands(missionId,data, ['balkan', 'irak', 'cypern', 'afghanistan']);
     const idleScreen = new IdleScreen(data);
+    
+}
+
+// island for the infoScreen
+function infoScreenIsland(missionId, data){
+    // /, search, -infoscreen
+    const urlIslandTag = 'infoscreen'; // the '-' is added in the classes
+    updateTheMissionsPage(missionId, data, urlIslandTag);
+    updateTheInfoScreen(data, missionId, urlIslandTag);
+    updateSearchPage(urlIslandTag);
+    updateBackgroundPages(data, urlIslandTag)
     loader.removeLoaderContainer();
 }
-function updateTheInfoScreen(data, missionId){
+// island for DEMA
+function beredskabsIsland(missionId, data){
+    const urlIslandTag = 'beredskab';
+    updateBeredskabsKort(missionId, data, urlIslandTag)
+    updateTheMissionsPage(missionId, data, urlIslandTag, true);
+    updateBackgroundPages(data, urlIslandTag)
+    loader.removeLoaderContainer();
+}
+
+
+// islands for the frontpage for 'balkan', 'irak', 'cypern', 'afghanistan'
+function locationIslands(missionId, data, locations = []){
+    // Get current pathname (e.g., "/balkan-forside/")
+    const pathname = window.location.pathname.toLowerCase();
+
+    // Find all locations that match part of the pathname
+    const matchingLocations = locations.filter(location => 
+        pathname.includes(location.toLowerCase())
+    );
+
+
+    // Set the first matching location, or null if none found
+    let currentLocation = matchingLocations.length > 0 ? matchingLocations[0] : null;
+
+    if (currentLocation){
+        updateTheMissionsPage(missionId, data, currentLocation, true);
+        areaPins(data, currentLocation);
+        updateBackgroundPages(data, currentLocation)
+    }
+    loader.removeLoaderContainer();
+}
+
+function organizationIsland(missionId, data){
+    const urlIslandTag = 'organisationer';
+    const Bool = true;
+    updateTheMissionsPage(missionId, data, urlIslandTag, Bool);
+    updateBackgroundPages(data, urlIslandTag)
+    loader.removeLoaderContainer();
+}
+
+function updateTheInfoScreen(data, missionId, urlIslandTag){
     if (isOnMissionsPage('') || isOnMissionsPage('/en/')) {
         selectedFilters.setData(data);
-        const InfoSide = new InfoScreenPage(selectedFilters.getData(), missionId, selectedFilters);
+        const InfoSide = new InfoScreenPage(selectedFilters.getData(), missionId, selectedFilters, urlIslandTag);
         selectedFilters.updateMapPins = InfoSide.updateMapPins.bind(InfoSide);
         
         selectedFilters.addFilterListener((type, value) => {
@@ -115,24 +164,24 @@ function updateTheInfoScreen(data, missionId){
     }
 }
 
-function updateSearchPage(){
+function updateSearchPage(urlIslandTag){
     if (isOnMissionsPage('search') || isOnMissionsPage('en/search')){
-        const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters, 'Søg i missioner her!');
+        const searchPageInstance = new SearchPage(selectedFilters.getData(), selectedFilters, 'Søg i missioner her!', urlIslandTag);
         loader.removeLoaderContainer();
     }
 }
 
 // update the missionspage with information
-function updateTheMissionsPage(missionId, data){
-    if (isOnMissionsPage('missionstest-1') || isOnMissionsPage('/en/missionstest-1')) {
+function updateTheMissionsPage(missionId, data, urlIslandTag, Bool){
+    if (isOnMissionsPage(`missioner-${urlIslandTag}`) || isOnMissionsPage(`/en/missioner-${urlIslandTag}`)) {
         // Create an instance of MissionPage
-        const missionPage = new MissionPage(data, missionId, selectedFilters);
+        const missionPage = new MissionPage(data, missionId, selectedFilters, urlIslandTag, Bool);
         loader.removeLoaderContainer();
     }
 }
 
 // function that adds the mission card menu to the background pages. The rest of the pages were made in wordpress, so this function is the only part needed in code.
-function updateBackgroundPages(data) {
+function updateBackgroundPages(data, urlIslandTag = null) {
     const collections = data.collections;
     // Danish : English mapping
     const locationNameMapping = {
@@ -164,10 +213,11 @@ function updateBackgroundPages(data) {
             : null;
 
         // Final Danish name
-        const finalDanishName = danishTitle || (matchedDanishTitle 
+        let DanishName = danishTitle || (matchedDanishTitle 
             ? matchedDanishTitle.charAt(0).toUpperCase() + matchedDanishTitle.slice(1) 
             : null);
 
+        const finalDanishName= urlIslandTag ? `${DanishName}-${urlIslandTag}`: DanishName;
         const englishPath = `/en/${finalDanishName}`;
         if (isOnMissionsPage(finalDanishName) || isOnMissionsPage(englishPath)) {
 
@@ -181,7 +231,8 @@ function updateBackgroundPages(data) {
                         collection.missions,
                         collection.title,
                         homePage,
-                        selectedFilters
+                        selectedFilters,
+                        urlIslandTag
                     );
                 });
             }
@@ -190,12 +241,12 @@ function updateBackgroundPages(data) {
     });
 }
 
-function updateBeredskabsKort(missionId, data){
+function updateBeredskabsKort(missionId, data, urlIslandTag){
     if (isOnMissionsPage('beredskabskort') || isOnMissionsPage('en/beredskabskort')){
-        // Step 1: Instantiate SelectedFilters without updateMapPins dependency
+        
         const selectedFiltersBeredskabs = new SelectedFilters({});
         selectedFiltersBeredskabs.setData(data);
-        const BeredskabsKort = new InfoScreenPage(selectedFiltersBeredskabs.getData(), missionId, selectedFiltersBeredskabs, 1092);
+        const BeredskabsKort = new InfoScreenPage(selectedFiltersBeredskabs.getData(), missionId, selectedFiltersBeredskabs, urlIslandTag, 1092);
         selectedFiltersBeredskabs.updateMapPins = BeredskabsKort.updateMapPins.bind(BeredskabsKort);
 
         selectedFiltersBeredskabs.addFilterListener((type, value) => {
@@ -244,7 +295,98 @@ function updateBeredskabsKort(missionId, data){
     }
 }
 
+// check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
+// page to trigger: en/balkan-forside/, en/cypern-forside/, en/irak-forside/, /en/afghanistan-forside/
+// Check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
+// Pages that should trigger the function
+function areaPins(data, urlIslandTag) {
+    // Supported pages and their corresponding keys in frontpages
+    const pageMapping = {
+        "/en/balkan-forside/": "Balkan",
+        "/en/cypern-forside/": "Cypern",
+        "/en/irak-forside/": "Iraq",
+        "/en/afghanistan-forside/": "Afghanistan",
+        "/balkan-forside/": "Balkan",
+        "/cypern-forside/": "Cypern",
+        "/irak-forside/": "Iraq",
+        "/afghanistan-forside/": "Afghanistan"
+    };
 
+    // Get the current page path
+    const currentPath = window.location.pathname;
+
+    // Check if the page is supported and get the corresponding frontpage key
+    const frontpageKey = pageMapping[currentPath];
+    if (!frontpageKey || !data.frontpages[frontpageKey]) {
+        return; // Exit if the page isn't supported or if data is missing
+    }
+
+    // Get frontpage mission data for the current page
+    const frontpageData = data.frontpages[frontpageKey];
+
+    // Find parent element
+    const parentElement = document.querySelector('[parent="yes"]'); // Adjust selector as needed
+    if (!parentElement) {
+        console.error('Parent element not found.');
+        return;
+    }
+    // Add event listeners to area pins
+    const areaPins = document.querySelectorAll('[area]'); // Adjust selector to match area pins
+    areaPins.forEach(pin => {
+        const tag = pin.getAttribute('area'); // Retrieve 'area' attribute
+        const tags = tag.split(',').map(t => t.trim()); // Split by comma and trim whitespace
+        
+        let idArray = [];
+
+        // Find matching areas in the frontpage data
+        tags.forEach(tag => {
+            tag = toCapitalizedLowercase(tag);
+
+            if (frontpageData[tag]) {
+                idArray = idArray.concat(frontpageData[tag]); // Get mission IDs
+            }
+        });
+
+        // Remove duplicates
+        //idArray = [...new Set(idArray)];
+
+        // Remove pins with no matching missions
+        if (idArray.length === 0) {
+            pin.remove();
+            return;
+        }
+
+        let tagName = null;
+        for (const child of pin.childNodes) {
+            if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('tag')) {
+                tagName = child.innerText;
+                break; // Exit loop after finding the tag
+            }
+        }
+        pin.addEventListener('click', () => {
+            searchByTag(tagName, parentElement, data, idArray, urlIslandTag); // Add event listener for clicks
+        });
+    });
+
+    function toCapitalizedLowercase(str) {
+        if (!str) return ''; // Handle empty or null input
+        str = str.toLowerCase(); // Convert the entire string to lowercase
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Search missions by tag
+    function searchByTag(tagName, parentElement, data, missionIds, urlIslandTag) {
+        let missionMenu = new MissionSelectorMenu(
+            missionIds,
+            tagName,
+            parentElement,
+            selectedFilters,
+            urlIslandTag
+        );
+    }
+
+    loader.removeLoaderContainer();
+}
 // Checks if the current page matches the specified site name
 function isOnMissionsPage(siteName) {
     if (typeof siteName !== 'string') {
@@ -344,96 +486,4 @@ function controlFlags() {
         window.location.href = newUrl; // Redirect to the new language
     });
     
-}
-
-// check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
-// page to trigger: en/balkan-forside/, en/cypern-forside/, en/irak-forside/, /en/afghanistan-forside/
-// Check if any of the pages are loaded either in da(/cypern-forside/) or en (en/cypern-forside/)
-// Pages that should trigger the function
-function areaPins(data) {
-    // Supported pages and their corresponding keys in frontpages
-    const pageMapping = {
-        "/en/balkan-forside/": "Balkan",
-        "/en/cypern-forside/": "Cypern",
-        "/en/irak-forside/": "Iraq",
-        "/en/afghanistan-forside/": "Afghanistan",
-        "/balkan-forside/": "Balkan",
-        "/cypern-forside/": "Cypern",
-        "/irak-forside/": "Iraq",
-        "/afghanistan-forside/": "Afghanistan"
-    };
-
-    // Get the current page path
-    const currentPath = window.location.pathname;
-
-    // Check if the page is supported and get the corresponding frontpage key
-    const frontpageKey = pageMapping[currentPath];
-    if (!frontpageKey || !data.frontpages[frontpageKey]) {
-        return; // Exit if the page isn't supported or if data is missing
-    }
-
-    // Get frontpage mission data for the current page
-    const frontpageData = data.frontpages[frontpageKey];
-
-    // Find parent element
-    const parentElement = document.querySelector('[parent="yes"]'); // Adjust selector as needed
-    if (!parentElement) {
-        console.error('Parent element not found.');
-        return;
-    }
-    // Add event listeners to area pins
-    const areaPins = document.querySelectorAll('[area]'); // Adjust selector to match area pins
-    areaPins.forEach(pin => {
-        const tag = pin.getAttribute('area'); // Retrieve 'area' attribute
-        const tags = tag.split(',').map(t => t.trim()); // Split by comma and trim whitespace
-        
-        let idArray = [];
-
-        // Find matching areas in the frontpage data
-        tags.forEach(tag => {
-            tag = toCapitalizedLowercase(tag);
-
-            if (frontpageData[tag]) {
-                idArray = idArray.concat(frontpageData[tag]); // Get mission IDs
-            }
-        });
-
-        // Remove duplicates
-        //idArray = [...new Set(idArray)];
-
-        // Remove pins with no matching missions
-        if (idArray.length === 0) {
-            pin.remove();
-            return;
-        }
-
-        let tagName = null;
-        for (const child of pin.childNodes) {
-            if (child.nodeType === Node.ELEMENT_NODE && child.hasAttribute('tag')) {
-                tagName = child.innerText;
-                break; // Exit loop after finding the tag
-            }
-        }
-        pin.addEventListener('click', () => {
-            searchByTag(tagName, parentElement, data, idArray); // Add event listener for clicks
-        });
-    });
-
-    function toCapitalizedLowercase(str) {
-        if (!str) return ''; // Handle empty or null input
-        str = str.toLowerCase(); // Convert the entire string to lowercase
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    // Search missions by tag
-    function searchByTag(tagName, parentElement, data, missionIds) {
-        let missionMenu = new MissionSelectorMenu(
-            missionIds,
-            tagName,
-            parentElement,
-            selectedFilters
-        );
-    }
-
-    loader.removeLoaderContainer();
 }
