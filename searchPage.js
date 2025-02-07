@@ -1,7 +1,7 @@
 import { MissionSelectorMenu } from './missionCardMenu.js'
 
 export class SearchPage {
-    constructor(data, selectedFilters, title) {
+    constructor(data, selectedFilters, title, urlsIslandTag) {
         this.searchPageContainer = null;
         this.searchActionContainer = null;
         this.searchBar = null;
@@ -18,6 +18,7 @@ export class SearchPage {
         this.searchHeader = null;
         this.tagBoxHeader = null;
         this.isEn = false; // used to check the language state
+        this.urlsIslandTag = urlsIslandTag;
         this.init();
     }
 
@@ -344,7 +345,7 @@ export class SearchPage {
             // requires the danish data file as the HTML pages are in danish
             const links = this.data.collections.map(item => item); //TODO update to contain the webadress
             links.forEach(link => {
-                const fullUrl = generateUrl(link.UrlTag);
+                const fullUrl = generateUrl(link.UrlTag+'-'+this.urlsIslandTag);
                 const tagElement = this.createTagElement(link.title, () => {
                     window.location.assign(fullUrl);
                 });
@@ -407,7 +408,8 @@ export class SearchPage {
             this.missionId,
             tag,
             this.searchPage,
-            this.selectedFilters
+            this.selectedFilters,
+            this.urlsIslandTag
         );
     }
 }

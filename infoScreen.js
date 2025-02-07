@@ -1,7 +1,7 @@
 import { MissionSelectorMenu } from './missionCardMenu.js'
 
 export class InfoScreenPage {
-    constructor(data, missionId, selectedFilters, staticForceFilterID = null){
+    constructor(data, missionId, selectedFilters, urlIslandTag, staticForceFilterID = null){
         this.data = data
         this.currentMissionId = missionId;
         this.selectedFilters = selectedFilters; // stores the selected filter object which contains must of the data and interactive logic
@@ -24,6 +24,7 @@ export class InfoScreenPage {
         };
         this.staticForceFilterID = staticForceFilterID; // must be one of the force IDs from the data. Using the IDs will make it easier to support english
         this.isEn = false; // used to check the language state
+        this.urlIslandTag = urlIslandTag;
         this.initialize();
     }
 
@@ -725,7 +726,8 @@ export class InfoScreenPage {
                                 missionIds,
                                 countryName.textContent,
                                 parentElement,
-                                this.selectedFilters
+                                this.selectedFilters,
+                                this.urlIslandTag
                             )
                         });
                     }
