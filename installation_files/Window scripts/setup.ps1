@@ -1,23 +1,22 @@
 # ------------------------
-# Local WB Auto Startup Script
+# Local WP InfoScreen Auto Startup Script
 # ------------------------
 
 # Define Paths
-$localWB = “C:\Program Files (x86)\Local\Local.exe”  # Change if needed
-$websiteURL = "http://localhost"  # Adjust if using a different local address
+$localWP = "C:\Program Files\Local\Local.exe"
+$websiteURL = "http://localhost"  # Change if InfoScreen runs on a different port
 
-# Start Local WB
-Write-Output "Starting Local WB..."
-Start-Process -FilePath $localWB
-Start-Sleep -Seconds 10  # Allow Local WB to start properly
+# Start LocalWP
+Write-Output "Starting LocalWP..."
+Start-Process -FilePath $localWP
+Start-Sleep -Seconds 10  # Allow LocalWP to start properly
 
-# Start Web Server inside Local WB (Simulating the launch)
-# If manual input is required, use AutoHotkey or UI Automation (optional)
-Write-Output "Starting Web Server..."
-# Here you might need to launch a project in Local WB manually or auto-configure it.
+# Start the InfoScreen Server inside LocalWP
+Write-Output "Starting InfoScreen Server in LocalWP..."
+Start-Process "C:\Program Files\Local\Local.exe" -ArgumentList "start --site InfoScreen" -NoNewWindow -Wait
 
 # Wait for Web Server to start (Check if Port 80 or 3000 is Open)
-Write-Output "Waiting for Web Server to be available..."
+Write-Output "Waiting for InfoScreen Server to be available..."
 $timeout = 60
 $started = $false
 for ($i=0; $i -lt $timeout; $i++) {
@@ -28,7 +27,7 @@ for ($i=0; $i -lt $timeout; $i++) {
     }
 }
 if ($started) {
-    Write-Output "Web Server is running!"
+    Write-Output "InfoScreen Server is running!"
 } else {
     Write-Output "Timeout reached! Web Server might not be running."
 }
