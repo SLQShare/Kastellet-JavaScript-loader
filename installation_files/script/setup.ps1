@@ -8,7 +8,7 @@ $webpage = "infocenter.local" # site domain
 
 # Find LocalWP dynamically
 $possiblePaths = @(
-    "C:\Program Files\Local\Local.exe",
+    "C:\Program Files (x86)\Local\Local.exe",
     "$env:LOCALAPPDATA\Programs\Local\Local.exe"
 )
 $localWP = $possiblePaths | Where-Object { Test-Path $_ } | Select-Object -First 1
@@ -19,7 +19,7 @@ if (-not $localWP) {
 Write-Output "Found LocalWP at: $localWP"
 
 # Define the AutoHotkey script path
-$ahkScript = "C:\scripts\startWebServer.ahk"
+$ahkScript = "C:\script\startWebServer.ahk"
 if (-not (Test-Path $ahkScript)) {
     Write-Output "Error: AutoHotkey script not found at $ahkScript"
     exit 1
@@ -69,36 +69,6 @@ Remove-Item -Path "$edgeCachePath\*" -Recurse -Force -ErrorAction SilentlyContin
 Write-Output "Clearing Edge Cookies..."
 Remove-Item -Path "$edgeCookiesPath" -Force -ErrorAction SilentlyContinue
 
-# Remove Edge Browsing History
-Write-Output "Clearing Edge History..."
-Remove-Item -Path "$edgeHistoryPath" -Force -ErrorAction SilentlyContinue
-
-# ------------------------
-# Disable Edge Pop-ups
-# ------------------------
-
-Write-Output "Disabling Microsoft Edge Translation Prompt..."
-New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
-    -Name "TranslateEnabled" -Value 0 -PropertyType DWORD -Force
-
-Write-Output "Disabling Edge First-Run Welcome Page..."
-New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
-    -Name "HideFirstRunExperience" -Value 1 -PropertyType DWORD -Force
-
-Write-Output "Disabling Restore Pages Prompt..."
-New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
-    -Name "RestoreOnStartup" -Value 4 -PropertyType DWORD -Force
-
-Write-Output "Disabling Autofill Popups..."
-New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
-    -Name "AutofillAddressEnabled" -Value 0 -PropertyType DWORD -Force
-New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
-    -Name "AutofillCreditCardEnabled" -Value 0 -PropertyType DWORD -Force
-
-Write-Output "Disabling Profile Sync Prompt..."
-New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
-    -Name "SyncDisabled" -Value 1 -PropertyType DWORD -Force
-# ------------------------
 # Launch Microsoft Edge in Fullscreen Kiosk Mode
 # ------------------------
 
