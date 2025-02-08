@@ -9,11 +9,12 @@ $websiteURL = "http://localhost"  # Change if InfoScreen runs on a different por
 # Start LocalWP
 Write-Output "Starting LocalWP..."
 Start-Process -FilePath $localWP
-Start-Sleep -Seconds 10  # Allow LocalWP to start properly
+Start-Sleep -Seconds 20  # Allow LocalWP to start properly
 
-# Start the InfoScreen Server inside LocalWP
-Write-Output "Starting InfoScreen Server in LocalWP..."
-Start-Process "C:\Program Files\Local\Local.exe" -ArgumentList "start --site InfoScreen" -NoNewWindow -Wait
+# Run AutoHotkey script to start the server inside LocalWP
+Write-Output "Starting InfoScreen Server in LocalWP using AutoHotkey..."
+Start-Process "C:\scripts\startWebServer.ahk"
+Start-Sleep -Seconds 10  # Give it time to start
 
 # Wait for Web Server to start (Check if Port 80 or 3000 is Open)
 Write-Output "Waiting for InfoScreen Server to be available..."

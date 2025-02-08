@@ -1,5 +1,5 @@
-; Max wait time: 1 minute (60 seconds)
-maxWaitTime := 60000
+; Max wait time: 2 minute (120 seconds)
+maxWaitTime := 120000
 elapsedTime := 0
 retryInterval := 5000  ; Check every 5 seconds
 
@@ -17,7 +17,7 @@ Loop
         Send, {Enter}
         Sleep, 2000
 
-        Send, {Tab 5}
+        Send, {Tab 4} ; this will likely need to be changed to 4
         Sleep, 500
         Send, {Enter}
 
