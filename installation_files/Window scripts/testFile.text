@@ -1,6 +1,13 @@
-F1::
-    WinActivate, ahk_exe Local.exe  ; Activate LocalWP window
-    Sleep, 1000
-    ControlGet, buttonText, List, , , ahk_exe Local.exe  ; Get list of UI elements
-    MsgBox, %buttonText%  ; Show button names
-return
+Sleep, 10000  ; Wait 10 seconds for LocalWP to open (adjust as needed)
+
+WinActivate, ahk_exe Local.exe  ; Activate LocalWP window
+Sleep, 2000  ; Ensure the window is active
+
+Send, {Tab 11}  ; Tab 11 times to select the website
+Sleep, 500
+Send, {Enter}  ; Press Enter to select the site
+Sleep, 2000
+
+Send, {Tab 5}  ; Tab 5 more times to reach "Start Site" button
+Sleep, 500
+Send, {Enter}  ; Press Enter to start the site
