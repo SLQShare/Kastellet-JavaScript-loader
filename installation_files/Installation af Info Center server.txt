@@ -1,32 +1,46 @@
 Installation of Info Center server
+
 Liste of files you need:
 1.	This guide
-2.	Installation file of LocalWP
-3.	WP backup file of Infocenter 
-4.	All-in-one-WP-migration-6.7 plugin file 
-5.	Login credentials for new Admin and old Admin accounts
-6.	InfoCenter folder (likely not needed but keep them)
+2.	WP backup file of Infocenter 
+3.	All-in-one-WP-migration-6.7 plugin file 
+4.	Login credentials for new Admin and old Admin accounts (not on gitHub)
+5.	InfoCenter folder (likely not needed but keep them)
+6.  Script folder with setup.ps1 and startWebServer.ahk
+
 Steps to follow: 
-1.	Install LocalWP
+1.	Install LocalWP and autohotkey v2.0 (USB tethering for internet)
+    a. https://www.autohotkey.com/
+    b. https://localwp.com/
 2.	Create a new site
-a.	Call it InfoCenter
-b.	Set username: Dev
-c.	Set password: dev123
-d.	Login to WP to check it works
+    a.	Call it InfoCenter
+    b.	Set username: Dev
+    c.	Set password: dev123
+    d.	Login to WP to check it works
 3.	Configure server *can likely be skipped*
-a.	Replace the file inside the folder with the files from InfoCenter folder
+    a.  Replace the file inside the folder with the files from InfoCenter folder
 4.	Plugins > Add New Plugin > upload plugin > select All-in-one-WP-migration-6.7 plugin file 
-a.	Don’t activate the plugin yet! (Need to be deactivated before the next step)
-b.	Go into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
-c.	Activate the plugin
-d.	Turn off the server
+    a.	Don’t activate the plugin yet! (Need to be deactivated before the next step)
+    b.	Go into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
+    c.	Activate the plugin
+    d.	Turn off the server
 5.	Go into the servers folder infoCenter>app>public>wp-content>ai1vm-backups
-a.	Copy the backup file into the folder
-b.	Start the server
-c.	Go into the All-in-one-WP-migration menu and select backup
-d.	Restore the inforcenter backup file 
-e.	When done go to Settings > permalinks > hit save changes twice 
-f.	Turn of WP navigation bar on user
+    a.	Copy the backup file into the folder
+    b.	Start the server
+    c.	Go into the All-in-one-WP-migration menu and select backup
+    d.	Restore the inforcenter backup file 
+    e.	When done go to Settings > permalinks > hit save changes twice 
+    f.	Turn of WP navigation bar on user
+    g.  Test the site
+6. Copy the script folder to the local disk (C:)
+    a. Open PowerShell with admin rights 
+    b. Paste the following command:
+        New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" ` -Name "LocalWPStartup" -Value "powershell.exe -ExecutionPolicy Bypass -File C:\script\setup.ps1" `-PropertyType String -Force
+    c. open the script folder and edit the setup.ps1 file. Change the $homeScreenPath from '' to the required island page e.g. 'videomap' etc. Remember to save the changes.
+    d. Make sure there is only one webserver folder in localWP.
+    e. Restart the pc to test it.
+7. Restart to enter the JAHC BIOS and enable Automatic Power ON. 
+    a. cut power and add it back to test the Automatic Power ON.
 
 Resources:
 •	https://www.youtube.com/watch?v=R5jipN-su_Q
@@ -34,3 +48,6 @@ Resources:
 •	https://mega.nz/file/A8JFkTQK#5i5RRxJxMg4Iu2Y6KxpY30BjShPmCSZhlaTGC6qj5mk 
 All-in-one-WP-migration-6.7 plugin file steps:
 •	When uploading the backup file, the plugin might fail due to the file size. You can fix this by going into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
+•   JEHE Active Hardware Control (JAHC) management system includes both hardware Microcontroller Unit (MCU) and software (JAHC Technology Manager). JAHC can avoid devices running in non-working hours and help users save power consumption significantly. The diagram shows how JAHC can control a device through a Microcontroller Unit (MCU). https://www.intersign.dk/products/alpha-si330-w-intel-i3-7100u
+    - Automatic Power ON - Enable this function in the BIOS, and the JAHC chip can instantly detect the power-on state. When the power is connected, automatic startup will be achieved.
+
