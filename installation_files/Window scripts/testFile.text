@@ -1,0 +1,6 @@
+F1::
+    WinActivate, ahk_exe Local.exe  ; Activate LocalWP window
+    Sleep, 1000
+    ControlGet, buttonText, List, , , ahk_exe Local.exe  ; Get list of UI elements
+    MsgBox, %buttonText%  ; Show button names
+return
