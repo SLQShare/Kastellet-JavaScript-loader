@@ -3,7 +3,8 @@
 # ------------------------
 
 # Define HomeScreen for this server
-$homeScreenPath = ""  # Change this if needed
+$homeScreenPath = ""  # landing page
+$webpage = "infocenter.local" # site domain
 
 # Find LocalWP dynamically
 $possiblePaths = @(
@@ -73,11 +74,36 @@ Write-Output "Clearing Edge History..."
 Remove-Item -Path "$edgeHistoryPath" -Force -ErrorAction SilentlyContinue
 
 # ------------------------
+# Disable Edge Pop-ups
+# ------------------------
+
+Write-Output "Disabling Microsoft Edge Translation Prompt..."
+New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
+    -Name "TranslateEnabled" -Value 0 -PropertyType DWORD -Force
+
+Write-Output "Disabling Edge First-Run Welcome Page..."
+New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
+    -Name "HideFirstRunExperience" -Value 1 -PropertyType DWORD -Force
+
+Write-Output "Disabling Restore Pages Prompt..."
+New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
+    -Name "RestoreOnStartup" -Value 4 -PropertyType DWORD -Force
+
+Write-Output "Disabling Autofill Popups..."
+New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
+    -Name "AutofillAddressEnabled" -Value 0 -PropertyType DWORD -Force
+New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
+    -Name "AutofillCreditCardEnabled" -Value 0 -PropertyType DWORD -Force
+
+Write-Output "Disabling Profile Sync Prompt..."
+New-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Edge" `
+    -Name "SyncDisabled" -Value 1 -PropertyType DWORD -Force
+# ------------------------
 # Launch Microsoft Edge in Fullscreen Kiosk Mode
 # ------------------------
 
 Write-Output "Launching Edge..."
-Start-Process "msedge.exe" -ArgumentList "--kiosk http://localhost/$homeScreenPath --edge-kiosk-type=fullscreen"
+Start-Process "msedge.exe" -ArgumentList "--disable-features=TranslateUI,AutofillPopup,SyncPromo --kiosk http://$webpage/$homeScreenPath --edge-kiosk-type=fullscreen"
 
 # ------------------------
 # Prevent Sleep Mode & Disable Notifications
