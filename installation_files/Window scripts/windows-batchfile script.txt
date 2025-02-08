@@ -1,3 +1,0 @@
-@echo off
-start "" "C:\Users\Bruger\Desktop\edge_fullscreen.ahk"
-exit
