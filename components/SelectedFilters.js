@@ -476,20 +476,26 @@ export class SelectedFilters {
                 pin.style.display = display; // Assign the validated display value
             });
         }
+
         function zoomToCoordinates(regionName, backgroundMap) {
-            // the map coordinates for zooming in and placing continent map pins
             const mapCoordinatesForZoom = {
-                africa: { scale: 2, x: -5, y: -10 },
-                asia: { scale: 2, x: -60, y: 0 },
-                europe: { scale: 3.8, x: -5, y: 65 },
-                america: { scale: 1.4, x: 40, y: 0 },
-                middleeast: { scale: 7, x: -60, y: 27 },
-                australia: { scale: 1.6, x: -15, y: 5 },
-                default: { scale: 1, x: 0, y: 0 } // Default zoom for reset or unmatched regions
+                africa: { scale: 2, x: 0, y: -10 },
+                asia: { scale: 2, x: -45, y: 5 },
+                europe: { scale: 3.8, x: -6, y: 68 },
+                america: { scale: 1.4, x: 30, y: 0 },
+                middleeast: { scale: 7, x: -50, y: 28 },
+                australia: { scale: 1.6, x: 35, y: 55 },
+                default: { scale: 1, x: 0, y: 0 } 
             };
-            const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
-            backgroundMap.style.transform = `translate(${coordinates.x}vw, ${coordinates.y}vh) scale(${coordinates.scale})`;
-        };
+
+        const coordinates = mapCoordinatesForZoom[regionName] || mapCoordinatesForZoom.default;
+        const currentZoom = coordinates.scale;
+
+        // Apply transform while keeping navigation inside the image
+        backgroundMap.style.transformOrigin = "center";
+        backgroundMap.style.transform = `translate(${coordinates.x}%, ${coordinates.y}%) scale(${currentZoom})`;
+    }
+
         // Helper: Update pin colors based on contribution filter
         function updatePinColors(forceIdForColor, contributionColors) {
             const elements = document.querySelectorAll('[id^="pin-"]');
