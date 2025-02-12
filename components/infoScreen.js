@@ -816,6 +816,8 @@ export class InfoScreenPage {
                     pin.remove(); // Remove pin if country is not valid for the geography filter
                     return;
                 }
+                
+                if (region === 'serbia'|| region === 'balkan') pin.remove();
         
                 // Check if any mission ID in the pin matches the filtered mission IDs
                 const isCountryStillValid = pinMissionIds.some(missionId => selectedMission.includes(missionId));
