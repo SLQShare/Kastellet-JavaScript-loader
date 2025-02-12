@@ -19,6 +19,10 @@ export class MissionPage {
         this.addTextFromDataToTable(this.data, this.missionId);
         this.missionLocation(this.data, this.missionId, this.urlIslandTag, this.HideLocationButton);
         this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
+        this.addFlexBoxTightScreen();
+        this.updateLayout();
+    }
+
     // checks the language setting
     langControl(){
         const url = window.location.href; // Get the full URL of the current page
@@ -30,6 +34,63 @@ export class MissionPage {
             this.isEn = false;
         }
     }
+
+    addFlexBoxTightScreen() {
+        // Listen for window resizing
+        window.addEventListener("resize", () => this.updateLayout());
+    }
+
+    updateLayout() {
+        const missionInformation = this.getMissionById(this.data.missions, this.missionId);
+        
+        // Ensure the mission data is valid
+        if (!missionInformation || !missionInformation.content || !missionInformation.content.text) {
+            console.error("Invalid mission data or content structure.");
+            return;
+        }
+        // Filter out "Kilder" and "Link" sections
+        const missionDataToBeDisplayed = missionInformation.content.text.filter(
+            type => type.id !== "Kilder" && type.id !== "Link"
+        ); 
+        
+        
+        const table =  document.getElementById('MissionTabs');
+        if (!table) {
+            console.error("Element #MissionTabs not found");
+            return;
+        }
+        const parent = table.parentElement;
+
+        if (!parent) {
+            console.error("Element #MissionTabs not found");
+            return;
+        }
+        const newtable = document.createElement('div');
+        if (window.innerWidth < 1400) {
+            if (document.getElementById('newtable')) return;
+            table.style.display = 'none';
+            missionDataToBeDisplayed.forEach(element => {
+                let text = document.createElement('span');
+                // heading is string and text is html
+                text.innerHTML = text.innerHTML = `<strong>${element.heading}</strong> ${element.text}`;
+                newtable.appendChild(text);
+            })
+            newtable.id = 'newtable';
+            Object.assign(newtable.style, {
+                fontFamily: 'Poppins, Sans-serif',
+                fontSize: 'clamp(0.5rem, 1vw, 1.5rem)', 
+                overflow: 'auto', /* Hides extra text */
+                height: '50vh'
+            });
+            parent.appendChild(newtable);
+        } else {
+            table.style.display = 'block';
+            const newtable = document.getElementById('newtable')
+            if (newtable) newtable.remove();
+        }
+    }
+    
+
     headerInformation(data, missionId, cssId, informationType){
         const missionInformation = this.getMissionById(data.missions, missionId);
         const elementArray = this.searchAndFindTextElements(this.findElementById(cssId));
@@ -111,13 +172,13 @@ export class MissionPage {
     addTextFromDataToTable(data, missionId) {
         const table = this.findElementById('MissionTabs');
         const missionInformation = this.getMissionById(data.missions, missionId);
-    
+        
         // Ensure the mission data is valid
         if (!missionInformation || !missionInformation.content || !missionInformation.content.text) {
             console.error("Invalid mission data or content structure.");
             return;
         }
-    
+
         // Get text elements
         const textElementsByClass = Array.from(document.getElementsByClassName('TabText'));
         // Get text header elements
@@ -133,7 +194,7 @@ export class MissionPage {
         const missionDataToBeDisplayed = missionInformation.content.text.filter(
             type => type.id !== "Kilder" && type.id !== "Link"
         ); 
-    
+
         // Determine the number of sections to process
         const numSections = Math.min(
             missionDataToBeDisplayed.length,
@@ -141,7 +202,7 @@ export class MissionPage {
             filteredArrayOfElementsH2.length,
             filteredArrayOfElementsButton.length
         );
-    
+
         // Update table content
         missionDataToBeDisplayed.forEach((entry, index) => {
             if (index < numSections) {
@@ -163,6 +224,11 @@ export class MissionPage {
                         textTransform: 'uppercase',
                         fontWeight: '300',
                         letterSpacing: '1px',
+                        width: '12.5vw',
+                        fontSize: 'clamp(0.5rem, 1vw, 1.5rem)', 
+                        whiteSpace: 'nowrap', /* Prevents text from wrapping */
+                        overflow: 'hidden', /* Hides extra text */
+                        textOverflow: 'ellipsis', /* Adds "..." if text overflows */
                     });
                     //filteredArrayOfElementsButton[index].style.display = ''; // Ensure visible
                 }
@@ -209,7 +275,7 @@ export class MissionPage {
             const linkElement = document.createElement('a');
             linkElement.className = 'elementor-button elementor-button-link elementor-size-sm';
             linkElement.href = `${url.protocol}//${url.hostname}${this.isEn? "/en/" : "/"}${encodeURIComponent(urlTag+'-'+urlIslandTag)}/`; 
-
+            
             // Add the text inside the <a> element
             const spanWrapper = document.createElement('span');
             spanWrapper.className = 'elementor-button-content-wrapper';
