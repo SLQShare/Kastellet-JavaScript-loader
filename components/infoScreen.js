@@ -53,22 +53,35 @@ export class InfoScreenPage {
 
         // Update map pins based on the new filters
         const mapContainer = document.getElementById('infoScreenMap');
+        selectedFilters.getMapContainer(mapContainer);
         if (mapContainer) {
             selectedFilters.setMapContainer(mapContainer);
             const url = new URL(window.location.href);
             mapContainer.style.backgroundImage = `url("${url.protocol}//${url.hostname}/wp-content/uploads/2024/12/verdenskort_8K.png")`;
+            const container = document.getElementById("InfoScreenContainer"); // The full page
+            // Keep the map container at a fixed size
             Object.assign(mapContainer.style, {
-                backgroundSize: 'cover', /* Or contain, depending on the design */
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                position: 'fixed',
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                position: "absolute", // Keeps it in flow but allows elements inside to move
+                width: "1920px",  // Fixed width
+                height: "1080px", // Fixed height
+                overflow: "hidden", // No scrolling inside the map itself
             });
+
+            Object.assign(container.style, {
+                position: "relative", 
+                width: "100vw", 
+                height: "auto", 
+                overflow: "auto", 
+            });
+            document.body.style.overflow = "auto";
         } else {
             console.error('Element with id "infoScreenMap" not found.');
         }
         this.updateMapPins(data, selectedFilters.getExcludedIds(), mapContainer, selectedMission, selectedFilters.contributionColors, 'continent');
-    }
-
+        }
 
     createInfoScreenFilterButton(missionId, data, excludedIds, dataIntervals) {
         const buttonIds = ['PeriodFilterButton', 'contributionFilterButton', 'geographyFilterButton'];
@@ -86,7 +99,7 @@ export class InfoScreenPage {
             parentButton.style.all = 'unset';
             this.applyStyles(parentButton, {
                 color: 'white',
-                fontSize: '24px',
+                fontSize: 'clamp(0.5rem, 1.25vw, 2rem)', 
                 textAlign: 'center',
                 display: 'flex',
                 alignItems: 'center',
@@ -95,8 +108,8 @@ export class InfoScreenPage {
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
                 marginBottom: '10px',
-                width: '350px',
-                height: '75px',
+                width: '18.23vw',
+                height: '6.94vh',
                 backgroundColor: '#72756f',
                 borderRadius: '50px',
             });
@@ -124,6 +137,7 @@ export class InfoScreenPage {
                 alignItems: 'center',
                 marginTop: '10px',
                 display: 'none',
+                zIndex: '50'
             });
     
             // Populate the container with filter buttons based on type
@@ -205,16 +219,16 @@ export class InfoScreenPage {
             backgroundColor: '#ffffff',
             alignItems: 'center',
             justifyContent: 'center',
-            height: '75px',
+            width: '18.23vw',
+            height: '6.94vh',
             WebkitAlignItems: 'center',
             WebkitJustifyContent: 'center',
             marginBottom: '5px',
             WebkitTextFillColor: '#81847e',
             display: 'flex',
-            width: '350px',
             textAlign: 'center',
             borderRadius: '50px',
-            fontSize: '24px',
+            fontSize: 'clamp(0.5rem, 1.25vw, 2rem)', 
             fontWeight: 'bold',
             textTransform: 'uppercase',
         });
@@ -443,7 +457,7 @@ export class InfoScreenPage {
             WebkitJustifyContent: 'center',
             width: '150px',
             height: 'auto',
-            zIndex: '100',
+            zIndex: '1',
             pointerEvents: 'auto',
             minHeight: '20px',
         });
