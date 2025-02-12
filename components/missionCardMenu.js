@@ -51,10 +51,10 @@ export class MissionSelectorMenu {
             backgroundColor: 'white',
             opacity: '1',
             width: '100vw',
-            height: '60vh',
+            maxHeight: '60vh',
             overflow: 'hidden',
             zIndex: '10001', // Ensure it stays above the overlay
-            boxShadow: '1px 0px 5px 5px rgb(33, 37, 33, 0.5)',
+            boxShadow: '0.05vw 0px 0.26vw 0.26vw rgb(33, 37, 33, 0.5)',
         });
 
         // Create title
@@ -67,6 +67,10 @@ export class MissionSelectorMenu {
             marginTop: '3vh',
             marginBottom: '1vh',
             fontFamily: 'Saira Stencil One, Sans-serif',
+            fontSize: 'clamp(0.5rem, 2.5vw, 3rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         menuTitle.textContent = `${this.isEn? "Missions in" : "Missioner i"} ${title}`;
         missionMenuContainer.appendChild(menuTitle);
@@ -92,8 +96,7 @@ export class MissionSelectorMenu {
             });
             // Listen for the animation to complete
             missionMenuContainer.addEventListener('animationend', () => {
-                missionMenuContainer.style.display = 'none'; // Hide the menu after animation
-                backgroundOverlay.style.display = 'none'; // Hide the overlay
+                closeBehavior();
             }, { once: true }); // Ensure the event listener is triggered only once
         });
 
@@ -103,24 +106,26 @@ export class MissionSelectorMenu {
         Object.assign(closeButton.style, {
             position: 'absolute',
             fontWeight: 'lighter',
-            top: '10px',
-            right: '10px',
+            top: '0.52vw',
+            right: '0.52vw',
             backgroundColor: 'transparent',
             color: 'black',
             border: 'none',
             fontSize: '36px', // Reduce size for better alignment
             zIndex: '10',
-            width: '60px',           // Fixed width for the circle
-            height: '60px',          // Fixed height for the circle
-            //borderRadius: '50%',     // Makes the element a perfect circle
+            width: '3.13wv',           // Fixed width for the circle
+            height: '5.56vh',          // Fixed height for the circle
             display: 'flex',         // Flexbox for centering the text
             justifyContent: 'center', // Center the text horizontally
             alignItems: 'center',    // Center the text vertically
-            //border: '3px solid #000',
             textAlign: 'center',
             fontFamily: 'Saira Stencil One, Sans-serif',
             lineHeight: '1',         // Normalize line height
             boxSizing: 'border-box', // Include padding and border in 
+            fontSize: 'clamp(0.5rem, 1.67vw, 2rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
 
         // Close the menu when clicking the close button
@@ -133,11 +138,14 @@ export class MissionSelectorMenu {
             });
             // Listen for the animation to complete
             missionMenuContainer.addEventListener('animationend', () => {
-                missionMenuContainer.style.display = 'none'; // Hide the menu after animation
-                backgroundOverlay.style.display = 'none'; // Hide the overlay
+                closeBehavior();
             }, { once: true }); // Ensure the event listener is triggered only once
         });
 
+        function closeBehavior(){
+            missionMenuContainer.remove();
+            backgroundOverlay.remove();
+        }
 
         // Append the overlay and close button to the document body
         document.body.appendChild(backgroundOverlay);
@@ -152,7 +160,7 @@ export class MissionSelectorMenu {
             alignItems: 'center',
             overflowX: 'auto',
             scrollSnapType: 'x mandatory',
-            width: '1258px',
+            width: '65.52vw',
             height: '100%',
             scrollBehavior: 'smooth',
             marginBottom: '1vh',
@@ -177,8 +185,8 @@ export class MissionSelectorMenu {
         
             if (aStart !== bStart) {
                 return aStart - bStart;
-        }
-
+            }
+        
             const aEnd = a.year?.to ?? aStart; // Default to start year if missing
             const bEnd = b.year?.to ?? bStart;
         
@@ -193,9 +201,9 @@ export class MissionSelectorMenu {
                 flex: '0 0 auto',
                 scrollSnapAlign: 'start',
                 backgroundColor: '#e6e6e6',
-                margin: '10px', // Space between cards
-                width: '300px', // Fixed width for consistent rendering
-                height: 'calc(100% - 20px)', // Adjust height based on parent and spacing
+                margin: '0.52vw', // Space between cards
+                width: '15.63vw', // Fixed width for consistent rendering
+                maxHeight: '90%', // Adjust height based on parent and spacing
                 textAlign: 'center',
                 display: 'flex', // Flexbox for child alignment
                 flexDirection: 'column', // Stack child elements
@@ -220,6 +228,10 @@ export class MissionSelectorMenu {
             fontWeight: 'bold',
             color: 'black',
             marginBottom: '3vh',
+            fontSize: 'clamp(0.5rem, 1.25vw, 1.5rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         
     
@@ -419,12 +431,11 @@ export class MissionSelectorMenu {
             width: '100%',             // Fully respect parent padding
             height: 'auto',            // Fixed height for clarity
             backgroundColor: '#212521',
-            padding: '10px',
+            padding: '0.52vw',
             boxSizing: 'border-box',   // Include padding in the dimensions
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-start',
-            //borderRadius: '5px 5px 0 0',
         });
     
         const menuTitle = document.createElement('span');
@@ -434,6 +445,10 @@ export class MissionSelectorMenu {
             color: 'white',
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
+            fontSize: 'clamp(0.5rem, 1.25vw, 1.5rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
    
         const missionDuration = 
@@ -465,7 +480,7 @@ export class MissionSelectorMenu {
             // Apply styles to ensure the image fits the container
             Object.assign(image.style, {
                 width: '100%',
-                height: '225px', // Maintain aspect ratio
+                height: '20.83vh', // Maintain aspect ratio
                 display: 'block', // Avoid inline spacing issues
                 objectFit: 'cover', // Ensure it fits within its container neatly
             });
@@ -482,7 +497,7 @@ export class MissionSelectorMenu {
             position: 'absolute',
             top: '0px',
             width: '100%',
-            height: '15px',
+            height: '1.39vh',
             display: 'flex',
             justifyContent: 'start',
             alignItems: 'start',
@@ -529,7 +544,7 @@ export class MissionSelectorMenu {
             alignItems: 'start',
             backgroundColor: '#e6e6e6',
             boxSizing: 'border-box',
-            padding: '10px',
+            padding: '0.52vw',
             position: 'relative',
         });
     
@@ -538,40 +553,47 @@ export class MissionSelectorMenu {
             fontWeight: 'bold',
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
-            margin: '5px 0',
+            margin: '0.26wv 0',
             overflow: 'hidden',        // Hide overflowing content
             whiteSpace: 'nowrap',      // Prevent text from wrapping
             textOverflow: 'ellipsis',  // Show "..." for truncated text
             fontSize: '18px',          // Default font size
             maxWidth: '100%',          // Ensure the title doesn't grow beyond its container
+            fontSize: 'clamp(0.5rem, 0.83vw, 1rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         
         title.textContent = missionInformation.title;
         contentContainer.appendChild(title);
     
-        function reduceFontSizeToFit(element, maxFontSize = 20, minFontSize = 10) {
-            let fontSize = maxFontSize;
+        // function reduceFontSizeToFit(element, maxFontSize = 20, minFontSize = 10) {
+        //     let fontSize = maxFontSize;
         
-            // Apply initial font size
-            element.style.fontSize = fontSize + 'px';
+        //     // Apply initial font size
+        //     element.style.fontSize = fontSize + 'px';
         
-            // Check if the text overflows the container
-            while (element.scrollWidth > element.offsetWidth && fontSize > minFontSize) {
-                fontSize -= 1; // Reduce font size
-                element.style.fontSize = fontSize + 'px';
-            }
-        }
+        //     // Check if the text overflows the container
+        //     while (element.scrollWidth > element.offsetWidth && fontSize > minFontSize) {
+        //         fontSize -= 1; // Reduce font size
+        //         element.style.fontSize = fontSize + 'px';
+        //     }
+        // }
         
         const subtitle = document.createElement('p');
         Object.assign(subtitle.style, {
-            fontSize: '14px',
             fontFamily: 'Arial, sans-serif',
-            margin: '5px 0',
+            margin: '0.26vw 0',
             overflow: 'hidden',        // Hide overflowing content
             whiteSpace: 'nowrap',      // Prevent text from wrapping
             textOverflow: 'ellipsis',  // Show "..." for truncated text
             fontSize: '18px',          // Default font size
             maxWidth: '100%',          // Ensure the title doesn't grow beyond its container
+            fontSize: 'clamp(0.5rem, 0.83vw, 1rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         subtitle.textContent = missionInformation.subtitle;
         contentContainer.appendChild(subtitle);
@@ -579,15 +601,15 @@ export class MissionSelectorMenu {
         const emblemContainer = document.createElement('div');
         Object.assign(emblemContainer.style, {
             display: 'flex',
-            gap: '5px',
+            gap: '0.26vw',
             width: '100%',
             justifyContent: 'flex-start',
             alignItems: 'start',
-            margin: '10px 0',
+            margin: '0.52vw 0',
         });
     
         // Call the function for the title element
-        reduceFontSizeToFit(title, 18, 12);
+        //reduceFontSizeToFit(title, 18, 12);
     
         // Get mission information
         const missionImageArray = missionInformation.content.gallery.images;
@@ -606,7 +628,7 @@ export class MissionSelectorMenu {
                 const emblem = document.createElement('img');
                 Object.assign(emblem.style, {
                     width: 'auto',
-                    height: '27px',
+                    height: '2.5vh',
                 });
                 emblem.src = `${url.protocol}//${url.hostname}/wp-content/uploads/`+image.url;;
 
@@ -628,7 +650,7 @@ export class MissionSelectorMenu {
     
         const missionButton = document.createElement('button');
         Object.assign(missionButton.style, {
-            padding: '10px 20px',
+            padding: '0.52vw 1.04vw',
             fontSize: '14px',
             fontWeight: 'bold',
             color: 'white',
@@ -637,6 +659,10 @@ export class MissionSelectorMenu {
             borderRadius: '25px',
             cursor: 'pointer',
             fontFamily: 'Arial, sans-serif',
+            fontSize: 'clamp(0.5rem, 0.83vw, 1rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         missionButton.addEventListener('click', () => {
             this.selectedFilters.setMissionId(missionId);
