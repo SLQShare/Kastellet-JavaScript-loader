@@ -5,11 +5,13 @@ export class MissionPage {
         this.filtersSelected = filtersSelected;
         this.urlIslandTag = urlIslandTag;
         this.HideLocationButton = HideLocationButton;
+        this.isEn = false; // used to check the language state
         this.emblemIds = filtersSelected ? filtersSelected.getEmblemIds() : []; // Initialize emblemIds
         this.initialize();
     }
 
     initialize() {
+        this.langControl();
         this.headerInformation(this.data, this.missionId, 'MissionTitle', 'title');
         this.headerInformation(this.data, this.missionId, 'MissionSubtitle', 'subtitle');
         this.comparesTheForceTagsToMissionForces(this.data, this.missionId, "ForceContainer");
@@ -17,6 +19,16 @@ export class MissionPage {
         this.addTextFromDataToTable(this.data, this.missionId);
         this.missionLocation(this.data, this.missionId, this.urlIslandTag, this.HideLocationButton);
         this.parseMediaUrl(this.data, this.missionId, this.emblemIds);
+    // checks the language setting
+    langControl(){
+        const url = window.location.href; // Get the full URL of the current page
+        if (url.includes('/en')) {
+            // en
+            this.isEn = true;
+        } else {
+            // da
+            this.isEn = false;
+        }
     }
     headerInformation(data, missionId, cssId, informationType){
         const missionInformation = this.getMissionById(data.missions, missionId);
@@ -196,7 +208,7 @@ export class MissionPage {
             // Create a new <a> element
             const linkElement = document.createElement('a');
             linkElement.className = 'elementor-button elementor-button-link elementor-size-sm';
-            linkElement.href = `${url.protocol}//${url.hostname}/${encodeURIComponent(urlTag+'-'+urlIslandTag)}/`;
+            linkElement.href = `${url.protocol}//${url.hostname}${this.isEn? "/en/" : "/"}${encodeURIComponent(urlTag+'-'+urlIslandTag)}/`; 
 
             // Add the text inside the <a> element
             const spanWrapper = document.createElement('span');
