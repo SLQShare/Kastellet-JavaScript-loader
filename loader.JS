@@ -223,6 +223,7 @@ function updateBackgroundPages(data, urlIslandTag = null) {
 
             const button = document.getElementById(`missionButton${collection.id}`);
             const homePage = document.getElementById(`PageElement${collection.id}`);
+            updateLayout(title, data.articles)
 
             if (button) {
                 button.addEventListener('click', (event) => {
@@ -236,9 +237,52 @@ function updateBackgroundPages(data, urlIslandTag = null) {
                     );
                 });
             }
+            window.addEventListener("resize", () => updateLayout(title, data.articles));
             loader.removeLoaderContainer();
         }
     });
+
+    function updateLayout(title, articles) {
+        const findArticleByTitle = (articleTitle) => articles.find(article => article.title.toLowerCase() === articleTitle);        
+        const article = findArticleByTitle(title).content.text;
+
+        const table =  document.getElementById('aboutTabs');
+        if (!table) {
+            console.error("Element #MissionTabs not found");
+            return;
+        }
+        const parent = table.parentElement;
+
+        if (!parent) {
+            console.error("Element #MissionTabs not found");
+            return;
+        }
+        const newtable = document.createElement('div');
+        if (window.innerWidth < 1400) {
+            if (document.getElementById('newtable')) return;
+            table.style.display = 'none';
+            article.forEach(element => {
+                if (element.id !== "Kilder"){
+                    let text = document.createElement('span');
+                    // heading is string and text is html
+                    text.innerHTML = element.text;
+                    newtable.appendChild(text);
+                }
+            })
+            newtable.id = 'newtable';
+            Object.assign(newtable.style, {
+                fontFamily: 'Poppins, Sans-serif',
+                fontSize: 'clamp(0.5rem, 1vw, 1.5rem)', 
+                overflow: 'auto', /* Hides extra text */
+                height: '50vh'
+            });
+            parent.appendChild(newtable);
+        } else {
+            table.style.display = 'block';
+            const newtable = document.getElementById('newtable')
+            if (newtable) newtable.remove();
+        }
+    }
 }
 
 function updateBeredskabsKort(missionId, data, urlIslandTag){
