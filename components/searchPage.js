@@ -67,7 +67,7 @@ export class SearchPage {
         const container = document.createElement('div');
         Object.assign(container.style, {
             width: '45%',
-            height: '383.25px',
+            height: '35.49vh',
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -81,7 +81,7 @@ export class SearchPage {
         const tagBoxContainer = document.createElement('div');
         Object.assign(tagBoxContainer.style, {
             width: '45%',
-            height: '383.25px',
+            height: '35.49vh',
         });
         this.searchPageContainer.appendChild(tagBoxContainer);
         this.tagBoxContainer = tagBoxContainer
@@ -95,16 +95,18 @@ export class SearchPage {
 
 
         const tagsTitle = document.createElement('H3');
-        tagsTitle.textContent = 'Baggrundsinformation' // TODO fix for english
         tagsTitle.textContent = `${this.isEn? "Background Information" : "Baggrundsinformation"}`;
         titleStyles(tagsTitle)
         this.tagBoxContainer.appendChild(tagsTitle);
         function titleStyles(element){
             Object.assign(element.style, {
-                fontSize: '30px',
+                fontSize: 'clamp(0.8rem, 1.67vw, 2rem)', 
                 fontFamily: 'Saira Stencil One, Sans-serif',
                 fontWeight: 'bold',
                 color: '#ffffff',
+                whiteSpace: 'nowrap', /* Prevents text from wrapping */
+                overflow: 'hidden', /* Hides extra text */
+                textOverflow: 'ellipsis', /* Adds "..." if text overflows */
             });
         }
         this.searchHeader = searchBarTitle;
@@ -116,20 +118,25 @@ export class SearchPage {
         const searchBarContainer = document.createElement('div');
         Object.assign(searchBarContainer.style, {
             width: '100%',
-            height: '50px',
-            marginBottom: '50px',
+            height: '4.63vh',
+            marginBottom: '4.63vh',
         });
+
+
 
         const searchBar = document.createElement('input');
         Object.assign(searchBar.style, {
             width: '100%',
             height: '100%',
-            padding: '10px',
-            fontSize: '22px',
+            padding: '0.52vw',
+            fontSize: 'clamp(0.8rem, 1.25vw, 1.5rem)', 
             fontFamily: 'Saira Stencil One, Sans-serif',
             fontWeight: 'bold',
             boxSizing: 'border-box',
-            borderRadius: '5px'
+            borderRadius: '0.26vw',
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         searchBar.type = 'text';
         searchBar.placeholder = `${this.isEn? "Search..." : "Søg..."}`;
@@ -158,14 +165,15 @@ export class SearchPage {
             position: 'relative',
             right: '-94.7%',
             transform: 'translateY(-112.5%)',
-            width: '40px',
-            height: '40px',
-            //background: '#ff5c5c',
-            border: 'solid 2px',
+            width: '2.08vw',
+            height: '3.70vh',
+            border: 'solid 0.10vw',
             borderRadius: '50%',
-            fontSize: '30px',
-            cursor: 'pointer',
             display: 'none', // Initially hidden
+            fontSize: 'clamp(0.5rem, 1.67vw, 2rem)', 
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
         clearButton.textContent = '×'; // Cross symbol
         clearButton.addEventListener('click', () => {
@@ -184,9 +192,8 @@ export class SearchPage {
         Object.assign(keyboardContainer.style, {
             display: 'grid',
             gridTemplateColumns: 'repeat(11, 1fr)', // 12 columns for the grid
-            gap: '10px',
+            gap: '0.52vw',
             width: '100%',
-            //margin: '20px auto',
         });
 
         // Danish keyboard layout (including DELETE and SPACE buttons)
@@ -202,12 +209,12 @@ export class SearchPage {
                 const keyButton = document.createElement('button');
                 Object.assign(keyButton.style, {
                     width: '100%', // Full width of the grid cell
-                    height: '40px',
+                    height: '3.70vh',
                     backgroundColor: '#ffffff',
                     color: '#212521',
-                    border: '3px solid #212521',
-                    borderRadius: '10px',
-                    fontSize: '22px',
+                    border: '0.16vw solid #212521',
+                    borderRadius: '0.52vw',
+                    fontSize: 'clamp(0.2rem, 1.25vw, 1.5rem)', 
                     fontFamily: 'Saira Stencil One, Sans-serif',
                     fontWeight: 'bold',
                     cursor: 'pointer',
@@ -215,6 +222,9 @@ export class SearchPage {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gridColumn: key === 'SPACE' ? 'span 2' : 'span 1', // Span multiple columns
+                    whiteSpace: 'nowrap', /* Prevents text from wrapping */
+                    overflow: 'hidden', /* Hides extra text */
+                    textOverflow: 'ellipsis', /* Adds "..." if text overflows */
                 });
 
                 keyButton.textContent = (key === 'SPACE' || key === 'DELETE') ? '' : key;
@@ -251,21 +261,24 @@ export class SearchPage {
     }
         static applyTagStyles(element, colSpan = 1) {
         Object.assign(element.style, {
-            padding: '12px',
+            padding: '0.63vw',
             backgroundColor: '#f4f4f4',
             color: '#020202',
-            borderRadius: '5px',
+            borderRadius: '0.26vw',
             cursor: 'pointer',
-            fontSize: '22px',
+            fontSize: 'clamp(0.8rem, 1.25vw, 1.5rem)',     
             fontFamily: 'Saira Stencil One, Sans-serif',
             fontWeight: 'bold',
             whiteSpace: 'nowrap',        // Prevent wrapping
-            height: '50px',             // Fixed row height
+            height: '4.63vh',             // Fixed row height
             textAlign: 'center',
             display: 'flex',             // Use Flexbox for centering
             alignItems: 'center',
             justifyContent: 'center',
             gridColumn: `span ${colSpan}`, // Dynamic column span
+            whiteSpace: 'nowrap', /* Prevents text from wrapping */
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
         });
     }
     createTagElement(tag, clickHandler) {
@@ -296,27 +309,16 @@ export class SearchPage {
     
     createTagBox() {
         const tagBox = document.createElement('div');
-        // const tagBoxContainer = document.createElement('div');
-        // Object.assign(tagBoxContainer.style, {
-        //     display: 'flex',
-        //     flexDirection: 'column',
-        //     flexWrap: 'wrap',
-        //     justifyContent: 'start', // Centers items along the main axis
-        //     alignItems: 'start',    // Centers items along the cross-axis
-        //     width: '45%',
-        //     height: '290px',
-        // });
         Object.assign(tagBox.style, {
             width: '100%',
-            maxHeight: '775px',
+            maxHeight: '71.76vh',
             display: 'grid',                 // Switch to grid layout
-            gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', // Flexible columns
+            gridTemplateColumns: 'repeat(auto-fit, minmax(5.21vw, 1fr))', // Flexible columns
             gridTemplateRows: 'repeat(13, auto)', // **Limit to 3 rows**
             gridAutoFlow: 'row dense',       // Fill rows in a dense manner
-            gap: '10px',                     // Space between items
+            gap: '0.52vw',                     // Space between items
             overflow: 'hidden',
             alignContent: 'start',             // Align items to the bottom of the container
-            // marginTop: '30px'
         });
         
         const tags = this.SearhResultOfTags;
@@ -361,7 +363,7 @@ export class SearchPage {
                 const tagElement = this.createTagElement(tag, this.searchByTag.bind(this));
                 tagBox.appendChild(tagElement);
                 const stringTag = query.toLocaleLowerCase();
-                this.tagBoxHeader.textContent = `${this.isEn? "Relevant Tags For" : "Relevante Tags Til"} ${stringTag}`; // TODO fix for englishq
+                this.tagBoxHeader.textContent = `${this.isEn? "Relevant Tags For" : "Relevante Tags Til"} ${stringTag}`;
             });
         }
     }
@@ -404,7 +406,7 @@ export class SearchPage {
             .map(mission => mission.id);                  // Extract their IDs
 
         this.missionId = results;
-        this.missionMenu = new MissionSelectorMenu( //TODO rewrite the class so I can update information instead of Repeated Instantiation of MissionSelectorMenu
+        this.missionMenu = new MissionSelectorMenu(
             this.missionId,
             tag,
             this.searchPage,
