@@ -183,7 +183,7 @@ export class IdleScreen {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            zIndex: '10000',
+            zIndex: '100000',
             opacity: '0', // Start with zero opacity for fade-in effect
             transition: 'opacity 2.5s ease', // Add a transition for opacity
             overflow: 'hidden',
