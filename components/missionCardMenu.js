@@ -170,13 +170,22 @@ export class MissionSelectorMenu {
             .sort(compareStartYear) // Sort in one ste
             .map(m => m.id);
 
+
         function compareStartYear(a, b) {
-            if (!a || !b) return 0; 
-            const aYear = a.year?.from; 
-            const bYear = b.year?.from;
-            return aYear - bYear;
+            const aStart = a.year?.from ?? Infinity;
+            const bStart = b.year?.from ?? Infinity;
+        
+            if (aStart !== bStart) {
+                return aStart - bStart;
         }
 
+            const aEnd = a.year?.to ?? aStart; // Default to start year if missing
+            const bEnd = b.year?.to ?? bStart;
+        
+            return aEnd - bEnd;
+        }
+        console.log('missionsIdArray', missionsIdArray);
+        console.log('sortedMissionArray', sortedMissionArray);
         // Loop through the missions and create mission cards
         sortedMissionArray.forEach((missionId) => {
             const missionCard = document.createElement('div');
