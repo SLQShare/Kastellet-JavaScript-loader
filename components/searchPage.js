@@ -130,8 +130,8 @@ export class SearchPage {
             height: '100%',
             padding: '0.52vw',
             fontSize: 'clamp(0.8rem, 1.25vw, 1.5rem)', 
-            fontFamily: 'Saira Stencil One, Sans-serif',
-            fontWeight: 'bold',
+            fontFamily: 'Poppins, Sans-serif',
+            fontWeight: 'normal',
             boxSizing: 'border-box',
             borderRadius: '0.26vw',
             whiteSpace: 'nowrap', /* Prevents text from wrapping */
@@ -215,8 +215,8 @@ export class SearchPage {
                     border: '0.16vw solid #212521',
                     borderRadius: '0.52vw',
                     fontSize: 'clamp(0.2rem, 1.25vw, 1.5rem)', 
-                    fontFamily: 'Saira Stencil One, Sans-serif',
-                    fontWeight: 'bold',
+                    fontFamily: 'Poppins, Sans-serif',
+                    fontWeight: 'normal',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -267,8 +267,8 @@ export class SearchPage {
             borderRadius: '0.26vw',
             cursor: 'pointer',
             fontSize: 'clamp(0.8rem, 1.25vw, 1.5rem)',     
-            fontFamily: 'Saira Stencil One, Sans-serif',
-            fontWeight: 'bold',
+            fontFamily: 'Poppins, Sans-serif',
+            fontWeight: 'normal',
             whiteSpace: 'nowrap',        // Prevent wrapping
             height: '4.63vh',             // Fixed row height
             textAlign: 'center',
@@ -300,7 +300,7 @@ export class SearchPage {
         SearchPage.applyTagStyles(tagElement, colSpan);
     
         tagElement.textContent = tag;
-    
+
         if (clickHandler) {
             tagElement.addEventListener('click', () => clickHandler(tag));
         }
