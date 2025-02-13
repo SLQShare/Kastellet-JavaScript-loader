@@ -553,13 +553,13 @@ export class MissionSelectorMenu {
             fontWeight: 'bold',
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
-            margin: '0.26wv 0',
+            margin: '0.5vh 0',
             overflow: 'hidden',        // Hide overflowing content
             whiteSpace: 'nowrap',      // Prevent text from wrapping
             textOverflow: 'ellipsis',  // Show "..." for truncated text
             fontSize: '18px',          // Default font size
             maxWidth: '100%',          // Ensure the title doesn't grow beyond its container
-            fontSize: 'clamp(0.5rem, 0.83vw, 1rem)', 
+            fontSize: 'clamp(0.5rem, 1.10vw, 1.5rem)', 
             whiteSpace: 'nowrap', /* Prevents text from wrapping */
             overflow: 'hidden', /* Hides extra text */
             textOverflow: 'ellipsis', /* Adds "..." if text overflows */
@@ -567,23 +567,10 @@ export class MissionSelectorMenu {
         
         title.textContent = missionInformation.title;
         contentContainer.appendChild(title);
-    
-        // function reduceFontSizeToFit(element, maxFontSize = 20, minFontSize = 10) {
-        //     let fontSize = maxFontSize;
-        
-        //     // Apply initial font size
-        //     element.style.fontSize = fontSize + 'px';
-        
-        //     // Check if the text overflows the container
-        //     while (element.scrollWidth > element.offsetWidth && fontSize > minFontSize) {
-        //         fontSize -= 1; // Reduce font size
-        //         element.style.fontSize = fontSize + 'px';
-        //     }
-        // }
-        
+            
         const subtitle = document.createElement('p');
         Object.assign(subtitle.style, {
-            fontFamily: 'Arial, sans-serif',
+            fontFamily: 'Poppins, Sans-serif',
             margin: '0.26vw 0',
             overflow: 'hidden',        // Hide overflowing content
             whiteSpace: 'nowrap',      // Prevent text from wrapping
