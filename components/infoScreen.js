@@ -75,8 +75,23 @@ export class InfoScreenPage {
                 width: "100vw", 
                 height: "auto", 
                 overflow: "auto", 
+                scrollbarWidth: "none",  // For Firefox
+                msOverflowStyle: "none"  // For Internet Explorer and Edge
             });
+            
+            // Hide scrollbar for Webkit-based browsers (Chrome, Safari)
+            container.style.overflow = "auto";
+            container.style.webkitOverflowScrolling = "touch"; // Smooth scrolling on iOS
+            container.style.scrollbarWidth = "none"; // Hide scrollbar for Firefox
             document.body.style.overflow = "auto";
+            const style = document.createElement("style");
+            style.innerHTML = `
+                #${container.id}::-webkit-scrollbar {
+                    display: none;
+                }
+            `;
+            document.head.appendChild(style);
+            
         } else {
             console.error('Element with id "infoScreenMap" not found.');
         }
