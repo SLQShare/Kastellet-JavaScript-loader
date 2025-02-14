@@ -1,37 +1,55 @@
-; Max wait time: 2 minute (120 seconds)
-maxWaitTime := 120000
+; ------------------------
+; AutoHotkey v2.0 Script - LocalWP Auto Start
+; ------------------------
+
+; Define required AutoHotkey version
+requiredVersion := 2.0
+
+; Wait for LocalWP to open (Max 10 minute)
+maxWaitTime := 600000
 elapsedTime := 0
 retryInterval := 5000  ; Check every 5 seconds
+stepOneDone := false
+done := false
 
-Loop
-{
-    ; Check if LocalWP is running
-    if WinExist("ahk_exe Local.exe")  
-    {
-        WinActivate, ahk_exe Local.exe  ; Activate LocalWP window
-        Sleep, 2000  ; Ensure the window is fully active
+While (!done) {
+    if (WinExist("ahk_exe Local.exe") and !stepOneDone) {
+        WinActivate("ahk_exe Local.exe")  ; Activate LocalWP window
+        Sleep(2000)  ; Ensure window is fully active
 
-        ; Navigate and start the site
-        Send, {Tab 11}
-        Sleep, 500
-        Send, {Enter}
-        Sleep, 2000
+        ; Select the first site (Tab 11 times)
+        Send("{Tab 11}")
+        Sleep(500)
+        Send("{Enter}")  ; Select the site
+        Sleep(2000)
 
-        Send, {Tab 4} ; this will likely need to be changed to 4
-        Sleep, 500
-        Send, {Enter}
+        ; Navigate to "Start Site" (Tab 4 more times)
+        Send("{Tab 4}")
+        Sleep(500)
+        Send("{Enter}")  ; Start the site
+        Sleep(3000)
 
-        ExitApp  ; Close script after completing the actions
+        ; Minimize LocalWP window
+        WinMinimize("A")
+
+        ; step one done
+        stepOneDone := true
+    }
+
+    if (WinExist("ahk_exe chrome.exe") and stepOneDone) {  ;
+        WinActivate("ahk_exe chrome.exe")
+        done := true
+        ExitApp()
     }
 
     ; If LocalWP is not found, wait and try again
-    Sleep, %retryInterval%
+    Sleep(retryInterval)
     elapsedTime += retryInterval
 
-    ; Stop trying after 1 minute
-    if (elapsedTime >= maxWaitTime)
-    {
-        MsgBox, LocalWP was not found after 1 minute. Exiting script.
-        ExitApp
+    ; Stop trying after 10 minute
+    if (elapsedTime >= maxWaitTime) {
+        elapsedMinutes := Round(elapsedTime / 1000 / 60, 1)  ; Convert to minutes
+        MsgBox("LocalWP was not found after " elapsedMinutes " minute(s). Exiting script.")
+        ExitApp()
     }
 }
