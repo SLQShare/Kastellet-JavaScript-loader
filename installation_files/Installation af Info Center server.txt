@@ -1,5 +1,9 @@
 Installation of Info Center server
 
+Windows installation:
+1.  Dont add a password then on boot the systems enter Windows
+2.  Edge need to be updated to enter the autohotkey website.
+
 Liste of files you need:
 1.	This guide
 2.	WP backup file of Infocenter 
@@ -9,9 +13,11 @@ Liste of files you need:
 6.  Script folder with setup.ps1 and startWebServer.ahk
 
 Steps to follow: 
-1.	Install LocalWP and autohotkey v2.0 (USB tethering for internet)
-    a. https://www.autohotkey.com/
-    b. https://localwp.com/
+0.  Change the display zoom to 100% - default zoom seems to be 125%.
+1.	Install LocalWP, autohotkey v2.0 and chrome (USB tethering for internet)
+    a.  https://www.autohotkey.com/
+    b.  https://localwp.com/
+    c.  https://www.google.com/intl/da/chrome/
 2.	Create a new site
     a.	Call it InfoCenter
     b.	Set username: Dev
@@ -32,14 +38,21 @@ Steps to follow:
     e.	When done go to Settings > permalinks > hit save changes twice 
     f.	Turn of WP navigation bar on user
     g.  Test the site
-6. Copy the script folder to the local disk (C:)
+6.  Generate new source URLs for elementor
+    a. WordPress Admin -> Elementor -> Tools -> press Regenerate Files to clear the cache.
+7. Copy the script folder to the local disk (C:)
     a. Open PowerShell with admin rights 
     b. Paste the following command:
-        New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" ` -Name "LocalWPStartup" -Value "powershell.exe -ExecutionPolicy Bypass -File C:\script\setup.ps1" `-PropertyType String -Force
+                ---------------*********---------------
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" `
+    -Name "LocalWPStartup" `
+    -Value '"powershell.exe" -ExecutionPolicy Bypass -File "C:\script\setup.ps1"' `
+    -PropertyType String -Force
+                ---------------*********---------------
     c. open the script folder and edit the setup.ps1 file. Change the $homeScreenPath from '' to the required island page e.g. 'videomap' etc. Remember to save the changes.
     d. Make sure there is only one webserver folder in localWP.
     e. Restart the pc to test it.
-7. Restart to enter the JAHC BIOS and enable Automatic Power ON. 
+8. Restart to enter the JAHC BIOS and enable Automatic Power ON. 
     a. cut power and add it back to test the Automatic Power ON.
 
 Resources:
