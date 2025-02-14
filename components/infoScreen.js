@@ -63,20 +63,21 @@ export class InfoScreenPage {
             Object.assign(mapContainer.style, {
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                position: "absolute", // Keeps it in flow but allows elements inside to move
+                backgroundPosition: "0% 0%",
+                position: "relative", // Keeps it in flow but allows elements inside to move
                 width: "1920px",  // Fixed width
                 height: "1080px", // Fixed height
+                maxHeight: '1080px',
                 overflow: "hidden", // No scrolling inside the map itself
+                top: "0",
+                left: "0",
             });
 
             Object.assign(container.style, {
-                position: "relative", 
-                width: "100vw", 
-                height: "auto", 
+                position: "relative", // Keeps it in flow but allows elements inside to move
                 overflow: "auto", 
                 scrollbarWidth: "none",  // For Firefox
-                msOverflowStyle: "none"  // For Internet Explorer and Edge
+                msOverflowStyle: "none" // For Internet Explorer and Edge
             });
             
             // Hide scrollbar for Webkit-based browsers (Chrome, Safari)
@@ -120,7 +121,7 @@ export class InfoScreenPage {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontFamily: 'Saira Stencil One, Sans-serif',
-                fontWeight: 'bold',
+                fontWeight: 'normal',
                 textTransform: 'uppercase',
                 marginBottom: '10px',
                 width: '18.23vw',
@@ -152,7 +153,9 @@ export class InfoScreenPage {
                 alignItems: 'center',
                 marginTop: '10px',
                 display: 'none',
-                zIndex: '50'
+                zIndex: '50',
+                position: "absolute",
+                top: "100%"
             });
     
             // Populate the container with filter buttons based on type
@@ -244,7 +247,7 @@ export class InfoScreenPage {
             textAlign: 'center',
             borderRadius: '50px',
             fontSize: 'clamp(0.5rem, 1.25vw, 2rem)', 
-            fontWeight: 'bold',
+            fontWeight: 'normal',
             textTransform: 'uppercase',
         });
 
@@ -400,7 +403,7 @@ export class InfoScreenPage {
         const mapCoordinatesForCountyMapPins = {
             usa: { x: 15, y: 35 }, // America
             chile: { x: 24, y: 65 }, // America
-            haiti: { x: 23, y: 43 }, // America 
+            haiti: { x: 23.3, y: 44.3 }, // America 
             congo: { x: 50, y: 57 }, // Africa
             libya: { x: 47, y: 40 }, // Africa
             liberia: { x: 41, y: 52 }, // Africa
@@ -503,7 +506,7 @@ export class InfoScreenPage {
             justifyContent: 'center', // Horizontally center text
             alignItems: 'center', // Vertically center text
             textTransform: 'uppercase',
-            fontWeight: 'bold',
+            fontWeight: 'normal',
             color: 'white',
             overflow: 'visible',
             whiteSpace: 'nowrap',
@@ -543,7 +546,7 @@ export class InfoScreenPage {
             color: 'white',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
-            fontFamily: 'Saira Stencil One, Sans-serif',
+            fontFamily: 'Poppins, Sans-serif',
             width: '100%', // Ensure it spans its container for proper alignment
             height: 'auto', // Adjust height based on content
             marginTop: '5px',
