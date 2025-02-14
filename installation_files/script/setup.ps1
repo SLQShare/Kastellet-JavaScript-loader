@@ -1,10 +1,10 @@
 # ------------------------
-# Local WP InfoScreen Auto Startup Script
+# Local WP InfoScreen Auto Startup Script (Using Chrome)
 # ------------------------
 
 # Define HomeScreen for this server
-$homeScreenPath = ""  # landing page
-$webpage = "infocenter.local" # site domain
+$homeScreenPath = ""  # Landing page 
+$webpage = "infocenter.local"  # Site domain
 
 # Find LocalWP dynamically
 $possiblePaths = @(
@@ -53,27 +53,43 @@ if ($started) {
 }
 
 # ------------------------
-# Clear Edge Cache Before Launching
+# Clear Chrome Cache Before Launching
 # ------------------------
 
-# Define Edge cache paths
-$edgeCachePath = "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Cache"
-$edgeCookiesPath = "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Cookies"
-$edgeHistoryPath = "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\History"
+# Define Chrome cache paths
+$chromeCachePath = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cache"
+$chromeCookiesPath = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cookies"
+$chromeHistoryPath = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\History"
 
-# Remove Edge Cache
-Write-Output "Clearing Edge Cache..."
-Remove-Item -Path "$edgeCachePath\*" -Recurse -Force -ErrorAction SilentlyContinue
+# Remove Chrome Cache
+Write-Output "Clearing Chrome Cache..."
+Remove-Item -Path "$chromeCachePath\*" -Recurse -Force -ErrorAction SilentlyContinue
 
-# Remove Edge Cookies
-Write-Output "Clearing Edge Cookies..."
-Remove-Item -Path "$edgeCookiesPath" -Force -ErrorAction SilentlyContinue
+# Remove Chrome Cookies
+Write-Output "Clearing Chrome Cookies..."
+Remove-Item -Path "$chromeCookiesPath" -Force -ErrorAction SilentlyContinue
 
-# Launch Microsoft Edge in Fullscreen Kiosk Mode
+# Remove Chrome Browsing History
+Write-Output "Clearing Chrome History..."
+Remove-Item -Path "$chromeHistoryPath" -Force -ErrorAction SilentlyContinue
+
+# ------------------------
+# Launch Google Chrome in Fullscreen Kiosk Mode
 # ------------------------
 
-Write-Output "Launching Edge..."
-Start-Process "msedge.exe" -ArgumentList "--disable-features=TranslateUI,AutofillPopup,SyncPromo --kiosk http://$webpage/$homeScreenPath --edge-kiosk-type=fullscreen"
+# Find Chrome's executable
+$chromePaths = @(
+    "C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+)
+$chromePath = $chromePaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $chromePath) {
+    Write-Output "Error: Google Chrome not found!"
+    exit 1
+}
+Write-Output "Launching Chrome in Kiosk Mode..."
+
+Start-Process -FilePath $chromePath -ArgumentList "--kiosk http://$webpage/$homeScreenPath --incognito --disable-popup-blocking --no-first-run"
 
 # ------------------------
 # Prevent Sleep Mode & Disable Notifications
