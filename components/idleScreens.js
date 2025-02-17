@@ -41,10 +41,10 @@ export class IdleScreen {
         const boundResetTimer = this.resetTimer.bind(this);
     
         // Reset timer on page load
-        window.addEventListener('load', boundResetTimer, true);
+        //window.addEventListener('load', boundResetTimer, true);
     
         // Add event listeners for user activity
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        const events = ['mousedown', 'touchmove', 'touchstart'];
         events.forEach((name) => {
             document.addEventListener(name, boundResetTimer, true);
         });
@@ -80,7 +80,7 @@ export class IdleScreen {
         if (closeButtonArray.length > 1){
             const buttonButtonSwiper = closeButtonArray[0]; // Source button
             const closeButton = closeButtonArray[1]; // Target button
-            debugger;
+        
             if (buttonButtonSwiper && closeButton) {
                 // Copy size from the source button
                 closeButton.style.width = `2.6vw`;
@@ -146,7 +146,6 @@ export class IdleScreen {
         this.time = 0;
         console.log('Timer reset', (this.idleTimeLimit/1000)/60, 'min');
         if (this.idleContainer){
-            //this.removeIdleContainer();
             window.location.href = this.location
         } 
 
