@@ -1,16 +1,16 @@
 export class BackNavigation{
     constructor(filtersObject){
-        this.NAVIGATION_STACK_KEY = 'navigationStack'; // Key for localStorage
+        this.NAVIGATION_STACK_KEY = 'navigationStack'; // Key for sessionStorage
         this.selectedFilters = filtersObject;
         this.backButton = this.getBackButton()
         this.createNavigationStack(this.NAVIGATION_STACK_KEY )
         this.pushToNavigationStack()
         this.addBackButtonListener();
     }
-     // Retrieve the navigation stack from localStorage
+     // Retrieve the navigation stack from sessionStorage
      createNavigationStack(key){
-        if(!localStorage.getItem(key)){
-            localStorage.setItem(key, JSON.stringify([]))
+        if(!sessionStorage.getItem(key)){
+            sessionStorage.setItem(key, JSON.stringify([]))
         }
     }
     
@@ -57,15 +57,12 @@ export class BackNavigation{
                 this.saveNavigationStack(stack)
                 window.location.href = window.location.origin + lastPage.url;                
             }         
-        } else {
-            this.pushToNavigationStack();
-            history.go(-2);
         }
     }
     
     getNavigationStack() {
         try {
-            const storedStack = localStorage.getItem(this.NAVIGATION_STACK_KEY);
+            const storedStack = sessionStorage.getItem(this.NAVIGATION_STACK_KEY);
             return storedStack ? JSON.parse(storedStack) : []; // Parse the JSON or initialize an empty array
         } catch (error) {
             console.error('Error retrieving navigation stack:', error);
@@ -73,10 +70,10 @@ export class BackNavigation{
         }
     }
 
-    // Save the navigation stack to localStorage
+    // Save the navigation stack to sessionStorage
     saveNavigationStack(stack) {
         try {
-            localStorage.setItem(this.NAVIGATION_STACK_KEY, JSON.stringify(stack));
+            sessionStorage.setItem(this.NAVIGATION_STACK_KEY, JSON.stringify(stack));
         } catch (error) {
             console.error('Error saving navigation stack:', error);
         }
@@ -105,7 +102,7 @@ export class BackNavigation{
         if (lastEntry && lastEntry.isEn != state.isEn){
             // if not
             stack.forEach((element, index) => {
-                element.fallback = true;
+                element.fallback = true; // todo check bug here on fallback - cannot create property fallback on string
                 // if dk, then convert element to en
                 if (lastEntry.isEn === 'dk') {
                     element.isEn = 'en';
@@ -119,7 +116,6 @@ export class BackNavigation{
                     element.url = element.url.replace(/^\/en/, '');
                     element.isEn = 'dk';
                 }
-                //
             });
             stack.pop();
         }
