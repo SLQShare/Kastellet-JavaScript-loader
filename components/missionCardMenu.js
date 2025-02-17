@@ -62,7 +62,7 @@ export class MissionSelectorMenu {
         Object.assign(menuTitle.style, {
             fontSize: '50px',
             textTransform: 'uppercase',
-            fontWeight: 'bold',
+            fontWeight: '400',
             color: 'black',
             marginTop: '3vh',
             marginBottom: '1vh',
@@ -105,7 +105,7 @@ export class MissionSelectorMenu {
         closeButton.innerHTML = '&times;'; // "×" symbol
         Object.assign(closeButton.style, {
             position: 'absolute',
-            fontWeight: 'lighter',
+            fontWeight: '400',
             top: '0.52vw',
             right: '0.52vw',
             backgroundColor: 'transparent',
@@ -225,7 +225,7 @@ export class MissionSelectorMenu {
             fontSize: '20px',
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
-            fontWeight: 'bold',
+            fontWeight: '400',
             color: 'black',
             marginBottom: '3vh',
             fontSize: 'clamp(0.5rem, 1.25vw, 1.5rem)', 
@@ -249,17 +249,17 @@ export class MissionSelectorMenu {
             const cardWidth = 310; // Width of each card including margin
             const visibleCards = Math.min(
                 Math.ceil(sliderContainer.scrollLeft / cardWidth), // Count based on scroll position
-                missionsIdArray.length // Ensure it doesn't exceed total cards
+                //missionsIdArray.length // Ensure it doesn't exceed total cards
             );
-            if (missionsIdArray.length === 1) {
+            if (sortedMissionArray.length === 1) {
                 //progressText.textContent = `VISER ${missionsIdArray.length} MISSION `;
-                progressText.textContent = `${this.isEn ? `SHOWS ${missionsIdArray.length} MISSION`: `VISER ${missionsIdArray.length} MISSION `}`
-            } else if (missionsIdArray.length < 5) {
-                progressText.textContent = `${this.isEn ? `SHOWS ${missionsIdArray.length} MISSIONS`: `VISER ${missionsIdArray.length} MISSIONER `}`
+                progressText.textContent = `${this.isEn ? `SHOWS ${sortedMissionArray.length} MISSION`: `VISER ${sortedMissionArray.length} MISSION `}`
+            } else if (sortedMissionArray.length < 5) {
+                progressText.textContent = `${this.isEn ? `SHOWS ${sortedMissionArray.length} MISSIONS`: `VISER ${sortedMissionArray.length} MISSIONER `}`
             } else {
                 progressText.textContent = `${this.isEn ? 
-                    `SHOWS ${visibleCards + 3} OUT OF ${missionsIdArray.length} MISSIONS`: 
-                    `VISER ${visibleCards + 3} UD AF ${missionsIdArray.length} MISSIONER`}`
+                    `SHOWS ${visibleCards + 3} OUT OF ${sortedMissionArray.length} MISSIONS`: 
+                    `VISER ${visibleCards + 3} UD AF ${sortedMissionArray.length} MISSIONER`}`
                 prevButton.style.display = 'block';
                 nextButton.style.display = 'block';
             }
@@ -441,7 +441,7 @@ export class MissionSelectorMenu {
         const menuTitle = document.createElement('span');
         Object.assign(menuTitle.style, {
             fontSize: '26px',
-            fontWeight: 'bold',
+            fontWeight: '400',
             color: 'white',
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
@@ -550,7 +550,7 @@ export class MissionSelectorMenu {
     
         const title = document.createElement('h3');
         Object.assign(title.style, {
-            fontWeight: 'bold',
+            fontWeight: '400',
             fontFamily: 'Saira Stencil One, Sans-serif',
             textTransform: 'uppercase',
             margin: '0.5vh 0',
@@ -677,7 +677,7 @@ export class MissionSelectorMenu {
             }
         });
         
-        missionButton.textContent = `${this.isEn? "GO TO" : "Gå TIL"}`;
+        missionButton.textContent = `${this.isEn? "GO TO" : "GÅ TIL"}`;
         contentContainer.appendChild(missionButton);
     
         missionCard.appendChild(missionTime);
