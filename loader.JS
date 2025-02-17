@@ -185,7 +185,7 @@ function updateBackgroundPages(data, urlIslandTag = null) {
     const collections = data.collections;
     // Danish : English mapping
     const locationNameMapping = {
-        "balkan": "Balkan",
+        "balkan": "The Balkans",
         "cypern": "Cyprus",
         "irak": "Iraq",
         "afghanistan": "Afghanistan",
@@ -223,7 +223,8 @@ function updateBackgroundPages(data, urlIslandTag = null) {
 
             const button = document.getElementById(`missionButton${collection.id}`);
             const homePage = document.getElementById(`PageElement${collection.id}`);
-            updateLayout(title, data.articles)
+            
+            updateLayout(DanishName, data.articles)
 
             if (button) {
                 button.addEventListener('click', (event) => {
@@ -237,24 +238,24 @@ function updateBackgroundPages(data, urlIslandTag = null) {
                     );
                 });
             }
-            window.addEventListener("resize", () => updateLayout(title, data.articles));
+            window.addEventListener("resize", () => updateLayout(DanishName, data.articles));
             loader.removeLoaderContainer();
         }
     });
 
     function updateLayout(title, articles) {
-        const findArticleByTitle = (articleTitle) => articles.find(article => article.title.toLowerCase() === articleTitle);        
-        const article = findArticleByTitle(title).content.text;
+        const findArticleByTitle = (articleTitle) => articles.find(article => article.name.toLowerCase() === articleTitle);        
+        const article = findArticleByTitle(title.toLowerCase()).content.text;
 
         const table =  document.getElementById('aboutTabs');
         if (!table) {
-            console.error("Element #MissionTabs not found");
+            console.warn("Element #MissionTabs not found");
             return;
         }
         const parent = table.parentElement;
 
         if (!parent) {
-            console.error("Element #MissionTabs not found");
+            console.warn("Element #MissionTabs not found");
             return;
         }
         const newtable = document.createElement('div');
