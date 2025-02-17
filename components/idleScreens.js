@@ -2,6 +2,7 @@ export class IdleScreen {
     constructor(data) {
         this.time = 0;
         this.idleTimeLimit = 180000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000 
+        this.imageInterval = 8000;
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
         this.data = data;
@@ -223,7 +224,7 @@ export class IdleScreen {
         }
     
         // Start automatic slideshow
-        setInterval(showNextImage, 4000); // Change image every 4 seconds
+        setInterval(showNextImage, this.imageInterval); // Change image every 8 seconds
     }
     
     // removes the idle element container
