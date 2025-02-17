@@ -75,7 +75,7 @@ export class InfoScreenPage {
 
             Object.assign(container.style, {
                 position: "relative", // Keeps it in flow but allows elements inside to move
-                overflow: "auto", 
+                overflow: "none", // set to auto for a more responsive experience
                 scrollbarWidth: "none",  // For Firefox
                 msOverflowStyle: "none" // For Internet Explorer and Edge
             });
@@ -83,16 +83,10 @@ export class InfoScreenPage {
             // Hide scrollbar for Webkit-based browsers (Chrome, Safari)
             container.style.overflow = "auto";
             container.style.webkitOverflowScrolling = "touch"; // Smooth scrolling on iOS
-            container.style.scrollbarWidth = "none"; // Hide scrollbar for Firefox
-            document.body.style.overflow = "auto";
-            const style = document.createElement("style");
-            style.innerHTML = `
-                #${container.id}::-webkit-scrollbar {
-                    display: none;
-                }
-            `;
-            document.head.appendChild(style);
-            
+            container.style.scrollbarWidth = "none"; // This works in CSS, not JavaScript
+
+            // Apply WebKit-specific scrollbar hiding via JavaScript
+            container.style.cssText += "::webkit-scrollbar { display: none; }";
         } else {
             console.error('Element with id "infoScreenMap" not found.');
         }
