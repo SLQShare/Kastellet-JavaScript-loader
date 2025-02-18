@@ -37,10 +37,10 @@ While (!done) {
         stepOneDone := true ; step one done
     }
 
-    if (WinExist("ahk_exe chrome.exe") and stepOneDone) {  ;
+    if (WinExist("ahk_exe chrome.exe") and stepOneDone) { 
         WinActivate("ahk_exe chrome.exe") ; select the chrome window
         done := true ; 
-        IniWrite 0, counterFile, "restartCounter", "count"; Write and reset the value to 0 in the file
+        IniWrite 0, counterFile, "restartCounter", "count" ; Write and reset the value to 0 in the file
         ExitApp() ; close the script, likely never called
     }
 
