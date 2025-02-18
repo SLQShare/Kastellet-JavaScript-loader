@@ -37,7 +37,7 @@ Start-Sleep -Seconds 10  # Give it time to start
 
 # Wait for Web Server to start (Check if Port 80 or 3000 is Open)
 Write-Output "Waiting for InfoScreen Server to be available..."
-$timeout = 60
+$timeout = 100
 $started = $false
 for ($i=0; $i -lt $timeout; $i++) {
     Start-Sleep -Seconds 2

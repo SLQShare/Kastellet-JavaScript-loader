@@ -48,6 +48,8 @@ While (!done) {
     if (WinExist("ahk_exe chrome.exe") and stepOneDone) {  ;
         WinActivate("ahk_exe chrome.exe")
         done := true
+        ; Write and reset the value to 0 in the file
+        IniWrite count, counterFile, "restartCounter", "0"
         ExitApp()
     }
 
@@ -61,10 +63,11 @@ While (!done) {
         ; OutputVar → The variable where the value will be stored (count in this case). Filename → The path to the .ini file (counterFile). Section → The section inside the .ini file ("restartCounter"). Key → The specific key to read ("count"). Default → The default value if the key does not exist (0 in this case). 
         count := IniRead(counterFile, "restartCounter", "count", 0)
 
-        if (counter > 3){
-            MsgBox("LocalWP was not found after "count" attempts. Exiting script.")
-            Sleep(30000)
-            ExitApp()
+        ; checks if the machine has failed 3 times, then it will go into sleep mode.
+        if (count > 3){
+            MsgBox("⚠ CRITICAL FAILURE! ⚠`nGoing to sleep mode in 30 seconds.`nPlease contact GB.", "Warning", 48)  ; 48 = Exclamation icon            
+            Sleep 30000  ; Wait 5 seconds before sleeping
+            DllCall("PowrProf\SetSuspendState", "Int", 0, "Int", 0, "Int", 0)
         }
         ; Increment the counter
         count++
@@ -72,9 +75,10 @@ While (!done) {
         ; Write the updated value back to the file
         IniWrite count, counterFile, "restartCounter", "count"
 
+        ; Short message before restarting
+        MsgBox("Could not perform start up, restarting i 10 seconds...")
+        Sleep 10000  ; Wait 5 seconds before sleeping
 
-        MsgBox("LocalWP was not found after "count" attempts. Restarting the machine.")
-        Sleep(30000)
         ; Restart the computer
         Shutdown 6
     }
