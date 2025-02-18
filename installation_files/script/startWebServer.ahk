@@ -12,6 +12,15 @@ retryInterval := 5000  ; Check every 5 seconds
 stepOneDone := false
 done := false
 
+
+; Define the path to the counter file
+counterFile := "C:\script\counter.ini"
+
+; Check if the counter file exists, if not, create it with a default value of 0
+if !FileExist(counterFile) {
+    IniWrite 0, counterFile, "restartCounter", "count"
+}
+
 While (!done) {
     if (WinExist("ahk_exe Local.exe") and !stepOneDone) {
         WinActivate("ahk_exe Local.exe")  ; Activate LocalWP window
@@ -48,8 +57,25 @@ While (!done) {
 
     ; Stop trying after 10 minute
     if (elapsedTime >= maxWaitTime) {
-        elapsedMinutes := Round(elapsedTime / 1000 / 60, 1)  ; Convert to minutes
-        MsgBox("LocalWP was not found after " elapsedMinutes " minute(s). Exiting script.")
-        ExitApp()
+        ; Read the current counter value
+        ; OutputVar → The variable where the value will be stored (count in this case). Filename → The path to the .ini file (counterFile). Section → The section inside the .ini file ("restartCounter"). Key → The specific key to read ("count"). Default → The default value if the key does not exist (0 in this case). 
+        count := IniRead(counterFile, "restartCounter", "count", 0)
+
+        if (counter > 3){
+            MsgBox("LocalWP was not found after "count" attempts. Exiting script.")
+            Sleep(30000)
+            ExitApp()
+        }
+        ; Increment the counter
+        count++
+
+        ; Write the updated value back to the file
+        IniWrite count, counterFile, "restartCounter", "count"
+
+
+        MsgBox("LocalWP was not found after "count" attempts. Restarting the machine.")
+        Sleep(30000)
+        ; Restart the computer
+        Shutdown 6
     }
 }
