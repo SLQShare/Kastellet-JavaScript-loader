@@ -1,7 +1,3 @@
-; ------------------------
-; AutoHotkey v2.0 Script - LocalWP Auto Start
-; ------------------------
-
 ; Define required AutoHotkey version
 requiredVersion := 2.0
 
@@ -11,7 +7,6 @@ elapsedTime := 0
 retryInterval := 5000  ; Check every 5 seconds
 stepOneDone := false
 done := false
-
 
 ; Define the path to the counter file
 counterFile := "C:\script\counter.ini"
@@ -26,60 +21,43 @@ While (!done) {
         WinActivate("ahk_exe Local.exe")  ; Activate LocalWP window
         Sleep(2000)  ; Ensure window is fully active
 
-        ; Select the first site (Tab 11 times)
-        Send("{Tab 11}")
+        Send("{Tab 11}") ; Select the first site (Tab 11 times)
         Sleep(500)
+
         Send("{Enter}")  ; Select the site
         Sleep(2000)
 
-        ; Navigate to "Start Site" (Tab 4 more times)
-        Send("{Tab 4}")
+        Send("{Tab 4}") ; Navigate to "Start Site" (Tab 4 more times)
         Sleep(500)
+
         Send("{Enter}")  ; Start the site
         Sleep(3000)
 
-        ; Minimize LocalWP window
-        WinMinimize("A")
-
-        ; step one done
-        stepOneDone := true
+        WinMinimize("A")  ; Minimize LocalWP window
+        stepOneDone := true ; step one done
     }
 
     if (WinExist("ahk_exe chrome.exe") and stepOneDone) {  ;
-        WinActivate("ahk_exe chrome.exe")
-        done := true
-        ; Write and reset the value to 0 in the file
-        IniWrite count, counterFile, "restartCounter", "0"
-        ExitApp()
+        WinActivate("ahk_exe chrome.exe") ; select the chrome window
+        done := true ; 
+        IniWrite 0, counterFile, "restartCounter", "count"; Write and reset the value to 0 in the file
+        ExitApp() ; close the script, likely never called
     }
 
-    ; If LocalWP is not found, wait and try again
-    Sleep(retryInterval)
+    Sleep(retryInterval)  ; If LocalWP is not found, wait and try again
     elapsedTime += retryInterval
 
-    ; Stop trying after 10 minute
-    if (elapsedTime >= maxWaitTime) {
+    if (elapsedTime >= maxWaitTime) { ; Stop trying after 10 minute
         ; Read the current counter value
         ; OutputVar → The variable where the value will be stored (count in this case). Filename → The path to the .ini file (counterFile). Section → The section inside the .ini file ("restartCounter"). Key → The specific key to read ("count"). Default → The default value if the key does not exist (0 in this case). 
         count := IniRead(counterFile, "restartCounter", "count", 0)
 
         ; checks if the machine has failed 3 times, then it will go into sleep mode.
         if (count > 3){
-            MsgBox("⚠ CRITICAL FAILURE! ⚠`nGoing to sleep mode in 30 seconds.`nPlease contact GB.", "Warning", 48)  ; 48 = Exclamation icon            
-            Sleep 30000  ; Wait 5 seconds before sleeping
-            DllCall("PowrProf\SetSuspendState", "Int", 0, "Int", 0, "Int", 0)
+            DllCall("PowrProf\SetSuspendState", "Int", 0, "Int", 0, "Int", 0) ; enter sleep mode
         }
-        ; Increment the counter
-        count++
-
-        ; Write the updated value back to the file
-        IniWrite count, counterFile, "restartCounter", "count"
-
-        ; Short message before restarting
-        MsgBox("Could not perform start up, restarting i 10 seconds...")
-        Sleep 10000  ; Wait 5 seconds before sleeping
-
-        ; Restart the computer
-        Shutdown 6
+        count++  ; Increment the counter
+        IniWrite count, counterFile, "restartCounter", "count" ; Write the updated value back to the file 
+        Shutdown 6 ; Restart the computer
     }
 }
