@@ -1,5 +1,5 @@
 Installation of Info Center server
-
+1.  Check if we can enter the current OS before reinstalling the machine.
 Windows installation:
 1.  Dont add a password then on boot the systems enter Windows
 2.  Edge need to be updated to enter the autohotkey website.
@@ -11,20 +11,20 @@ Liste of files you need:
 4.	Login credentials for new Admin and old Admin accounts (not on gitHub)
 5.	InfoCenter folder (likely not needed but keep them)
 6.  Script folder with setup.ps1 and startWebServer.ahk
+7.  JEHE.exe
 
 Steps to follow: 
-0.  Change the display zoom to 100% - default zoom seems to be 125%.
-1.	Install LocalWP, autohotkey v2.0 and chrome (USB tethering for internet)
+1.  Verify the screen size and ensure it is correct: full HD or 4K
+    a. Change the display zoom to 100% - default zoom seems to be 125%.
+2.	Install LocalWP, autohotkey v2.0 and chrome (USB tethering for internet)
     a.  https://www.autohotkey.com/
     b.  https://localwp.com/
     c.  https://www.google.com/intl/da/chrome/
-2.	Create a new site
+3.	Create a new site
     a.	Call it InfoCenter
     b.	Set username: Dev
     c.	Set password: dev123
     d.	Login to WP to check it works
-3.	Configure server *can likely be skipped*
-    a.  Replace the file inside the folder with the files from InfoCenter folder
 4.	Plugins > Add New Plugin > upload plugin > select All-in-one-WP-migration-6.7 plugin file 
     a.	Don’t activate the plugin yet! (Need to be deactivated before the next step)
     b.	Go into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
@@ -35,14 +35,14 @@ Steps to follow:
     b.	Start the server
     c.	Go into the All-in-one-WP-migration menu and select backup
     d.	Restore the inforcenter backup file 
-    e.	When done go to Settings > permalinks > hit save changes twice 
-    f.	Turn of WP navigation bar on user
+    e.  This will log you out. Use the credential.txt to find the new login information.
+    f.	When done go to Settings > permalinks > hit save changes twice 
     g.  Test the site
 6.  Generate new source URLs for elementor
     a. WordPress Admin -> Elementor -> Tools -> press Regenerate Files to clear the cache.
-7. Copy the script folder to the local disk (C:)
+7.  Copy the script folder to the local disk (C:)
     a. Open PowerShell with admin rights 
-    b. Paste the following command:
+    b. Paste the following command and hit enter:
                 ---------------*********---------------
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" `
     -Name "LocalWPStartup" `
@@ -50,10 +50,22 @@ New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" `
     -PropertyType String -Force
                 ---------------*********---------------
     c. open the script folder and edit the setup.ps1 file. Change the $homeScreenPath from '' to the required island page e.g. 'videomap' etc. Remember to save the changes.
+        a. infoScreen: ""
+        b. Balkan-forside: "balkan-forside"
+        c. Afghanistan-forside: "afghanistan-forside"
+        d. Cypern-forside: "cypern-forside"
+        e. Equipment: "equipment"
+        f. Infoscreen-beredskab: "beredskabskort"
+        g. Organizations: "organizations"
+        h. Uniforms: "uniforms"
+        i. Videomap: "videomap"
     d. Make sure there is only one webserver folder in localWP.
     e. Restart the pc to test it.
-8. Restart to enter the JAHC BIOS and enable Automatic Power ON. 
-    a. cut power and add it back to test the Automatic Power ON.
+8. Restart to enter the BIOS to enable JEHE.
+    a.  Select Advanced- >Wake Configuration- > JAHC Enable- > Enabled.
+    b.  Exit the bios and enter windows to install the JEHC software.
+    c.  Configure the boot and Shutdown times for the machine.
+    c.  Cut power and add it back to test the Automatic Power ON.
 
 Resources:
 •	https://www.youtube.com/watch?v=R5jipN-su_Q
@@ -63,4 +75,3 @@ All-in-one-WP-migration-6.7 plugin file steps:
 •	When uploading the backup file, the plugin might fail due to the file size. You can fix this by going into: Tools => Plugin File Editor => select All-in-one-WP-migration-6.7 => go under constants.php and search for “max”. You want to find the Max File Size and change to to “2 << 32”
 •   JEHE Active Hardware Control (JAHC) management system includes both hardware Microcontroller Unit (MCU) and software (JAHC Technology Manager). JAHC can avoid devices running in non-working hours and help users save power consumption significantly. The diagram shows how JAHC can control a device through a Microcontroller Unit (MCU). https://www.intersign.dk/products/alpha-si330-w-intel-i3-7100u
     - Automatic Power ON - Enable this function in the BIOS, and the JAHC chip can instantly detect the power-on state. When the power is connected, automatic startup will be achieved.
-
