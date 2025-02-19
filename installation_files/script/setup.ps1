@@ -2,6 +2,21 @@
 # Local WP InfoScreen Auto Startup Script (Using Chrome)
 # ------------------------
 
+# Maximize PowerShell window
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class Win32 {
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetForegroundWindow();
+}
+"@ -Language CSharp
+
+Start-Sleep -Milliseconds 500  # Give the window time to initialize
+[Win32]::ShowWindow([Win32]::GetForegroundWindow(), 3)  # Maximize the window
+
 # Define HomeScreen for this server
 $homeScreenPath = ""  # Landing page 
 $webpage = "infocenter.local"  # Site domain
