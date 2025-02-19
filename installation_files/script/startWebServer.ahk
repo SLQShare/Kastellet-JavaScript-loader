@@ -2,7 +2,7 @@
 requiredVersion := 2.0
 
 ; Wait for LocalWP to open (Max 10 minute)
-maxWaitTime := 600000
+maxWaitTime := 200000
 elapsedTime := 0
 retryInterval := 5000  ; Check every 5 seconds
 stepOneDone := false
@@ -54,10 +54,14 @@ While (!done) {
 
         ; checks if the machine has failed 3 times, then it will go into sleep mode.
         if (count > 3){
-            DllCall("PowrProf\SetSuspendState", "Int", 0, "Int", 0, "Int", 0) ; enter sleep mode
+            Shutdown 5  ; Force shutdown
+            ExitApp() ; close the script, likely never called
+        } else {
+            count++  ; Increment the counter
+            IniWrite count, counterFile, "restartCounter", "count" ; Write the updated value back to the file 
+            Shutdown 6 ; Restart the computer
+            ExitApp() ; close the script, likely never called
         }
-        count++  ; Increment the counter
-        IniWrite count, counterFile, "restartCounter", "count" ; Write the updated value back to the file 
-        Shutdown 6 ; Restart the computer
+        
     }
 }
