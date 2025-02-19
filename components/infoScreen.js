@@ -65,9 +65,11 @@ export class InfoScreenPage {
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "0% 0%",
                 position: "relative", // Keeps it in flow but allows elements inside to move
+                // enable for the web version
                 width: "1920px",  // Fixed width
                 height: "1080px", // Fixed height
                 maxHeight: '1080px',
+                minHeight: '1080px',
                 overflow: "hidden", // No scrolling inside the map itself
                 top: "0",
                 left: "0",
@@ -77,7 +79,10 @@ export class InfoScreenPage {
                 position: "relative", // Keeps it in flow but allows elements inside to move
                 overflow: "none", // set to auto for a more responsive experience
                 scrollbarWidth: "none",  // For Firefox
-                msOverflowStyle: "none" // For Internet Explorer and Edge
+                msOverflowStyle: "none", // For Internet Explorer and Edge
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
             });
             
             // Hide scrollbar for Webkit-based browsers (Chrome, Safari)
@@ -119,6 +124,8 @@ export class InfoScreenPage {
                 textTransform: 'uppercase',
                 marginBottom: '10px',
                 width: '18.23vw',
+                minWidth: '200px',
+                minHeight: '55px',
                 height: '6.94vh',
                 backgroundColor: '#72756f',
                 borderRadius: '50px',

@@ -97,8 +97,7 @@ function processData(missionId , data) {
     beredskabsIsland(missionId, data);
     organizationIsland(missionId, data);
     locationIslands(missionId,data, ['balkan', 'irak', 'cypern', 'afghanistan']);
-    const idleScreen = new IdleScreen(data);
-    
+    //const idleScreen = new IdleScreen(data); // enable on site
 }
 
 // island for the infoScreen
