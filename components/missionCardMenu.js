@@ -192,7 +192,6 @@ export class MissionSelectorMenu {
         
             return aEnd - bEnd;
         }
-        console.log('missionsIdArray', missionsIdArray);
         console.log('sortedMissionArray', sortedMissionArray);
         // Loop through the missions and create mission cards
         sortedMissionArray.forEach((missionId) => {
