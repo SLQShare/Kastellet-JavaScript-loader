@@ -1,0 +1,20 @@
+Installation fixes for infoCenter
+1.  Disable multi finger gestures
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad
+Registry Key Name	Value Type	Description
+ThreeFingerTapEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+ThreeFingerSlideEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+FourFingerTapEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+FourFingerSlideEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+PinchZoomEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+RotateEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+EdgeSwipeEnabled	DWORD (32-bit)	1 = Enable, 0 = Disable
+
+2. Disable Touch Gestures via Registry Editor (For Windows 10/11 Home Users)
+    Press Win + R, type regedit, and hit Enter.
+    Navigate to:
+HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\EdgeUI
+If the EdgeUI key doesn’t exist, right-click on Windows, select New → Key, and name it EdgeUI.
+Inside EdgeUI, right-click on the right pane, select New → DWORD (32-bit) Value.
+Name it AllowEdgeSwipe and set its value to 0.
+Close the Registry Editor and restart your system.

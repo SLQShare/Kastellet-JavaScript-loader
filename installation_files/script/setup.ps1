@@ -104,7 +104,8 @@ if (-not $chromePath) {
 }
 Write-Output "Launching Chrome in Kiosk Mode..."
 
-Start-Process -FilePath $chromePath -ArgumentList "--kiosk http://$webpage/$homeScreenPath --incognito --disable-popup-blocking --no-first-run"
+#Start-Process -FilePath $chromePath -ArgumentList "--kiosk http://$webpage/$homeScreenPath --incognito --disable-popup-blocking --no-first-run"
+Start-Process -FilePath $chromePath -ArgumentList "--kiosk http://$webpage/$homeScreenPath --incognito --disable-popup-blocking --no-first-run --disable-pinch --force-device-scale-factor=1 --overscroll-history-navigation=0"
 
 # ------------------------
 # Prevent Sleep Mode & Disable Notifications
@@ -119,4 +120,28 @@ Write-Output "Disabling Notifications..."
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings" `
                  -Name "NOC_GLOBAL_SETTING_TOASTS_ENABLED" -Value 0 -PropertyType DWORD -Force
 
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad" -Name "ThreeFingerTapEnabled" -Value 0
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad" -Name "PinchZoomEnabled" -Value 0
+
+
+# Run this script as Administrator
+
+# Define the registry path for Precision TouchPad settings
+$regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad"
+
+# Function to set registry values
+Function Set-TouchGesture {
+    param (
+        [string]$name,
+        [int]$value
+    )
+    # Check if the registry key exists, if not, create it
+    if (!(Test-Path $regPath)) {
+        New-Item -Path $regPath -Force | Out-Null
+    }
+    
+    # Set the registry value
+    Set-ItemProperty -Path $regPath -Name $name -Value $value -Type DWord
+}
+         
 Write-Output "Startup tasks completed!"
