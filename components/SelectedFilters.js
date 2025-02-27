@@ -158,6 +158,7 @@ export class SelectedFilters {
                 );
             }
         });
+        console.log('filteredMissionIds', filteredMissionIds);
 
         return filteredMissionIds;
 

@@ -64,7 +64,7 @@ export class InfoScreenPage {
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "0% 0%",
-                position: "relative", // Keeps it in flow but allows elements inside to move
+                position: "relative",
                 // enable for the web version
                 width: "1920px",  // Fixed width
                 height: "1080px", // Fixed height
@@ -76,8 +76,8 @@ export class InfoScreenPage {
             });
 
             Object.assign(container.style, {
-                position: "relative", // Keeps it in flow but allows elements inside to move
-                overflow: "none", // set to auto for a more responsive experience
+                position: "relative", 
+                overflow: "hidden", // change to auto for web
                 scrollbarWidth: "none",  // For Firefox
                 msOverflowStyle: "none", // For Internet Explorer and Edge
                 display: 'flex',
@@ -86,7 +86,6 @@ export class InfoScreenPage {
             });
             
             // Hide scrollbar for Webkit-based browsers (Chrome, Safari)
-            container.style.overflow = "auto";
             container.style.webkitOverflowScrolling = "touch"; // Smooth scrolling on iOS
             container.style.scrollbarWidth = "none"; // This works in CSS, not JavaScript
 
@@ -627,7 +626,6 @@ export class InfoScreenPage {
         // Construct the base image path dynamically
         const url = new URL(window.location.href);
         const baseImagePath = `${url.protocol}//${url.hostname}/wp-content/uploads/`;
-    
         if (type === 'country') {
             // countryPin.style.transform = 'scale(0.36)';
             const scaleValues = {

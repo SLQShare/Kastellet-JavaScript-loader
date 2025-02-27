@@ -3492,7 +3492,7 @@
       "x": 363,
       "y": 67,
       "direction": "left",
-      "region": "MiddleEast",
+      "region": "Europe",
       "county": "Turkey"
     },
     {
@@ -4531,8 +4531,8 @@
       "x": 498,
       "y": 253,
       "direction": "left",
-      "region": "MiddleEast",
-      "county": ""
+      "region": "Europe",
+      "county": "Mediterranean"
     },
     {
       "mapid": 4460,
@@ -4731,7 +4731,7 @@
       "x": 745,
       "y": 439,
       "direction": "left",
-      "region": "MiddleEast",
+      "region": "Europe",
       "county": "Turkey"
     },
     {
@@ -4741,7 +4741,7 @@
       "x": 740,
       "y": 239,
       "direction": "left",
-      "region": "MiddleEast",
+      "region": "Europe",
       "county": "Turkey"
     },
     {
@@ -4751,7 +4751,7 @@
       "x": 525,
       "y": 307,
       "direction": "left",
-      "region": "MiddleEast",
+      "region": "Europe",
       "county": "Turkey"
     },
     {
@@ -7227,7 +7227,6 @@
       "hotspotCollections": [
         4260,
         4235,
-        4439,
         4686
       ],
       "year": {
@@ -15735,7 +15734,8 @@
         "Røde Kors",
         "Danish Refugee Council",
         "International Red Cross",
-        "Refugees"
+        "Refugees",
+        "Congo"
       ],
       "location": null,
       "hotspotCollections": [
@@ -17314,7 +17314,10 @@
         "Observatører",
         "Sanctions",
         "Observers",
-        "Embargo"
+        "Embargo",
+        "Bosnien",
+        "Bosnia",
+        "Bosnien-Herzegovina"
       ],
       "location": null,
       "hotspotCollections": [
