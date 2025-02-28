@@ -85,6 +85,7 @@ export class IdleScreen {
                 // Copy size from the source button
                 closeButton.style.width = `2.6vw`;
                 closeButton.style.height = `4.6vh`;
+                closeButton.style.top = `94%`;
                 
                 // Adjust font size, padding, margins, and other styles
                 closeButton.querySelectorAll("*").forEach(child => {
