@@ -575,3 +575,71 @@ if (!meta) {
     document.head.appendChild(meta);
 }
 meta.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0 user-scalable=no");
+
+
+class responsiveAlert {
+    constructor(windowWidh) {
+        this.windowWidh = windowWidh;
+        this.warnElement = null
+        this.isWarningActive = false;
+        this.initialize()
+    }
+
+    initialize(){
+        this.createWarningElement();
+        this.windowTooNarrow()
+        this.addEvent();
+    }
+    addEvent() {
+        // Listen for window resizing
+        window.addEventListener("resize", () => this.windowTooNarrow());
+    }
+
+    createWarningElement(){
+        this.warnElement = document.createElement('div');
+        this.warnElement.id = 'warnElement';
+        
+        Object.assign(this.warnElement.style, {
+            fontFamily: 'Poppins, Sans-serif',
+            textTransform: 'uppercase',
+            fontWeight: '300',
+            letterSpacing: '1px',
+            width: '100vw',
+            height: '100vh',
+            fontSize: 'clamp(0.5rem, 50vw, 1.5rem)', 
+            overflow: 'hidden', /* Hides extra text */
+            textOverflow: 'ellipsis', /* Adds "..." if text overflows */
+            backgroundColor: 'black',
+            color: 'white',
+            zIndex: '100000',
+            position: 'absolute',
+            top: '0',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-evenly'
+        });
+        const text = document.createElement('span');
+        text.textContent = 'Hjemmesiden understøtter ikke smalle skærme eller mobile enheder.';
+        this.warnElement.appendChild(text);
+        const texten = document.createElement('span');
+        texten.textContent = 'The website does not support narrow screens or mobile devices.';
+        this.warnElement.appendChild(texten);
+    }
+    // if the window is too narrow add a black box with the text website does not support mobile devices
+    windowTooNarrow(){
+        console.log('windowTooNarrow', window.innerWidth)
+        if (window.innerWidth < this.windowWidh && !this.isWarningActive){
+            document.body.style.overflow = 'hidden';
+            document.body.appendChild(this.warnElement)
+            this.isWarningActive = true;
+
+        } else if (window.innerWidth >= this.windowWidh && this.isWarningActive){
+            this.warnElement.remove();
+            document.body.style.overflow = '';
+            this.isWarningActive = false;
+        }
+    }
+}
+
+// 1000 px wide
+const mobileAlert = new responsiveAlert(1000);
