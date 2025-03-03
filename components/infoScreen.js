@@ -63,16 +63,16 @@ export class InfoScreenPage {
             Object.assign(mapContainer.style, {
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "0% 0%",
+                //backgroundPosition: "0% 0%",
                 position: "relative",
                 // enable for the web version
                 width: "1920px",  // Fixed width
                 height: "1080px", // Fixed height
                 maxHeight: '1080px',
                 minHeight: '1080px',
-                overflow: "hidden", // No scrolling inside the map itself
+                overflow: "auto", // No scrolling inside the map itself
                 top: "0",
-                left: "0",
+                //left: "0",
             });
 
             Object.assign(container.style, {
