@@ -12,6 +12,7 @@ export class IdleScreen {
         this.location = null;
         this.isVideoPlaying = false;
         this.observer = null;
+        this.resetTimer = this.resetTimer.bind(this);
         this.closeButton = null;
         this.init(this.data);
     }
@@ -37,17 +38,8 @@ export class IdleScreen {
     }
     
     addEvent() {
-        // Bind `this.resetTimer` to maintain context in event listeners
-        const boundResetTimer = this.resetTimer.bind(this);
-    
-        // Reset timer on page load
-        //window.addEventListener('load', boundResetTimer, true);
-    
-        // Add event listeners for user activity
-        const events = ['mousedown', 'touchmove', 'touchstart'];
-        events.forEach((name) => {
-            document.addEventListener(name, boundResetTimer, true);
-        });
+        document.addEventListener('touchstart', this.resetTimer);
+
         if (this.isOnMissionsPage('videomap')){
             this.startObserving();
         }
@@ -154,7 +146,9 @@ export class IdleScreen {
         if (this.timer) {
             clearTimeout(this.timer);
         }
-        this.startIdleTimer();
+        if (this.isOnMissionsPage('videomap')){
+            this.startIdleTimer();
+        }
     }
 
     startIdleTimer() {
