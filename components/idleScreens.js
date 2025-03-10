@@ -14,6 +14,7 @@ export class IdleScreen {
         this.observer = null;
         this.resetTimer = this.resetTimer.bind(this);
         this.closeButton = null;
+        this.clickControl = false;
         this.init(this.data);
     }
 
@@ -136,6 +137,8 @@ export class IdleScreen {
     }
 
     resetTimer() {
+        if (this.clickControl) return;
+        this.clickControl = true;
         this.time = 0;
         console.log('Timer reset', (this.idleTimeLimit/1000)/60, 'min');
         if (this.idleContainer){
