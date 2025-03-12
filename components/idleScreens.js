@@ -1,7 +1,7 @@
 export class IdleScreen {
     constructor(data) {
         this.time = 0;
-        this.idleTimeLimit = 180000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000 
+        this.idleTimeLimit = 10000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000 
         this.imageInterval = 8000;
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
@@ -12,7 +12,6 @@ export class IdleScreen {
         this.location = null;
         this.isVideoPlaying = false;
         this.observer = null;
-        this.resetTimer = this.resetTimer.bind(this);
         this.closeButton = null;
         this.clickControl = false;
         this.init(this.data);
@@ -39,8 +38,15 @@ export class IdleScreen {
     }
     
     addEvent() {
-        document.addEventListener('touchstart', this.resetTimer);
-
+        // Bind `this.resetTimer` to maintain context in event listeners
+        const boundResetTimer = this.resetTimer.bind(this);
+    
+        // Reset timer on page load
+        //window.addEventListener('load', boundResetTimer, true);
+    
+        document.addEventListener('touchstart', boundResetTimer, true);
+        document.addEventListener('touchmove', boundResetTimer, true);
+        document.addEventListener('touchend', boundResetTimer, true);
         if (this.isOnMissionsPage('videomap')){
             this.startObserving();
         }
@@ -137,24 +143,18 @@ export class IdleScreen {
     }
 
     resetTimer() {
-        if (this.clickControl) return;
-        this.clickControl = true;
         this.time = 0;
         console.log('Timer reset', (this.idleTimeLimit/1000)/60, 'min');
-        if (this.idleContainer){
-            window.location.href = this.location
+        if (this.idleContainer && !this.clickControl){
+            this.clickControl = true;
+            window.location.replace(this.location);
         } 
-
-        // Restart the idle timer
-        if (this.timer) {
-            clearTimeout(this.timer);
-        }
-        if (this.isOnMissionsPage('videomap')){
-            this.startIdleTimer();
-        }
+        
+        this.startIdleTimer();
     }
 
     startIdleTimer() {
+        console.log('Timer started', (this.idleTimeLimit/1000)/60, 'min');
         // Trigger idle state after the specified time limit
         this.timer = setTimeout(() => {
             if (this.isVideoPlaying === true){
