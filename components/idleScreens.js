@@ -147,7 +147,10 @@ export class IdleScreen {
         console.log('Timer reset', (this.idleTimeLimit/1000)/60, 'min');
         if (this.idleContainer && !this.clickControl){
             this.clickControl = true;
+            this.removeIdleContainer();
+            this.createLoadingElement();
             window.location.replace(this.location);
+
         } 
         
         this.startIdleTimer();
@@ -236,7 +239,50 @@ export class IdleScreen {
                 if (container.parentElement) container.remove();
             }, 2000); // Match the duration of the transition
         }
+
     }  
+
+     // Create the loading element and append it to the body
+     createLoadingElement() {
+        const animationElement = document.createElement('div');
+        Object.assign(animationElement.style, {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#363636',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '1000',
+        });
+
+        // Create a spinner for the loading animation
+        const spinner = document.createElement('div');
+        Object.assign(spinner.style, {
+            width: '50px',
+            height: '50px',
+            border: '5px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '5px solid white',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+        });
+
+        animationElement.appendChild(spinner);
+        document.body.appendChild(animationElement);
+        this.element = animationElement;
+
+        // Add CSS for the spinner animation
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    }
     
     assignImages(data){
         const aspectRatio = window.innerWidth / window.innerHeight;
