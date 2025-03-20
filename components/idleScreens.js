@@ -1,7 +1,7 @@
 export class IdleScreen {
     constructor(data) {
         this.time = 0;
-        this.idleTimeLimit = 10000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000 
+        this.idleTimeLimit = 180000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000 
         this.imageInterval = 8000;
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
