@@ -41,7 +41,7 @@ While (!done) {
         WinActivate("ahk_exe chrome.exe") ; select the chrome window
         done := true ; 
         IniWrite 0, counterFile, "restartCounter", "count" ; Write and reset the value to 0 in the file
-        ExitApp() ; close the script, likely never called
+        ;ExitApp() ; close the script, likely never called
     }
 
     Sleep(retryInterval)  ; If LocalWP is not found, wait and try again
@@ -63,5 +63,17 @@ While (!done) {
             ExitApp() ; close the script, likely never called
         }
         
+    }
+}
+
+; while done wait for 10 mins then set chrome in focus to ensure it is the only accessible window
+While (done) {
+    if (WinExist("ahk_exe chrome.exe")) {
+        Sleep(600000) ; wait 10 minutes
+        WinActivate("ahk_exe chrome.exe") ; select the chrome window
+        WinSetAlwaysOnTop("A", true) ; ensure the chrome window stays on top
+        ExitApp()
+    } else {
+        done := false ; if chrome is not found, exit the loop
     }
 }
