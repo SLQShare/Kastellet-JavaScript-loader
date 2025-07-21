@@ -1,7 +1,7 @@
 export class IdleScreen {
     constructor(data) {
         this.time = 0;
-        this.idleTimeLimit = 180000; //ms Example:300000 = 30 seconds of inactivity, 1 sec = 1000 
+        this.idleTimeLimit = 180000; //ms Example:30000 = 30 seconds of inactivity, 1 sec = 1000 
         this.imageInterval = 8000;
         this.timer = null; // For managing the idle timer
         this.idleContainer = null;
@@ -173,6 +173,10 @@ export class IdleScreen {
     }
 
     createIdleElements() {
+        if (this.idleContainer) {
+            console.log('Idle container already exists, skipping creation.');
+            return; // If idleContainer already exists, do not create a new one
+        }
         const idleContainer = document.createElement('div');
         Object.assign(idleContainer.style, {
             position: 'fixed',
@@ -206,7 +210,7 @@ export class IdleScreen {
             idleContainer.appendChild(imageElement);
             imageElements.push(imageElement);
         });
-    
+        idleContainer.classList.add("idleContainer");
         document.body.appendChild(idleContainer);
         
         // Trigger fade-in animation
@@ -270,8 +274,8 @@ export class IdleScreen {
         });
 
         animationElement.appendChild(spinner);
+        animationElement.classList.add('loading-animation');
         document.body.appendChild(animationElement);
-        this.element = animationElement;
 
         // Add CSS for the spinner animation
         const styleSheet = document.createElement('style');
