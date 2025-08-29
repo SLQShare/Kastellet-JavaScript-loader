@@ -17073,91 +17073,96 @@
                 },
                 "gallery": {
                     "images": [
-                        {
-                            "title": "Vestlige Middelhav",
-                            "url": "media/1683/vestlig-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481082780000000",
-                            "caption": "Western Mediterranean"
-                        },
-                        {
-                            "title": "Østlige Middelhav",
-                            "url": "media/1685/oestlige-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481081580000000",
-                            "caption": "Eastern Mediterranean"
-                        },
-                        {
-                            "title": "EU",
-                            "url": "media/1687/eu_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436360000000",
-                            "caption": "EU"
-                        },
-                        {
-                            "title": "Forsvaret",
-                            "url": "media/1689/forsvaret_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479435930000000",
-                            "caption": "Danish Defence"
-                        },
-                        {
-                            "title": "Hjemmeværnet",
-                            "url": "media/1690/hjemmevaernet_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479435680000000",
-                            "caption": "Home Guard"
-                        },
-                        {
-                            "title": "Beredskabsstyrelsen",
-                            "url": "media/1686/beredskabsstyrelsen-01.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436670000000",
-                            "caption": "DEMA"
-                        },
-                        {
-                            "title": "Politi",
-                            "url": "media/1693/politi_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436920000000",
-                            "caption": "Danish Police"
-                        },
-                        {
-                            "title": "Team Challenger 2018",
-                            "url": "media/1181/2018-05-30-_flv4372frontex-afgang.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483659680000000",
-                            "caption": "Challenger team"
-                        },
-                        {
-                            "title": "Overvågning fra Challenger",
-                            "url": "media/1184/fotoairtransportwing-1.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483658040000000",
-                            "caption": "Inside the Challenger"
-                        },
-                        {
-                            "title": "Defender (1)",
-                            "url": "media/1183/defender-2.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483659130000000",
-                            "caption": "Defender"
-                        },
-                        {
-                            "title": "Defender",
-                            "url": "media/2138/defender.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479427460000000",
-                            "caption": "Defender"
-                        },
-                        {
-                            "title": "FRONTEX 2017",
-                            "url": "media/2334/frontex-2017_migranter-og-flygtninge-samlet-op-paa-havet-af-graeske-myndigheder-ved-oeen-chios.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132485218160000000",
-                            "caption": "FRONTEX 2017"
-                        },
-                        {
-                            "title": "Kystovervågning",
-                            "url": "media/1188/kystovervaagning.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483657490000000",
-                            "caption": "Surveillance radar"
-                        },
-                        {
-                            "title": "Opdaget",
-                            "url": "media/1186/frontex-2.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483658880000000",
-                            "caption": "More boats are coming"
-                        },
-                        {
-                            "title": "Fennec helikopter",
-                            "url": "media/1940/fennec.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481966050000000",
-                            "caption": "Fennec helicopter"
-                        },
-                        {
-                            "title": "Flygtninge fra Tyrkiet",
-                            "url": "media/2331/frontex-2017_flygtninge-ankommer-til-chios-i-hurtigbaade-fra-tyrkiet.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132485217570000000",
-                            "caption": "Refuges from Turkey"
-                        },
-                        {
-                            "title": "Patruljefartøj",
-                            "url": "media/2140/ptr-fartoej-1.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132482044310000000",
-                            "caption": "Small patrolship"
-                        }
+                      {
+                        "title": "Vestlige Middelhav",
+                        "url": "media/1683/vestlig-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481082780000000",
+                        "caption": "Western Mediterranean"
+                      },
+                      {
+                        "title": "Østlige Middelhav",
+                        "url": "media/1685/oestlige-middelhav.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481081580000000",
+                        "caption": "Eastern Mediterranean"
+                      },
+                      {
+                        "title": "EU",
+                        "url": "media/1687/eu_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436360000000",
+                        "caption": "EU"
+                      },
+                      {
+                        "title": "Forsvaret",
+                        "url": "media/1689/forsvaret_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479435930000000",
+                        "caption": "Danish Defence"
+                      },
+                      {
+                        "title": "Hjemmeværnet",
+                        "url": "media/1690/hjemmevaernet_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479435680000000",
+                        "caption": "Home Guard"
+                      },
+                      {
+                        "title": "Beredskabsstyrelsen",
+                        "url": "media/1686/beredskabsstyrelsen-01.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436670000000",
+                        "caption": "DEMA"
+                      },
+                      {
+                        "title": "Politi",
+                        "url": "media/1693/politi_logo.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479436920000000",
+                        "caption": "Danish Police"
+                      },
+                      {
+                        "title": "Team Challenger 2018",
+                        "url": "media/1181/2018-05-30-_flv4372frontex-afgang.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483659680000000",
+                        "caption": "Challenger team"
+                      },
+                      {
+                        "title": "Overvågning fra Challenger",
+                        "url": "media/1184/fotoairtransportwing-1.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483658040000000",
+                        "caption": "Inside the Challenger"
+                      },
+                      {
+                        "title": "Defender (1)",
+                        "url": "media/1183/defender-2.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483659130000000",
+                        "caption": "Defender"
+                      },
+                      {
+                        "title": "Defender",
+                        "url": "media/2138/defender.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132479427460000000",
+                        "caption": "Defender"
+                      },
+                      {
+                        "title": "FRONTEX 2017",
+                        "url": "media/2334/frontex-2017_migranter-og-flygtninge-samlet-op-paa-havet-af-graeske-myndigheder-ved-oeen-chios.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132485218160000000",
+                        "caption": "FRONTEX 2017"
+                      },
+                      {
+                        "title": "Kystovervågning",
+                        "url": "media/1188/kystovervaagning.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483657490000000",
+                        "caption": "Surveillance radar"
+                      },
+                      {
+                        "title": "Opdaget",
+                        "url": "media/1186/frontex-2.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132483658880000000",
+                        "caption": "More boats are coming"
+                      },
+                      {
+                        "title": "Fennec helikopter",
+                        "url": "media/1940/fennec.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132481966050000000",
+                        "caption": "Fennec helicopter"
+                      },
+                      {
+                        "title": "Flygtninge fra Tyrkiet",
+                        "url": "media/2331/frontex-2017_flygtninge-ankommer-til-chios-i-hurtigbaade-fra-tyrkiet.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132485217570000000",
+                        "caption": "Refuges from Turkey"
+                      },
+                      {
+                        "title": "Patruljefartøj",
+                        "url": "media/2140/ptr-fartoej-1.jpg?anchor=center&mode=crop&width=800&height=600&rnd=132482044310000000",
+                        "caption": "Small patrolship"
+                      },
+                      {
+                        "title": "Hugin og Munin patruljerer ved Lampedusa",
+                        "url": "media/2516/nyt-patruljeskib-til-Frontex-10.jpg",
+                        "caption": "Hugin or Munin in the water around Lampedusa"
+                      }
                     ]
                 }
             }
